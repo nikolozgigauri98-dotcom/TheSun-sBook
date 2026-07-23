@@ -3221,6 +3221,60 @@ function showLoadPlanet(){
 function advancePlanet(){lpIdx=(lpIdx+1)%PLANET_ORDER.length;showLoadPlanet();}
 function startLoad(){lpIdx=0;orbitAngle=0;showLoadPlanet();loadInt=setInterval(tickOrbit,40);loadSwitchInt=setInterval(advancePlanet,6500);}
 function stopLoad(){clearInterval(loadInt);clearInterval(loadSwitchInt);}
+/* ============================================================
+   Remembering the chart
+   ------------------------------------------------------------
+   The birth details are kept locally so that a return visit
+   opens on the chart rather than on an empty form. Nothing here
+   needs the network: it works signed out, offline, and on the
+   first visit alike. SB_cloudSaveBirth / SB_cloudLoadBirth are
+   the seams where Firestore will carry the same record between
+   a person's devices once the database is enabled.
+   ============================================================ */
+var SB_BIRTH_KEY='sb_birth';
+function SB_saveBirth(b){
+  try{localStorage.setItem(SB_BIRTH_KEY,JSON.stringify(b));}catch(e){}
+  if(typeof SB_cloudSaveBirth==='function')try{SB_cloudSaveBirth(b);}catch(e){}
+}
+function SB_readBirth(){
+  try{var s=localStorage.getItem(SB_BIRTH_KEY);return s?JSON.parse(s):null;}catch(e){return null;}
+}
+function SB_forgetBirth(){
+  try{localStorage.removeItem(SB_BIRTH_KEY);}catch(e){}
+}
+/* Puts a saved record back into the form and casts it. */
+function SB_restoreBirth(b){
+  b=b||SB_readBirth();
+  if(!b||!b.date)return false;
+  var set=function(id,v){var e=document.getElementById(id);if(e&&v!==undefined&&v!==null)e.value=v;};
+  set('iName',b.name==='The Seeker'?'':b.name);
+  set('iDate',b.date);
+  set('iTime',b.noTime?'':b.time);
+  set('iPlace',b.place);
+  set('iGender',b.gender);
+  var nt=document.getElementById('iNoTime');if(nt)nt.checked=!!b.noTime;
+  if(b.tzOv!==null&&b.tzOv!==undefined){set('iTzMode','manual');set('iTzManual',b.tzOv);
+    var tm=document.getElementById('iTzMode');if(tm&&tm.onchange)tm.onchange();}
+  if(b.geo)window.SB_GEO=b.geo;
+  castChart();
+  return true;
+}
+(function(){
+  var go=function(){
+    /* only on a clean first paint - never interrupt a chart already drawn */
+    try{
+      if(!document.body.classList.contains('sb-cast'))return;
+      var f=document.getElementById('formCard');
+      if(!f||f.style.display==='none')return;
+      SB_restoreBirth();
+    }catch(e){}
+  };
+  try{
+    if(document.readyState==='complete')setTimeout(go,60);
+    else window.addEventListener('load',function(){setTimeout(go,60);});
+  }catch(e){}
+})();
+
 async function castChart(){
   var name=document.getElementById('iName').value.trim()||'The Seeker';
   var date=document.getElementById('iDate').value;
@@ -3244,6 +3298,8 @@ async function castChart(){
   try{chart=calculateChart(date,time,place,_tzOv,_geo,noTime?'Sun':null);}
   catch(e){stopLoad();document.getElementById('loading').style.display='none';document.getElementById('formCard').style.display='block';errEl.textContent='Calc error: '+e.message;errEl.style.display='block';return;}
   window.SB3D_STATE={chart:chart,birth:{date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime}};
+  SB_saveBirth({date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime,
+                gender:((document.getElementById('iGender')||{}).value||'u'),saved:Date.now()});
   stopLoad();
   document.getElementById('loading').style.display='none';
   renderReading(name,date,time,place,chart,'');
@@ -3498,7 +3554,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   var out=document.getElementById('reading');
   out.innerHTML=html;
   var b3=document.createElement('button');b3.className='btn-cast';b3.style.marginTop='40px';b3.textContent='Enter the 3D Sky';b3.onclick=function(){if(window.SB3D_open)SB3D_open();};out.appendChild(b3);
-  var rb=document.createElement('button');rb.className='btn-cast';rb.style.marginTop='40px';rb.textContent='Cast Another Chart';rb.onclick=function(){out.style.display='none';out.innerHTML='';document.getElementById('formCard').style.display='block';document.body.classList.remove('sb-read');document.body.classList.add('sb-cast');window.scrollTo({top:0,behavior:'smooth'});};
+  var rb=document.createElement('button');rb.className='btn-cast';rb.style.marginTop='40px';rb.textContent='Cast Another Chart';rb.onclick=function(){SB_forgetBirth();out.style.display='none';out.innerHTML='';document.getElementById('formCard').style.display='block';document.body.classList.remove('sb-read');document.body.classList.add('sb-cast');window.scrollTo({top:0,behavior:'smooth'});};
   out.appendChild(rb);
   SB_buildPages(chart,out,b3,rb);
   if(LANG==='ka')translatePage();
