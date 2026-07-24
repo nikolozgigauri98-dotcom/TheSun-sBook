@@ -2,7 +2,7 @@
 <!--
   ============================================================================
 
-    T H E   S U N ' S   B O O K   —   O R A C L E
+    T H E   S U N ' S   B O O K
 
     Copyright (c) 2026 Nikoloz Gigauri. All rights reserved.
 
@@ -24,10 +24,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="Nikoloz Gigauri">
 <meta name="copyright" content="&copy; 2026 Nikoloz Gigauri. All rights reserved.">
-<meta name="description" content="The Sun's Book — Oracle. The living edition of the book by Nikoloz Gigauri.">
-<title>The Sun's Book — Oracle</title>
+<meta name="description" content="The Sun's Book. The living edition of the book by Nikoloz Gigauri. When algebra meets the planets.">
+<title>The Sun's Book</title>
 <style>
-/*! The Sun's Book — Oracle · © 2026 Nikoloz Gigauri · All rights reserved.
+/*! The Sun's Book · © 2026 Nikoloz Gigauri · All rights reserved.
     Based on the book "The Sun's Book". thesunsbook.com */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
 :root{--void:#080810;--deep:#0d0d1a;--card:#111122;--border:#2a2a4a;--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#7a6030;--silver:#a0a8c0;--cream:#d8d0b8;--ruby:#8b2040;--glow:rgba(201,168,76,0.15)}
@@ -176,9 +176,16 @@ body.sb-cast::before{background-image:linear-gradient(rgba(7,5,10,.38),rgba(7,5,
 body.sb-read::before{background-image:linear-gradient(rgba(5,5,14,.5),rgba(5,5,14,.85)),var(--bgMain);opacity:1}
 body.sb-read header,body.sb-read footer{display:none}
 body.sb-read .app{padding-bottom:150px}
+.sbRestored{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:0 auto 22px;padding:9px 16px;max-width:520px;border:1px solid var(--border);border-radius:20px;background:var(--deep);font-size:12.5px;color:var(--silver)}
+.sbRestored button{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;padding:5px 14px;border-radius:14px;cursor:pointer;transition:all .2s}
+.sbRestored button:hover{border-color:var(--gold);background:var(--glow)}
+.sbRestored.sbAskSave{border-color:rgba(201,168,76,.4);background:linear-gradient(180deg,rgba(201,168,76,.07),transparent)}
+.sbRestored.sbAskSave span{color:var(--cream)}
 #sbCorner{position:fixed;top:10px;left:10px;z-index:60;display:flex;gap:8px;align-items:center}
 #sbCorner button{background:rgba(10,10,22,.72);border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.12em;padding:6px 14px;cursor:pointer;border-radius:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:all .25s}
 #sbCorner button:hover{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.3)}
+#sbMuteBtn{padding:5px 10px;font-size:14px;line-height:1.15}
+#sbMuteBtn.sbIsMuted{color:var(--gold-dim);border-color:rgba(201,168,76,.28);opacity:.75}
 #sbGearBtn,#sbAcctCorner{width:36px;height:36px;padding:0!important;display:flex;align-items:center;justify-content:center;border-radius:50%!important}
 #sbGearBtn svg{width:19px;height:19px;animation:sbGear 16s linear infinite}
 #sbAcctCorner svg{width:18px;height:18px}
@@ -416,6 +423,22 @@ body.sb-light.sb-read::before{background-image:linear-gradient(rgba(248,242,226,
 body.sb-light h1{background:linear-gradient(180deg,#2a2040 0%,#191228 60%,#0e0a18 100%);-webkit-background-clip:text;background-clip:text}
 /* the 3D sky is ALWAYS a night sky - it keeps the dark-theme palette */
 body.sb-light #sb3dOverlay{--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#8a6f2e;--silver:#a0a8c0;--cream:#f2ead2;--border:#3a3a52;color:#f2ead2}
+/* the western transit wheel is a picture of the night sky too: the light
+   theme repaints its glyphs almost black onto an almost black disc, so the
+   wheel keeps the dark palette and reads identically in both themes.
+   !important because the #secSky rules below have equal specificity and
+   would otherwise win on order alone */
+body.sb-light #sbBiWheel svg [stroke="#f2e9cf"]{stroke:#f2e9cf!important}
+body.sb-light #sbBiWheel svg [fill="#f2ead2"]{fill:#f2ead2!important}
+body.sb-light #sbBiWheel svg [fill="#f2e9cf"]{fill:#f2e9cf!important}
+body.sb-light #sbBiWheel svg [fill="#c9a0e8"]{fill:#c9a0e8!important}
+body.sb-light #sbBiWheel svg [fill="#e8c97a"]{fill:#e8c97a!important}
+body.sb-light #sbBiWheel svg [fill="#c9a84c"]{fill:#c9a84c!important}
+body.sb-light #sbBiWheel svg [fill="#ffd060"]{fill:#ffd060!important}
+body.sb-light #sbBiWheel svg [fill="#d4af5a"]{fill:#d4af5a!important}
+body.sb-light #sbBiWheel svg [stroke="#c9a84c"]{stroke:#c9a84c!important}
+body.sb-light #sbBiWheel svg [stroke="#8a6f2e"]{stroke:#8a6f2e!important}
+body.sb-light #sbBiWheel svg [stroke="#a5731f"]{stroke:#a5731f!important}
 /* royal black: kill every light-gold and pale-silver inline color on parchment */
 body.sb-light .app [style*="color:#e8c97a"],body.sb-light .app [style*="color:#ffd060"],body.sb-light .app [style*="color:#f5c842"],body.sb-light .app [style*="color:#e0a85a"],body.sb-light .app [style*="color:#d4af5a"],body.sb-light .app [style*="color:#c9a84c"]{color:#3a2c0e!important}
 body.sb-light .app [style*="color:#8890a8"],body.sb-light .app [style*="color:#b0b8d8"],body.sb-light .app [style*="color:#7a7f94"],body.sb-light .app [style*="color:#8f86a8"]{color:#332e48!important}
@@ -545,10 +568,10 @@ body.sb-light .zdNote{border-color:rgba(60,44,16,.3)}
 <header>
   <span class="sigil">&#9737;</span>
   <h1>The Sun's Book</h1>
-  <p class="subtitle">Eastern Astrology Oracle</p>
+  <p class="subtitle">When Algebra Meets the Planets</p>
   <p class="author-line">by Nikoloz Gigauri</p>
 </header>
-<div id="sbCorner"><button id="langBtn" onclick="toggleLang()">ქართული</button><button id="sbGearBtn" onclick="SB_openSettings()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/><circle cx="12" cy="12" r="7" stroke-dasharray="2.4 3.4"/></svg></button><button id="sbAcctCorner" onclick="SB_openAccount()" title="Account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.3 7-6.3s7 2.6 7 6.3"/></svg></button><button id="sbTermsBtn" onclick="SB_openTerms()">Terms</button></div>
+<div id="sbCorner"><button id="langBtn" onclick="toggleLang()">ქართული</button><button id="sbMuteBtn" onclick="SB_toggleMute()" title="Sound" aria-label="Sound">🔊</button><button id="sbGearBtn" onclick="SB_openSettings()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/><circle cx="12" cy="12" r="7" stroke-dasharray="2.4 3.4"/></svg></button><button id="sbAcctCorner" onclick="SB_openAccount()" title="Account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.3 7-6.3s7 2.6 7 6.3"/></svg></button><button id="sbTermsBtn" onclick="SB_openTerms()">Terms</button></div>
 <div class="form-card" id="formCard">
   <p class="form-title">Cast Your Chart</p>
   <div class="form-grid">
@@ -557,7 +580,7 @@ body.sb-light .zdNote{border-color:rgba(60,44,16,.3)}
     <div class="form-group"><label>Time of Birth</label><input type="time" id="iTime"/>
       <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--silver);cursor:pointer;text-transform:none;letter-spacing:0.03em"><input type="checkbox" id="iNoTime" style="width:auto;margin:0" onchange="var t=document.getElementById('iTime');t.disabled=this.checked;if(this.checked)t.value='12:01';"/> I don't know my birth time</label>
     </div>
-    <div class="form-group"><label>Place of Birth</label><input type="text" id="iPlace" placeholder="City, Country"/></div>
+    <div class="form-group"><label>Place of Birth</label><input type="text" id="iPlace" placeholder="City, Country" onkeydown="if(event.key==='Enter')event.preventDefault();"/></div>
     <div class="form-group full"><label>Time Zone</label>
       <select id="iTzMode" onchange="var w=document.getElementById('iTzWrap');if(w)w.style.display=this.value==='manual'?'block':'none';"><option value="auto">Auto (from city)</option><option value="manual">Manual (GMT offset)</option></select>
       <div id="iTzWrap" style="display:none;margin-top:8px"><input type="number" step="0.25" id="iTzManual" placeholder="GMT offset, e.g. 4 or -5.5"/></div>
@@ -569,13 +592,12 @@ body.sb-light .zdNote{border-color:rgba(60,44,16,.3)}
   <button class="btn-cast" onclick="castChart()">Read My Chart</button>
   <div class="error-msg" id="errorMsg"></div>
 </div>
-<div id="loading"><div class="wheel"></div><div class="orbit-wrap"><div class="orbit-center"><div class="loader-sym" id="loadSym">&#9737;</div><div class="loader-name" id="loadPlanet">The Sun</div></div><div class="orbit-ring" id="orbitRing"></div></div><p class="loading-text">Casting the celestial circle</p></div>
 <div id="reading"></div>
 <footer><p id="footerTxt">The planets act as the hands of the clock - they do not create time; they merely show it.</p><p style="margin-top:6px;opacity:0.5">The Sun's Book by Nikoloz Gigauri</p></footer>
 </div>
 <script>
 /*! ===========================================================================
-    The Sun's Book — Oracle · Engine (block 1)
+    The Sun's Book · Engine (block 1)
     © 2026 Nikoloz Gigauri · All rights reserved.
 
     Ephemerides, ascendant & houses, nakshatras, dasha, vargas, dignity,
@@ -1293,7 +1315,7 @@ function baladiAvastha(si,deg){var masc=(si%2===0);var idx=masc?Math.floor(deg/6
 var LANG='en';
 var G_DICT={
 /* chrome + form */
-"Eastern Astrology Oracle":"აღმოსავლური ასტროლოგიის ორაკული",
+"When Algebra Meets the Planets":"როცა ალგებრა პლანეტებს ხვდება",
 "Cast Your Chart":"ააგე შენი რუკა",
 "Full Name":"სრული სახელი","Enter your name":"შეიყვანე სახელი",
 "Date of Birth":"დაბადების თარიღი","Time of Birth":"დაბადების დრო",
@@ -3189,38 +3211,6 @@ var PLANET_KW={
   Ketu:{sym:'\u260B',name:'Ketu',words:['Detachment','Past Karma','Liberation','Mysticism','Escape','Intuition']}
 };
 var PLANET_ORDER=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
-var loadInt,loadSwitchInt,lpIdx=0,orbitAngle=0;
-function renderOrbitWords(words){
-  var ring=document.getElementById('orbitRing');if(!ring)return;
-  ring.innerHTML='';
-  for(var i=0;i<words.length;i++){
-    var el=document.createElement('div');
-    el.className='orbit-word';el.textContent=words[i];
-    el.setAttribute('data-angle',(360/words.length*i));
-    ring.appendChild(el);
-  }
-}
-function tickOrbit(){
-  var ring=document.getElementById('orbitRing');if(!ring)return;
-  orbitAngle+=0.9;
-  var words=ring.children,R=120;
-  for(var i=0;i<words.length;i++){
-    var ang=(parseFloat(words[i].getAttribute('data-angle'))+orbitAngle)*Math.PI/180;
-    var x=R*Math.cos(ang),y=R*0.62*Math.sin(ang);
-    words[i].style.transform='translate(calc(-50% + '+x.toFixed(1)+'px), calc(-50% + '+y.toFixed(1)+'px))';
-    words[i].style.opacity=(0.55+0.45*((y/(R*0.62)+1)/2)).toFixed(2);
-  }
-}
-function showLoadPlanet(){
-  var symEl=document.getElementById('loadSym'),nameEl=document.getElementById('loadPlanet');
-  if(!symEl||!nameEl)return;
-  var pl=PLANET_ORDER[lpIdx],data=PLANET_KW[pl];
-  symEl.textContent=data.sym;nameEl.textContent=data.name;
-  renderOrbitWords(data.words);
-}
-function advancePlanet(){lpIdx=(lpIdx+1)%PLANET_ORDER.length;showLoadPlanet();}
-function startLoad(){lpIdx=0;orbitAngle=0;showLoadPlanet();loadInt=setInterval(tickOrbit,40);loadSwitchInt=setInterval(advancePlanet,6500);}
-function stopLoad(){clearInterval(loadInt);clearInterval(loadSwitchInt);}
 /* ============================================================
    Remembering the chart
    ------------------------------------------------------------
@@ -3232,7 +3222,18 @@ function stopLoad(){clearInterval(loadInt);clearInterval(loadSwitchInt);}
    a person's devices once the database is enabled.
    ============================================================ */
 var SB_BIRTH_KEY='sb_birth';
+/* Signed in or not - answered without waiting for the SDK, so the very
+   first paint already knows whether a chart is coming back. */
+function SB_isSignedIn(){
+  try{
+    if(window.SB_user)return true;
+    return localStorage.getItem('sb_signed_in')==='1';
+  }catch(e){return false;}
+}
+/* Nothing is written for a visitor who has not signed in. A chart is kept
+   because someone asked for an account, not because they passed through. */
 function SB_saveBirth(b){
+  if(!SB_isSignedIn())return;
   try{localStorage.setItem(SB_BIRTH_KEY,JSON.stringify(b));}catch(e){}
   if(typeof SB_cloudSaveBirth==='function')try{SB_cloudSaveBirth(b);}catch(e){}
 }
@@ -3251,27 +3252,85 @@ function SB_restoreBirth(b){
   set('iDate',b.date);
   set('iTime',b.noTime?'':b.time);
   set('iPlace',b.place);
-  set('iGender',b.gender);
+  set('iGender',b.gender||'u');
   var nt=document.getElementById('iNoTime');if(nt)nt.checked=!!b.noTime;
   if(b.tzOv!==null&&b.tzOv!==undefined){set('iTzMode','manual');set('iTzManual',b.tzOv);
     var tm=document.getElementById('iTzMode');if(tm&&tm.onchange)tm.onchange();}
   if(b.geo)window.SB_GEO=b.geo;
+  SB_RESTORED=true;
   castChart();
   return true;
 }
+/* Empties the form so nothing is silently carried into the next chart. */
+function SB_clearForm(){
+  var v=function(id,val){var e=document.getElementById(id);if(e)e.value=(val===undefined?'':val);};
+  v('iName');v('iDate');v('iTime');v('iPlace');v('iTzManual');
+  v('iGender','u');v('iTzMode','auto');
+  var nt=document.getElementById('iNoTime');if(nt)nt.checked=false;
+  var tm=document.getElementById('iTzMode');if(tm&&tm.onchange)tm.onchange();
+  window.SB_GEO=null;SB_RESTORED=false;
+}
+/* The banner above the chart. Signed in, it explains where the chart came
+   from and offers to let it go. Signed out, it is the one place that says
+   what an account is actually for. */
+var SB_RESTORED=false;
+function SB_restoreNotice(){
+  if(SB_isSignedIn()){
+    if(!SB_RESTORED)return'';
+    return '<div class="sbRestored"><span>Showing your saved chart.</span>'
+          +'<button type="button" onclick="SB_dropSaved()">Clear</button></div>';
+  }
+  return '<div class="sbRestored sbAskSave"><span>This chart is not saved. '
+        +'Create an account and it will be waiting for you next time.</span>'
+        +'<button type="button" onclick="SB_openAccount()">Save my chart</button></div>';
+}
+function SB_dropSaved(){
+  SB_forgetBirth();SB_clearForm();
+  var out=document.getElementById('reading');
+  if(out){out.style.display='none';out.innerHTML='';}
+  var f=document.getElementById('formCard');if(f)f.style.display='block';
+  document.body.classList.remove('sb-read');document.body.classList.add('sb-cast');
+  try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}
+}
+/* Signing in or out while a chart is on screen swaps the banner without
+   redrawing the whole reading. */
+function SB_refreshNotice(){
+  try{
+    var out=document.getElementById('reading');
+    if(!out||out.style.display==='none')return;
+    var cur=out.querySelector&&out.querySelector('.sbRestored');
+    var html=SB_restoreNotice();
+    if(cur){
+      if(!html)cur.parentNode.removeChild(cur);
+      else{var d=document.createElement('div');d.innerHTML=html;cur.parentNode.replaceChild(d.firstChild,cur);}
+    }else if(html){
+      var d2=document.createElement('div');d2.innerHTML=html;
+      out.insertBefore(d2.firstChild,out.firstChild);
+    }
+  }catch(e){}
+}
 (function(){
+  var early=function(){
+    try{
+      if(!SB_isSignedIn())return;
+      var b=SB_readBirth();if(!b||!b.date)return;
+      var f=document.getElementById('formCard');
+      if(f&&f.style.display!=='none')f.style.display='none';
+    }catch(e){}
+  };
   var go=function(){
-    /* only on a clean first paint - never interrupt a chart already drawn */
     try{
       if(!document.body.classList.contains('sb-cast'))return;
       var f=document.getElementById('formCard');
-      if(!f||f.style.display==='none')return;
-      SB_restoreBirth();
-    }catch(e){}
+      if(!f)return;
+      if(!SB_isSignedIn()){f.style.display='block';return;}   /* start clean */
+      if(!SB_restoreBirth())f.style.display='block';
+    }catch(e){var f2=document.getElementById('formCard');if(f2)f2.style.display='block';}
   };
   try{
-    if(document.readyState==='complete')setTimeout(go,60);
-    else window.addEventListener('load',function(){setTimeout(go,60);});
+    if(document.readyState==='loading'){
+      document.addEventListener('DOMContentLoaded',function(){early();go();});
+    }else{early();go();}
   }catch(e){}
 })();
 
@@ -3288,20 +3347,16 @@ async function castChart(){
   if(!date){errEl.textContent=(LANG==='ka'&&G_DICT['Please enter your date of birth.'])||'Please enter your date of birth.';errEl.style.display='block';return;}
   errEl.style.display='none';
   document.getElementById('formCard').style.display='none';
-  document.getElementById('loading').style.display='block';
   document.getElementById('reading').style.display='none';
-  startLoad();
   var chart;
-  if(getCity(place).unknown){alert('City "'+place+'" is not in the database yet, so the chart would be wrong. Known cities include Tbilisi, San Francisco, New York, London, Tokyo and ~60 more. Ask to add your city.');stopLoad();document.getElementById('loading').style.display='none';document.getElementById('formCard').style.display='block';return;}
+  if(getCity(place).unknown){alert('City "'+place+'" is not in the database yet, so the chart would be wrong. Known cities include Tbilisi, San Francisco, New York, London, Tokyo and ~60 more. Ask to add your city.');document.getElementById('formCard').style.display='block';return;}
   var _tzMode=document.getElementById('iTzMode'),_tzOv=null;if(_tzMode&&_tzMode.value==='manual'){var _tv=(document.getElementById('iTzManual')||{}).value;if(_tv!==undefined&&_tv!==''&&!isNaN(parseFloat(_tv)))_tzOv=parseFloat(_tv);}
   var _geo=(window.SB_GEO&&window.SB_GEO.label===place)?window.SB_GEO:null;
   try{chart=calculateChart(date,time,place,_tzOv,_geo,noTime?'Sun':null);}
-  catch(e){stopLoad();document.getElementById('loading').style.display='none';document.getElementById('formCard').style.display='block';errEl.textContent='Calc error: '+e.message;errEl.style.display='block';return;}
+  catch(e){document.getElementById('formCard').style.display='block';errEl.textContent='Calc error: '+e.message;errEl.style.display='block';return;}
   window.SB3D_STATE={chart:chart,birth:{date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime}};
   SB_saveBirth({date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime,
                 gender:((document.getElementById('iGender')||{}).value||'u'),saved:Date.now()});
-  stopLoad();
-  document.getElementById('loading').style.display='none';
   renderReading(name,date,time,place,chart,'');
   document.getElementById('reading').style.display='block';
   document.body.classList.remove('sb-cast');document.body.classList.add('sb-read');
@@ -3312,7 +3367,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   var sections={};try{sections=JSON.parse(aiTxt.replace(/```json|```/g,'').trim());}catch(e){}
   var age=(function(){var dp=date.split('-'),nn=new Date(),a=nn.getFullYear()-(+dp[0]),mm=(nn.getMonth()+1)-(+dp[1]);if(mm<0||(mm===0&&nn.getDate()<+dp[2]))a--;return a;})();
   var DCOLS={exaltation:'#c9a84c',moolatrikona:'#e8c97a',own:'#90c060',highlyFriendly:'#60a8c0',friendly:'#6080b0',neutral:'#888',enemy:'#c07050',highlyInimical:'#c06040',fall:'#a02020'};
-  var html='<div class="reading-header"><div class="chart-name">'+name+'</div><div class="chart-meta">'+date+(time?' - '+time:'')+' - '+place+'</div><div class="chart-meta" style="margin-top:5px;font-size:13px;color:var(--gold-dim)">'+asc.sign.name+' Rising - Age '+age+' \u00B7 running year '+(age+1)+'</div></div>';
+  var html=SB_restoreNotice()+'<div class="reading-header"><div class="chart-name">'+name+'</div><div class="chart-meta">'+date+(time?' - '+time:'')+' - '+place+'</div><div class="chart-meta" style="margin-top:5px;font-size:13px;color:var(--gold-dim)">'+asc.sign.name+' Rising - Age '+age+' \u00B7 running year '+(age+1)+'</div></div>';
   /* ---- Current Sky: the very first thing on the page — the transit
      bi-wheel (outer = right now, inner = natal) and the list of where
      every planet stands at this moment ---- */
@@ -3320,7 +3375,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   var tw=trans.when;
   var tStamp=tw.getFullYear()+'-'+('0'+(tw.getMonth()+1)).slice(-2)+'-'+('0'+tw.getDate()).slice(-2)+' '+('0'+tw.getHours()).slice(-2)+':'+('0'+tw.getMinutes()).slice(-2);
   html+='<div class="section" id="secSky"><p class="section-label">Current Sky - Transits</p><p class="section-title">The Sky Right Now</p>';
-  html+='<div style="max-width:700px;margin:0 auto 16px">'+renderBiWheel(chart,trans)+'</div>';
+  html+='<div id="sbBiWheel" style="max-width:700px;margin:0 auto 16px">'+renderBiWheel(chart,trans)+'</div>';
   html+='<p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:14px;text-align:center">Outer wheel - the transiting sky at '+tStamp+' (device time). Inner wheel - the natal chart. Whole sign houses from the natal Ascendant.</p>';
   html+='<div class="planet-grid">';
   trans.order.forEach(function(tn){var t=trans.planets[tn],th=((t.index-asc.index+12)%12)+1;
@@ -3554,7 +3609,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   var out=document.getElementById('reading');
   out.innerHTML=html;
   var b3=document.createElement('button');b3.className='btn-cast';b3.style.marginTop='40px';b3.textContent='Enter the 3D Sky';b3.onclick=function(){if(window.SB3D_open)SB3D_open();};out.appendChild(b3);
-  var rb=document.createElement('button');rb.className='btn-cast';rb.style.marginTop='40px';rb.textContent='Cast Another Chart';rb.onclick=function(){SB_forgetBirth();out.style.display='none';out.innerHTML='';document.getElementById('formCard').style.display='block';document.body.classList.remove('sb-read');document.body.classList.add('sb-cast');window.scrollTo({top:0,behavior:'smooth'});};
+  var rb=document.createElement('button');rb.className='btn-cast';rb.style.marginTop='40px';rb.textContent='Cast Another Chart';rb.onclick=function(){SB_dropSaved();};
   out.appendChild(rb);
   SB_buildPages(chart,out,b3,rb);
   if(LANG==='ka')translatePage();
@@ -5148,9 +5203,28 @@ function SB_fbInit(){
     if(!window.firebase.apps.length)window.firebase.initializeApp(SB_FB_CFG);
     var auth=window.firebase.auth();
     auth.onAuthStateChanged(function(u){
+      var was=SB_user;
       SB_user=u||null;
       try{u?localStorage.setItem(SB_FB_MARK,'1'):localStorage.removeItem(SB_FB_MARK);}catch(e){}
+      if(u&&!was){
+        /* the chart already on screen is the one they just asked us to keep */
+        try{
+          var st=window.SB3D_STATE;
+          if(st&&st.birth&&st.birth.date&&typeof SB_saveBirth==='function'){
+            var g=document.getElementById('iGender');
+            SB_saveBirth({date:st.birth.date,time:st.birth.time,place:st.birth.place,
+              name:st.birth.name,tzOv:st.birth.tzOv,geo:st.birth.geo,noTime:st.birth.noTime,
+              gender:(g&&g.value)||'u',saved:Date.now()});
+          }
+        }catch(e){}
+      }
+      if(!u&&was){
+        /* the saved chart belonged to that account, not to this browser */
+        try{if(typeof SB_forgetBirth==='function')SB_forgetBirth();}catch(e){}
+        try{window.SB_RESTORED=false;}catch(e){}
+      }
       SB_authRender();
+      try{if(typeof SB_refreshNotice==='function')SB_refreshNotice();}catch(e){}
     });
     return auth;
   });
@@ -5292,6 +5366,25 @@ function SB_authSignOut(){
   if(document.readyState==='complete')setTimeout(start,0);
   else window.addEventListener('load',start);
 })();
+
+/* ---------- sound ----------
+   One preference, one icon, wherever it is shown. The sky reads the same
+   key, so muting here means the sky opens silent and the reverse. */
+function SB_muted(){try{return localStorage.getItem('sb3d_music_muted')==='1';}catch(e){return false;}}
+function SB_muteIcon(){
+  var b=document.getElementById('sbMuteBtn');if(!b)return;
+  var m=SB_muted();
+  b.textContent=m?'\uD83D\uDD07':'\uD83D\uDD0A';
+  b.title=m?'Sound off':'Sound on';
+  b.classList.toggle('sbIsMuted',m);
+}
+function SB_toggleMute(){
+  var m=!SB_muted();
+  if(typeof SB3D_musicSetMuted==='function')SB3D_musicSetMuted(m);
+  else{try{localStorage.setItem('sb3d_music_muted',m?'1':'0');}catch(e){}}
+  SB_muteIcon();
+}
+try{SB_muteIcon();}catch(e){}
 
 /* ---------- settings ---------- */
 function SB_settingsHTML(){
@@ -5461,7 +5554,7 @@ function SB_initGeo(){
 </script>
 <script>
 /*! ===========================================================================
-    The Sun's Book — Oracle · 3D Sky (block 3)
+    The Sun's Book · 3D Sky (block 3)
     © 2026 Nikoloz Gigauri · All rights reserved.
     Based on the book "The Sun's Book". thesunsbook.com
     =========================================================================== */
@@ -7755,7 +7848,11 @@ function SB3D_musicIcon(){
   b.textContent=SB3D_musicMutedPref()?'\uD83D\uDD07':'\uD83D\uDD0A';
 }
 /* one polite attempt to play; every guard lives here */
+var SB3D_musicAllowed=false;
 function SB3D_musicTry(){
+  /* the armed document listeners outlive the overlay, so without this gate
+     the first click anywhere after leaving the sky starts the music again */
+  if(!SB3D_musicAllowed)return;
   var a=SB3D_musicEl();
   if(!a||SB3D_musicMutedPref())return;
   if(a.paused&&a.play){var pr=a.play();if(pr&&pr.catch)pr.catch(function(){});}
@@ -7793,11 +7890,16 @@ function SB3D_musicStart(){
     ov.appendChild(b);
   }
   if(b)b.style.display='block';
+  SB3D_musicAllowed=true;
   SB3D_musicArm();
   SB3D_musicIcon();
   SB3D_musicSetMuted(SB3D_musicMutedPref()); /* plays now if not muted */
 }
-function SB3D_musicStop(){if(SB3D_music)SB3D_music.pause();}
+function SB3D_musicStop(){
+  SB3D_musicAllowed=false;
+  if(SB3D_music)SB3D_music.pause();
+  if(typeof SB_muteIcon==='function')SB_muteIcon();
+}
 
 function SB3D_wtBuildSteps(){
   var s=SB3D.state,chart=s.chart,fn=chart.funcNature||{};
@@ -8701,12 +8803,25 @@ function SB3D_updatePPanelPos(){
    Re-casts (editing the birth data later) do NOT relaunch the tour. */
 (function(){
   if(typeof window==='undefined'||typeof window.castChart!=='function')return;
+  /* The tour is the introduction to the instrument. Everyone who has not
+     signed in gets it, every time they cast a chart by hand. Signing in is
+     what turns it off - by then the person has seen it and knows the way.
+     A chart coming back on its own after a refresh is not a cast: replaying
+     the tour there would trap the reader inside the sky on every reload. */
+  function tourDue(){
+    try{
+      if(window.SB_user)return false;      /* signed in - never again */
+      if(window.SB_RESTORED)return false;  /* a refresh, not a new chart */
+    }catch(e){}
+    return true;
+  }
   var SB3D_origCast=window.castChart;
   window.castChart=function(){
     var hadChart=!!(window.SB3D_STATE&&window.SB3D_STATE.chart);
+    var due=tourDue();
     var r=SB3D_origCast.apply(this,arguments);
     function after(){
-      if(!hadChart&&window.SB3D_STATE&&window.SB3D_STATE.chart&&!SB3D.state){
+      if(due&&window.SB3D_STATE&&window.SB3D_STATE.chart&&!SB3D.state){
         SB3D.pendingWalkthrough=true; /* consumed by SB3D_startMain */
         SB3D_open();
       }
