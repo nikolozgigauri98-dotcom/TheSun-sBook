@@ -597,6 +597,223 @@ body.sb-light .hevH,body.sb-light .hevNote{border-color:rgba(60,44,16,.3)}
 body.sb-light .zdCrown{background:rgba(255,252,244,.88);border-color:rgba(138,101,32,.32)}
 body.sb-light .zdTrack{background:rgba(60,44,16,.12);border-color:rgba(138,101,32,.25)}
 body.sb-light .zdNote{border-color:rgba(60,44,16,.3)}
+
+/* ===== COMPLETE HOUSE EVALUATION ===== */
+/* Two tokens of our own. On the dark theme they are the app's golds; on the
+   light theme gold text on near-white is unreadable, so both fall back to the
+   royal blue-black already in the palette (--border is #2a2a4a). */
+:root{--hevaInk:var(--gold);--hevaDim:var(--gold-dim)}
+body.sb-light{--hevaInk:#14142e;--hevaDim:#3d3d5c}
+.hevaLead{color:var(--silver);line-height:1.75;margin-bottom:14px}
+.hevaMethod{font-size:.92em;opacity:.82;border-left:2px solid var(--border);padding-left:14px}
+.hevaSub{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.35em;color:var(--hevaDim);
+  text-transform:uppercase;margin:30px 0 12px}
+.hevaFoot{color:var(--silver);font-size:.9em;line-height:1.7;margin-top:14px;opacity:.9}
+
+
+
+/* the twelve-house diverging table */
+.hevaTot{margin:22px 0 6px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:10px 0}
+.hevaTotHd{display:flex;align-items:center;font-family:'Cinzel',serif;font-size:8px;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--hevaDim);padding:0 0 10px}
+.hevaTotHd span:nth-child(1){flex:1;text-align:right;padding-right:8px}
+.hevaTotHd span:nth-child(2){width:54px;text-align:center}
+.hevaTotHd span:nth-child(3){flex:1;padding-left:8px}
+
+.hevaRow{display:flex;align-items:center;min-height:26px}
+.hevaRow+.hevaRow{border-top:1px solid rgba(255,255,255,.04)}
+.hevaNum{width:40px;text-align:right;padding-right:7px;font-size:11px;color:#d05a3a;
+  font-variant-numeric:tabular-nums}
+.hevaNumR{text-align:left;padding:0 7px 0 0;color:#7ac87a}
+.hevaL,.hevaR{flex:1;display:flex;height:13px;align-items:center}
+.hevaL{justify-content:flex-end}
+.hevaL i{display:block;height:100%;background:linear-gradient(90deg,#d05a3a55,#d05a3a);
+  border-radius:2px 0 0 2px}
+.hevaR i{display:block;height:100%;background:linear-gradient(90deg,#7ac87a,#7ac87a55);
+  border-radius:0 2px 2px 0}
+.hevaC{width:54px;flex:0 0 54px;text-align:center;font-family:'Cinzel',serif;
+  font-size:12.5px;letter-spacing:.06em;line-height:1.15}
+.hevaC em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:8.5px;letter-spacing:.08em;opacity:.6}
+.hevaBand{width:150px;flex:0 0 150px;padding-left:12px;font-size:10.5px;line-height:1.25}
+.hevaBand em{display:block;font-style:normal;font-size:9px;color:var(--hevaDim);
+  letter-spacing:.03em;opacity:.85}
+
+/* the fold bars, one per chart */
+.hevaBar{display:flex;align-items:center;gap:10px;width:100%;background:transparent;
+  border:1px solid var(--border);border-radius:4px;padding:11px 14px;margin-top:8px;
+  cursor:pointer;font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--hevaInk);text-align:left}
+.hevaBar:hover{border-color:var(--hevaDim)}
+.hevaBarT{flex:1}
+.hevaBarW{font-size:8.5px;letter-spacing:.12em;color:var(--hevaDim);text-transform:none;
+  border:1px solid var(--border);border-radius:10px;padding:2px 8px}
+.hevaCaret{transition:transform .18s ease;font-size:11px}
+.hevaBar.open .hevaCaret{transform:rotate(180deg)}
+.hevaBody{padding:6px 0 18px}
+.hevaBodyNote{color:var(--silver);font-size:.88em;line-height:1.6;margin:10px 0 12px;opacity:.85}
+
+.hevaTbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.hevaTbl th{font-family:'Cinzel',serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--hevaDim);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);
+  font-weight:400}
+.hevaTbl td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--silver);
+  font-variant-numeric:tabular-nums}
+.hevaTbl tr:hover td{background:rgba(255,255,255,.02)}
+.hevaTh{font-family:'Cinzel',serif;color:var(--hevaInk);letter-spacing:.06em}
+
+/* light theme: the bars need less glow and the hairlines need more contrast */
+body.sb-light .hevaRow+.hevaRow,
+body.sb-light .hevaTbl td{border-top-color:rgba(0,0,0,.09);border-bottom-color:rgba(0,0,0,.09)}
+body.sb-light .hevaTbl tr:hover td{background:rgba(0,0,0,.025)}
+/* the bar fills need more body against white, and the numerals more weight */
+body.sb-light .hevaL i{background:linear-gradient(90deg,#b8452788,#b84527)}
+body.sb-light .hevaR i{background:linear-gradient(90deg,#3f8f4f,#3f8f4f88)}
+body.sb-light .hevaNum{color:#b84527}
+body.sb-light .hevaNumR{color:#3f8f4f}
+body.sb-light .hevaTbl th,body.sb-light .hevaSub,body.sb-light .hevaTotHd{font-weight:600}
+body.sb-light .hevaLead,body.sb-light .hevaFoot,body.sb-light .hevaBodyNote{color:#3a3a4e}
+
+/* narrow screens: the band column is the first thing to go */
+@media(max-width:620px){
+  .hevaBand{display:none}
+  .hevaNum{width:32px;font-size:10px}
+  .hevaC{width:44px;flex:0 0 44px;font-size:11px}
+  .hevaTbl{font-size:10.5px}
+  .hevaTbl th:nth-child(3),.hevaTbl td:nth-child(3){display:none}
+  .hevaTbl th:nth-child(7),.hevaTbl td:nth-child(7){display:none}
+}
+
+/* ---- semantic colours, one place, both themes -----------------
+   These come out of the module as class names rather than inline hex so the
+   light theme can darken them. On white, the pale greens and the gold of
+   "Mixed" simply disappear; on the dark ground they are the app's own tones. */
+.hevB1,.hevV1{color:#7ac87a}
+.hevB2,.hevV2{color:#8fbf70}
+.hevV3{color:var(--gold)}
+.hevB3,.hevV4{color:#e07a5a}
+.hevB4,.hevV5{color:#d05a3a}
+body.sb-light .hevB1,body.sb-light .hevV1{color:#256b33}
+body.sb-light .hevB2,body.sb-light .hevV2{color:#3f7a2e}
+body.sb-light .hevV3{color:#14142e}
+body.sb-light .hevB3,body.sb-light .hevV4{color:#a8482a}
+body.sb-light .hevB4,body.sb-light .hevV5{color:#8f2f1c}
+.hevaBand.hevB1 em,.hevaBand.hevB2 em,.hevaBand.hevB3 em,.hevaBand.hevB4 em{color:var(--hevaDim)}
+
+/* ===== COMPLETE PLANETARY EVALUATION ===== */
+/* Rides on the house panel's layout. Only the centre glyph, the house-kind
+   marker and the mobile column choice are its own. */
+.pevaC{font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;line-height:1.05}
+.pevaC em{font-size:8.5px;letter-spacing:.08em;opacity:.6}
+.pevaTot .hevaBand{width:212px;flex:0 0 212px}
+.pevaTot .hevaBand em{font-variant-numeric:tabular-nums;letter-spacing:0}
+.pevaKind{display:inline-block;min-width:13px;height:13px;line-height:12px;padding:0 2px;
+  text-align:center;border:1px solid var(--border);border-radius:3px;font-size:8px;
+  text-transform:uppercase;color:var(--hevaDim);vertical-align:1px}
+
+@media(max-width:620px){
+  /* The house table's mobile rules hide columns 3 and 7 by index. On this table
+     those are House and Total, both of which have to stay, so put them back and
+     drop Sign and Verdict instead. */
+  .pevaTbl th:nth-child(3),.pevaTbl td:nth-child(3),
+  .pevaTbl th:nth-child(7),.pevaTbl td:nth-child(7){display:table-cell}
+  .pevaTbl th:nth-child(2),.pevaTbl td:nth-child(2),
+  .pevaTbl th:nth-child(8),.pevaTbl td:nth-child(8){display:none}
+  .pevaC{font-size:15px}
+}
+
+/* ---- prominence ---- */
+.promTot{margin:20px 0 8px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:6px 0}
+.promRow{display:flex;align-items:center;gap:10px;min-height:34px}
+.promRow+.promRow{border-top:1px solid rgba(255,255,255,.04)}
+body.sb-light .promRow+.promRow{border-top-color:rgba(0,0,0,.08)}
+.promRk{width:26px;font-size:10px;color:var(--hevaDim);font-variant-numeric:tabular-nums}
+.promGl{width:20px;text-align:center;font-size:17px;line-height:1}
+.promNm{width:74px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.06em;color:var(--hevaInk)}
+.promBarW{flex:1;min-width:60px;height:9px;display:flex;align-items:center}
+.promBarW i{display:block;height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+body.sb-light .promBarW i{background:linear-gradient(90deg,#a8935f,#8a6f26)}
+.promSc{width:56px;text-align:right;font-family:'Cinzel',serif;font-size:15px;line-height:1.05;
+  font-variant-numeric:tabular-nums}
+.promSc em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:8.5px;letter-spacing:.04em;color:var(--hevaDim)}
+.promParts{width:150px;flex:0 0 150px;display:flex;gap:7px;font-size:9.5px;color:var(--hevaDim);
+  font-variant-numeric:tabular-nums}
+.promParts sup{font-size:7px}
+.promBand{width:170px;flex:0 0 170px;font-size:10.5px;line-height:1.25}
+.promBand em{display:block;font-style:normal;font-size:9px;color:var(--hevaDim);opacity:.9}
+@media(max-width:620px){
+  .promBand,.promParts{display:none}
+  .promNm{width:64px;font-size:10px}
+  .promSc{width:48px;font-size:13px}
+}
+
+/* ===== LOCKED PREMIUM PANELS ===== */
+.sbLocked{position:relative;min-height:190px;padding:4px 0 2px}
+.sbLockGhost{filter:blur(3px);opacity:.30;pointer-events:none;user-select:none;padding:6px 0}
+.sbLockGr{display:flex;align-items:center;gap:11px;height:26px}
+.sbLockGr+.sbLockGr{border-top:1px solid rgba(255,255,255,.05)}
+body.sb-light .sbLockGr+.sbLockGr{border-top-color:rgba(0,0,0,.07)}
+.sbLockGd{width:16px;height:16px;border-radius:50%;background:var(--gold-dim);flex:0 0 16px}
+.sbLockGb{height:9px;border-radius:3px;background:linear-gradient(90deg,var(--gold-dim),transparent)}
+.sbLockGn{width:34px;height:9px;border-radius:3px;background:var(--gold-dim);margin-left:auto}
+.sbLockOver{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;gap:11px;padding:14px 20px}
+.sbLockBadge{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;border:1px solid var(--border);color:var(--gold);
+  background:radial-gradient(circle at 50% 35%,rgba(201,168,76,.16),transparent 70%)}
+body.sb-light .sbLockBadge{color:#8a6f26;background:radial-gradient(circle at 50% 35%,rgba(138,111,38,.12),transparent 70%)}
+.sbLockIcon{width:21px;height:21px}
+.sbLockTxt{max-width:470px;color:var(--silver);line-height:1.7;font-style:italic;margin:0}
+body.sb-light .sbLockTxt{color:#4a4a58}
+
+/* the locked entry point under the dasha table */
+.sbTBBtn{display:flex;align-items:center;gap:9px;margin:16px 0 0;padding:10px 16px;
+  background:transparent;border:1px solid var(--border);border-radius:22px;cursor:pointer;
+  color:var(--gold);font-family:'Cinzel',serif;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase}
+.sbTBBtn:hover{border-color:var(--gold-dim)}
+body.sb-light .sbTBBtn{color:#8a6f26}
+.sbTBBtn.locked{opacity:.72}
+.sbTBBtn .sbLockIcon{width:15px;height:15px}
+.sbTBCar{transition:transform .18s ease;margin-left:2px}
+.sbTBBtn.open .sbTBCar{transform:rotate(180deg)}
+
+/* ===== TIME BOMBS ===== */
+.tbTot{margin:10px 0 4px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:5px 0}
+.tbRow{display:flex;align-items:center;gap:10px;min-height:38px}
+.tbRow+.tbRow{border-top:1px solid rgba(255,255,255,.04)}
+body.sb-light .tbRow+.tbRow{border-top-color:rgba(0,0,0,.08)}
+.tbRow.tb-past{opacity:.42}
+.tbRow.tb-current{background:linear-gradient(90deg,rgba(201,168,76,.10),transparent 60%)}
+body.sb-light .tbRow.tb-current{background:linear-gradient(90deg,rgba(138,111,38,.10),transparent 60%)}
+.tbGl{width:22px;text-align:center;font-size:17px;line-height:1;flex:0 0 22px}
+.tbNm{width:186px;flex:0 0 186px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.05em;
+  color:var(--hevaInk);line-height:1.25}
+.tbNm em{display:block;font-style:normal;font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:9.5px;letter-spacing:.02em;color:var(--hevaDim)}
+.tbBar{flex:1;min-width:50px;height:9px;display:flex;align-items:center}
+.tbBar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+body.sb-light .tbBar i{background:linear-gradient(90deg,#a8935f,#8a6f26)}
+.tbSc{width:34px;text-align:right;font-family:'Cinzel',serif;font-size:14px;font-variant-numeric:tabular-nums}
+.tbBd{width:196px;flex:0 0 196px;font-size:10.5px;line-height:1.3}
+.tbWhy{display:block;font-size:9px;color:var(--hevaDim);font-variant-numeric:tabular-nums}
+.tbWhy i{font-style:normal;opacity:.8}
+@media(max-width:620px){
+  .tbBd{display:none}
+  .tbNm{width:140px;flex:0 0 140px;font-size:10px}
+}
+
+/* ===== desktop dropdown bars, shrunk to their word =====
+   They were half the pane header each, which crowded the language switch
+   and pushed it under. The menu keeps its own width so the long entries
+   still fit. */
+.sbPaneHdr .sbDD{flex:0 0 auto;width:auto;max-width:none;min-width:0}
+.sbPaneHdr .sbDDBtn{width:auto;padding:10px 15px;gap:7px}
+.sbPaneHdr .sbDDMenu{left:0;right:auto;min-width:246px}
 </style>
 </head>
 <body class="sb-cast">
@@ -4907,6 +5124,1046 @@ function SB_houseEvalHTML(chart,h){
   return html;
 }
 
+/* ============================================================
+   COMPLETE HOUSE EVALUATION  (premium)
+   ------------------------------------------------------------
+   The D-1 House Evaluation of PS-10 §2.1, read again in every
+   varga this app draws except the three whose dignity does not
+   sit on the canonical ladder:
+
+     D-2  Hora        - horaDignity, its own gender scale
+     D-3  Drekkana    - decan lord, inclusive-distance rule
+     D-30 Trimshamsha - segment lord, inclusive-distance rule
+
+   What is left is the six charts whose dignity is one engine:
+   D-1, D-7, D-9, D-10, D-12, D-16.  D-1 and D-9 carry double
+   weight, exactly as calcShodasavarga already weights them, so
+   the divisor is eight and not six.
+
+   THE ONE METHODOLOGICAL DECISION, WRITTEN DOWN
+   ---------------------------------------------
+   The aspect fall-off ("one point per degree off the cusp") is
+   measured in REAL ZODIACAL DEGREES in every chart, never in
+   divisional degrees.  vDivDeg stretches a position across its
+   segment - by nine in D-9, by sixteen in D-16 - so a gap taken
+   in divisional coordinates would punish the higher vargas for
+   nothing but the projection.  Real degrees keep the arithmetic
+   identical to D-1: only the nominal strength changes, because
+   only the house changes.
+
+   A consequence worth knowing: SB_hevaEval(chart,h,1) returns
+   the same numbers as SB_houseEval(chart,h).  hevalltest.js
+   asserts it.
+   ============================================================ */
+
+var SB_HEVA_V   = [1,7,9,10,12,16];
+var SB_HEVA_W   = {1:2, 7:1, 9:2, 10:1, 12:1, 16:1};
+var SB_HEVA_DIV = 8;                     /* 2+1+2+1+1+1 */
+var SB_HEVA_NAME= {1:'D-1 Rashi', 7:'D-7 Saptamsha', 9:'D-9 Navamsa',
+                   10:'D-10 Dashamsha', 12:'D-12 Dwadashamsha', 16:'D-16 Shodashamsha'};
+var SB_HEVA_ROM = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+var SB_HEVA_POSC= '#7ac87a', SB_HEVA_NEGC='#d05a3a';
+
+/* --- step 1: the rotation, in any varga ---------------------- */
+/* The varga lagna is taken from the natal ascendant, then house h
+   is the h-th sign from it. Every body is re-counted from there.
+   The cusp keeps the NATAL ascendant degree, which is what makes
+   the fall-off comparable from one chart to the next. */
+function SB_hevaRotate(chart,h,v){
+  var asc=chart.asc;
+  var degInSign=asc.totalDeg-Math.floor(asc.totalDeg/30)*30;
+  var vasc=vSign(asc.index,amFloor(degInSign),v);          /* varga lagna sign */
+  var signIdx=(vasc+h-1)%12;                               /* the house itself */
+  var pl=chart.planets,vp={};
+  for(var n in pl){
+    if(!pl[n])continue;
+    var L=pl[n].degree+(pl[n].minutes||0)/60;
+    var vs=vSign(pl[n].index,L,v);
+    vp[n]={signIdx:vs,sign:SIGNS[vs],
+           house:((vs-signIdx+12)%12)+1,                   /* house in the ROTATION */
+           divDeg:vDivDeg(pl[n].index,L,v)};
+  }
+  return{v:v,vascIdx:vasc,vascSign:SIGNS[vasc],
+         signIdx:signIdx,sign:SIGNS[signIdx],degInSign:degInSign,
+         planets:vp,raw:pl};
+}
+
+/* --- steps 2 to 4: the arithmetic, in any varga -------------- */
+function SB_hevaEval(chart,h,v){
+  var rot=SB_hevaRotate(chart,h,v),planets=chart.planets;
+  var fn=FN[rot.sign.name]||{};
+  var rows=[],nodes=[],silent=[],pos=0,neg=0,nPos=0,nNeg=0,nZero=0;
+
+  function build(pl,isNode){
+    var vp=rot.planets[pl];if(!vp)return null;
+    var fromH=vp.house,off=((1-fromH)+12)%12;
+    var base=getAspectOffsets(pl)[off];
+    if(base===undefined){silent.push({planet:pl,fromHouse:fromH,
+      reason:'casts no aspect on the '+SB_ordinal(h)+' house'});return null;}
+    /* real zodiacal degrees on both sides - see the header note */
+    var pdeg=planets[pl].degree+(planets[pl].minutes||0)/60;
+    var gap=Math.abs(pdeg-rot.degInSign);
+    var pct=Math.round(base-gap);if(pct<0)pct=0;
+    if(pct<=0){silent.push({planet:pl,fromHouse:fromH,base:base,gap:gap,
+      reason:'its '+HEV_ASPNAME[off]+' aspect starts at '+base+'% and it stands '
+             +gap.toFixed(1)+'&#176; off the cusp, so nothing of it lands'});return null;}
+    /* dignity is read in THIS chart, not in D-1 */
+    var d=vargaDignityFor(pl,planets,v);
+    var dp=(d&&isFinite(d.points))?d.points:50;
+    var fnv=isNode?null:((fn[pl]===undefined)?0:fn[pl]);
+    var w,dir,rule;
+    if(isNode){w=1;dir=-1;rule='shadow node - listed, not counted';}
+    else if(fnv>0){dir=1;w=fnv;
+      if(dp<50){w=w/2;rule='benefic with poor dignity - its good halved';}
+      else rule='functionally benefic';}
+    else if(fnv<0){dir=-1;w=-fnv;
+      if(dp>=50){w=w/2;rule='demanding but well dignified - its harm halved';}
+      else rule='functionally demanding';}
+    else{w=1;dir=(dp>=50)?1:-1;
+      rule='neutral - dignity decides ('+dp+(dp>=50?' &gt;= 50, so positive)':' &lt; 50, so negative)');}
+    var mag=Math.floor(w*dp*pct/100),score=mag*dir;   /* the book truncates */
+    var lb=isNode?{label:'Shadow Node',col:SB_hevPC(pl)}:SB_hevFNLabel(fnv);
+    return{planet:pl,fromHouse:fromH,signName:vp.sign.name,off:off,pct:pct,base:base,
+      gap:gap,deg:pdeg,divDeg:vp.divDeg,how:HEV_ASPNAME[off],occupies:(off===0),
+      fn:fnv,fnLabel:lb.label,fnCol:lb.col,dig:dp,digLabel:(d&&d.label)||'Neutral',
+      weight:w,dir:dir,mag:mag,score:score,rule:rule,node:!!isNode};
+  }
+
+  for(var i=0;i<HEV_ORDER.length;i++){var r=build(HEV_ORDER[i],false);
+    if(r){rows.push(r);
+      if(r.score>0){pos+=r.score;nPos++;}
+      else if(r.score<0){neg+=-r.score;nNeg++;}
+      else nZero++;}}
+  for(var j=0;j<HEV_NODES.length;j++){var rn=build(HEV_NODES[j],true);if(rn)nodes.push(rn);}
+  rows.sort(function(a,b){return b.score-a.score;});
+
+  var net=pos-neg,tot=pos+neg,verdict,vcol,vcls;
+  if(pos>=2*neg&&pos>0){verdict='Strongly Favourable';vcol='#7ac87a';vcls='hevV1';}
+  else if(pos>neg*1.15){verdict='Favourable';vcol='#8fbf70';vcls='hevV2';}
+  else if(neg>=2*pos&&neg>0){verdict='Strongly Demanding';vcol='#d05a3a';vcls='hevV5';}
+  else if(neg>pos*1.15){verdict='Demanding';vcol='#e07a5a';vcls='hevV4';}
+  else{verdict='Mixed - Tested Ground';vcol='#c9a84c';vcls='hevV3';}
+
+  return{house:h,v:v,sign:rot.sign,signIdx:rot.signIdx,vascSign:rot.vascSign,
+    ascDeg:rot.degInSign,rows:rows,nodes:nodes,silent:silent,fnTable:fn,
+    positive:pos,negative:neg,net:net,total:tot,ratio:tot?pos/tot:0.5,
+    countPos:nPos,countNeg:nNeg,countZero:nZero,verdict:verdict,verdictCol:vcol,
+    verdictCls:vcls,lord:SIGNS[rot.signIdx].ruler};
+}
+
+/* --- the whole collection, computed once and kept ------------ */
+/* 6 vargas x 12 houses = 72 evaluations. Cached on the chart, so
+   opening and closing the panel costs nothing after the first time. */
+function SB_hevaAll(chart){
+  if(chart.__heva)return chart.__heva;
+  var byV={},h,v,i;
+  for(i=0;i<SB_HEVA_V.length;i++){
+    v=SB_HEVA_V[i];byV[v]=[];
+    for(h=1;h<=12;h++)byV[v].push(SB_hevaEval(chart,h,v));
+  }
+  var agg=[],maxAbs=0;
+  for(h=1;h<=12;h++){
+    var p=0,n=0;
+    for(i=0;i<SB_HEVA_V.length;i++){
+      v=SB_HEVA_V[i];var w=SB_HEVA_W[v],e=byV[v][h-1];
+      p+=w*e.positive;n+=w*e.negative;
+    }
+    p=Math.round(p/SB_HEVA_DIV);n=Math.round(n/SB_HEVA_DIV);
+    if(p>maxAbs)maxAbs=p;if(n>maxAbs)maxAbs=n;
+    var net=p-n,vd,vc,vcl;
+    if(p>=2*n&&p>0){vd='Strongly Favourable';vc='#7ac87a';vcl='hevV1';}
+    else if(p>n*1.15){vd='Favourable';vc='#8fbf70';vcl='hevV2';}
+    else if(n>=2*p&&n>0){vd='Strongly Demanding';vc='#d05a3a';vcl='hevV5';}
+    else if(n>p*1.15){vd='Demanding';vc='#e07a5a';vcl='hevV4';}
+    else{vd='Mixed - Tested Ground';vc='#c9a84c';vcl='hevV3';}
+    agg.push({house:h,positive:p,negative:n,net:net,verdict:vd,verdictCol:vc,verdictCls:vcl});
+  }
+  /* ranking, so the reading can name the strongest and the hardest */
+  var rank=agg.slice().sort(function(a,b){return b.net-a.net;});
+  /* --- why a rank band exists ---------------------------------
+     The verdict cascade is the book's, and it is kept untouched: a
+     functionally neutral body scores positive whenever its dignity
+     reaches 50, and 50 is the commonest dignity there is, so support
+     outweighs strain in most houses of most charts. On one D-1 page
+     that is invisible. Summed over six charts it makes eleven houses
+     out of twelve read "Strongly Favourable", and a column that says
+     the same thing twelve times compares nothing.
+     So the aggregate - and only the aggregate - also carries where
+     each house stands among the other eleven. The absolute verdict is
+     still printed beside it; nothing is replaced. */
+  var BANDS=[{n:'Strongest ground',c:'#7ac87a',k:'hevB1'},{n:'Above the middle',c:'#8fbf70',k:'hevB2'},
+             {n:'Below the middle',c:'#e07a5a',k:'hevB3'},{n:'Hardest ground',c:'#d05a3a',k:'hevB4'}];
+  for(i=0;i<12;i++){
+    rank[i].rank=i+1;
+    rank[i].band=BANDS[Math.floor(i/3)].n;
+    rank[i].bandCol=BANDS[Math.floor(i/3)].c;   /* kept for the console / any caller */
+    rank[i].bandCls=BANDS[Math.floor(i/3)].k;   /* what the panel actually uses */
+  }
+  chart.__heva={byV:byV,agg:agg,maxAbs:maxAbs||1,rank:rank};
+  return chart.__heva;
+}
+/* dropped whenever a new chart is cast */
+function SB_hevaReset(chart){if(chart)delete chart.__heva;}
+
+/* --- the twelve-house table, the centre of the panel --------- */
+function SB_hevaTotalHTML(data){
+  var mx=data.maxAbs,out='';
+  out+='<div class="hevaTot">';
+  out+='<div class="hevaTotHd"><span>demanding</span><span>house</span><span>supportive</span></div>';
+  /* rows run in rank order, strongest ground first — the order IS the reading,
+     so the ranking has to be visible without the band column, which the narrow
+     layout drops. Hence the small #n under each numeral. */
+  for(var i=0;i<12;i++){
+    var a=data.rank[i];
+    var lw=Math.round(a.negative/mx*100),rw=Math.round(a.positive/mx*100);
+    out+='<div class="hevaRow">'
+      +'<div class="hevaNum">'+(a.negative?a.negative:'')+'</div>'
+      +'<div class="hevaL"><i style="width:'+lw+'%"></i></div>'
+      +'<div class="hevaC '+a.bandCls+'" title="'+a.verdict+'">'
+        +SB_HEVA_ROM[a.house-1]+'<em>#'+a.rank+'</em></div>'
+      +'<div class="hevaR"><i style="width:'+rw+'%"></i></div>'
+      +'<div class="hevaNum hevaNumR">'+(a.positive?a.positive:'')+'</div>'
+      +'<div class="hevaBand '+a.bandCls+'">'+a.band
+      +'<em>net '+(a.net>=0?'+':'')+a.net+' &middot; '+a.verdict+'</em></div>'
+      +'</div>';
+  }
+  out+='</div>';
+  var best=data.rank[0],worst=data.rank[11];
+  out+='<p class="hevaFoot">Weighted across six charts - D-1 and D-9 counted twice, '
+    +'the sum divided by eight. Read top to bottom: <b class="hevB1">the '
+    +SB_ordinal(best.house)+' house</b> is the strongest ground in this chart at a net of '
+    +(best.net>=0?'+':'')+best.net+', <b class="hevB4">the '
+    +SB_ordinal(worst.house)+' house</b> the hardest at '+(worst.net>=0?'+':'')+worst.net
+    +'. Bars are drawn to the largest figure in the column, not to a fixed ceiling, so they '
+    +'compare houses with each other and not with another chart.</p>';
+  return out;
+}
+
+/* --- one varga, all twelve houses, compact ------------------- */
+function SB_hevaVargaHTML(data,v){
+  var rowsV=data.byV[v],out='',i;
+  out+='<table class="hevaTbl"><thead><tr><th>House</th><th>Sign</th>'
+     +'<th>Bodies</th><th>Positive</th><th>Negative</th><th>Net</th><th>Reading</th></tr></thead><tbody>';
+  for(i=0;i<12;i++){
+    var e=rowsV[i];
+    out+='<tr><td class="hevaTh">'+SB_HEVA_ROM[i]+'</td>'
+      +'<td>'+e.sign.name+' '+vgDegMin(e.ascDeg)+'</td>'
+      +'<td>'+e.countPos+'&#43; / '+e.countNeg+'&#8722;'
+      +(e.countZero?' / '+e.countZero+'&#9900;':'')+'</td>'
+      +'<td class="hevPos">'+e.positive+'</td>'
+      +'<td class="hevNeg">'+e.negative+'</td>'
+      +'<td class="'+e.verdictCls+'"><b>'+(e.net>=0?'+':'')+e.net+'</b></td>'
+      +'<td class="'+e.verdictCls+'">'+e.verdict+'</td></tr>';
+  }
+  out+='</tbody></table>';
+  return out;
+}
+
+/* --- the fold bars ------------------------------------------- */
+function SB_hevaFold(v){
+  var b=document.getElementById('hevaBar-'+v),w=document.getElementById('hevaBody-'+v);
+  if(!b||!w)return;
+  var open=w.style.display!=='none';
+  w.style.display=open?'none':'block';
+  b.classList.toggle('open',!open);
+}
+
+/* --- the panel ----------------------------------------------- */
+function SB_houseEvalAllHTML(chart){
+  var head='<div class="section sbLockWrap" id="secHEvalAll">'
+    +'<p class="section-label">Complete House Evaluation</p>'
+    +'<p class="section-title">All Twelve Houses, Across Six Charts</p>';
+
+  if(typeof SB_hasPremium==='function'&&!SB_hasPremium())
+    return head+SB_lockedBodyHTML('house-eval',
+      'The single-house evaluation stays open to everyone, on every house page. This is the '
+      +'collection: every house weighed again in the Saptamsha, the Navamsa, the Dashamsha, the '
+      +'Dwadashamsha and the Shodashamsha, then ranked from the strongest ground to the hardest.',
+      12)+'</div>';
+
+  var data=SB_hevaAll(chart),out=head;
+  out+='<div class="section-body">';
+  out+='<p class="hevaLead">Six charts carry the same dignity engine, so the same five '
+    +'steps can be walked in all of them: <b>D-1</b>, <b>D-7</b>, <b>D-9</b>, <b>D-10</b>, '
+    +'<b>D-12</b> and <b>D-16</b>. The Hora, the Drekkana and the Trimshamsha are left out '
+    +'on purpose - their dignity is read on a different scale, and forcing them onto this '
+    +'one would make a number that looks comparable and is not.</p>';
+  out+='<p class="hevaLead hevaMethod">Aspect strength falls one point per degree off the '
+    +'cusp, and that distance is measured in <b>real zodiacal degrees in every chart</b>. '
+    +'Divisional degrees are a proportional stretch of the sign - nine to one in the '
+    +'Navamsa, sixteen to one in the Shodashamsha - so a distance taken in them would '
+    +'shrink the higher vargas for no reason in the sky. Only the nominal strength changes '
+    +'from chart to chart, because only the house changes.</p>';
+
+  out+=SB_hevaTotalHTML(data);
+
+  out+='<p class="hevaSub">Chart by chart</p>';
+  for(var i=0;i<SB_HEVA_V.length;i++){
+    var v=SB_HEVA_V[i],dbl=(SB_HEVA_W[v]===2);
+    out+='<button class="hevaBar" id="hevaBar-'+v+'" type="button" onclick="SB_hevaFold('+v+')">'
+      +'<span class="hevaBarT">'+SB_HEVA_NAME[v]+'</span>'
+      +(dbl?'<span class="hevaBarW">weighted &#215;2</span>':'')
+      +'<span class="hevaCaret">&#9662;</span></button>'
+      +'<div class="hevaBody" id="hevaBody-'+v+'" style="display:none">'
+      +'<p class="hevaBodyNote">Lagna of this chart: <b>'
+      +data.byV[v][0].vascSign.name+'</b>. Each row rotates that chart so the house named '
+      +'becomes its Ascendant, then weighs every body that reaches it.</p>'
+      +SB_hevaVargaHTML(data,v)+'</div>';
+  }
+  out+='</div></div>';
+  return out;
+}
+
+/* --- routing -------------------------------------------------- */
+/* Mirrors SB_pickHouse exactly, including the desktop pane path, so the
+   entry behaves like any other item in the Houses dropdown. */
+function SB_pickHouseAll(btn){
+  var lbl=document.getElementById('sbDDHousesLbl');
+  if(lbl)lbl.textContent='Complete Evaluation';
+  if(btn){var sibs=btn.parentNode.querySelectorAll('.sbDDItem');
+    for(var i=0;i<sibs.length;i++)sibs[i].classList.remove('cur');
+    btn.classList.add('cur');}
+  if(typeof SB_isDesk==='function'&&SB_isDesk()){
+    var pl2=document.getElementById('sbDDPlanetsLbl');
+    if(pl2)pl2.textContent='Planets';
+    SB_markItems('sbDDPlanets',-1);SB_deskExitFull();
+    SB_deskShowPH('pgHouseAll');SB_closeDD();return;}
+  SB_nav('pgHouseAll');
+}
+
+/* ============================================================
+   THE LOCKED STATE
+   One treatment for every premium panel: the shape of the thing
+   showing through frosted glass, greyed back, with a padlock and
+   the way in. Seeing that something real is behind the glass is
+   worth more than a paragraph describing it.
+   ============================================================ */
+function SB_lockGlyph(){
+  return '<svg class="sbLockIcon" viewBox="0 0 24 24" aria-hidden="true">'
+    +'<path d="M7 10V7a5 5 0 0 1 10 0v3" fill="none" stroke="currentColor" '
+    +'stroke-width="1.7" stroke-linecap="round"/>'
+    +'<rect x="4.5" y="10" width="15" height="10.5" rx="2.2" fill="none" '
+    +'stroke="currentColor" stroke-width="1.7"/>'
+    +'<circle cx="12" cy="15.2" r="1.5" fill="currentColor"/>'
+    +'<path d="M12 16.4v2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'
+    +'</svg>';
+}
+/* the ghost behind the glass - bars of the right shape, nothing readable */
+function SB_lockGhost(rows){
+  var w=[86,64,72,50,78,58,44,68,54,62],out='<div class="sbLockGhost" aria-hidden="true">';
+  for(var i=0;i<rows;i++)
+    out+='<div class="sbLockGr"><span class="sbLockGd"></span>'
+      +'<span class="sbLockGb" style="width:'+w[i%w.length]+'%"></span>'
+      +'<span class="sbLockGn"></span></div>';
+  return out+'</div>';
+}
+function SB_lockedBodyHTML(reason,blurb,rows){
+  return '<div class="section-body sbLocked">'
+    +SB_lockGhost(rows||7)
+    +'<div class="sbLockOver">'
+    +'<div class="sbLockBadge">'+SB_lockGlyph()+'</div>'
+    +'<p class="sbLockTxt">'+blurb+'</p>'
+    +'<button class="sbTxtBuy" type="button" onclick="SB_premiumGate(\''+reason+'\')">'
+    +'See what premium opens</button>'
+    +'</div></div>';
+}
+
+/* ============================================================
+   COMPLETE PLANETARY EVALUATION  (premium)
+   ------------------------------------------------------------
+   The Planetary Evaluation of PS-10 §2.7, read again in the same
+   six charts the Complete House Evaluation uses: D-1, D-7, D-9,
+   D-10, D-12, D-16, with D-1 and D-9 counted twice and the sum
+   divided by eight.
+
+   WHAT CHANGES FROM CHART TO CHART
+     dignity            vargaDignityFor(pl, planets, v)
+     house              counted from the varga lagna, so the sign
+                        of the house term flips
+     aspects received   the offsets change, so a different set of
+                        senders clears the 60% threshold
+     functional nature  FN[varga lagna], re-read in every chart
+                        (owner's call, PS-11)
+
+   WHAT DOES NOT — these are facts about the real sky and have no
+   divisional counterpart, so they are computed once in D-1 and
+   never repeated:
+     cusp alignment     real degrees; only its sign flips
+     Avastha, Sandhi, combustion, Graha Yuddha, Chara Karaka,
+     Shadbala
+
+   THE PENALTY IS APPLIED ONCE
+   Sandhi measures the distance to a real sign boundary and
+   combustion the distance to the real Sun. Recomputing either per
+   varga would turn one fact in the sky into six. So the six
+   totals are averaged first, and the D-1 penalty is applied to
+   that average.
+
+   YOGAS are computed in D-1 and D-9 only (owner's call). They do
+   not enter the total in the original engine and they do not here.
+
+   SB_pevaEval(chart,pl,1) reproduces SB_planetEval(chart,pl)
+   component for component. pevalltest.js asserts it.
+   ============================================================ */
+
+var SB_PEVA_ORDER=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
+var SB_PEVA_YOGA_V={1:1,9:1};        /* the only charts whose yogas are read */
+
+/* --- the aspect table of one varga --------------------------- */
+/* allAsps, with the house offsets taken from the varga signs while the
+   degree separation stays real — the same rule the house evaluation uses. */
+function SB_pevaAsps(chart,v){
+  var planets=chart.planets,asc=chart.asc;
+  var ascDeg=asc.totalDeg-Math.floor(asc.totalDeg/30)*30;
+  var vasc=vSign(asc.index,amFloor(ascDeg),v);
+  var si={},houses={},n;
+  for(n in planets){
+    if(!planets[n])continue;
+    var L=planets[n].degree+(planets[n].minutes||0)/60;
+    si[n]=vSign(planets[n].index,L,v);
+    houses[n]=((si[n]-vasc+12)%12)+1;
+  }
+  var recv={},all=SB_PEVA_ORDER;
+  for(var ti=0;ti<all.length;ti++){
+    var tgt=all[ti];if(!planets[tgt])continue;recv[tgt]=[];
+    for(var s=0;s<all.length;s++){
+      var src=all[s];if(src===tgt||!planets[src])continue;
+      var off=((houses[tgt]-houses[src])+12)%12;
+      var base=getAspectOffsets(src)[off];
+      if(base===undefined)continue;
+      var sDeg=planets[src].degree+(planets[src].minutes||0)/60;
+      var tDeg=planets[tgt].degree+(planets[tgt].minutes||0)/60;
+      var str=Math.round(Math.max(0,base-Math.abs(sDeg-tDeg)));
+      if(str>=60)recv[tgt].push({from:src,str:str});
+    }
+    recv[tgt].sort(function(a,b){return b.str-a.str;});
+  }
+  return{v:v,vascIdx:vasc,vascSign:SIGNS[vasc],recv:recv,houses:houses,signIdx:si};
+}
+
+/* --- lordship and linkage, read in a varga ------------------- */
+function SB_pevaLordOf(A,pl){
+  var out=[];for(var s=0;s<12;s++)if(SIGNS[s].ruler===pl)out.push(((s-A.vascIdx+12)%12)+1);
+  return out.sort(function(a,b){return a-b;});
+}
+function SB_pevaLinked(A,a,b){
+  if(A.signIdx[a]===undefined||A.signIdx[b]===undefined)return null;
+  if(A.signIdx[a]===A.signIdx[b])return'conjunction';
+  var r=A.recv[a]||[],back=A.recv[b]||[],i,toMe=false,toIt=false;
+  for(i=0;i<r.length;i++)if(r[i].from===b)toMe=true;
+  for(i=0;i<back.length;i++)if(back[i].from===a)toIt=true;
+  if(toMe&&toIt)return'mutual aspect';
+  if(toMe||toIt)return'aspect';
+  return null;
+}
+/* SB_pevYogas with every D-1 reference replaced by its varga equivalent.
+   With v=1 it returns exactly what SB_pevYogas returns. */
+function SB_pevaYogas(chart,pl,A){
+  var out=[],KEN={1:1,4:1,7:1,10:1},TRI={1:1,5:1,9:1},DUS={6:1,8:1,12:1};
+  if(!chart.planets[pl])return out;
+  var mine=SB_pevaLordOf(A,pl),myH=A.houses[pl];
+  var K=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'],i;
+  function has(list,map){for(var q=0;q<list.length;q++)if(map[list[q]])return list[q];return 0;}
+  for(i=0;i<K.length;i++){
+    var o=K[i];if(o===pl||!chart.planets[o])continue;
+    var theirs=SB_pevaLordOf(A,o),link=SB_pevaLinked(A,pl,o);
+    if(SIGNS[A.signIdx[pl]].ruler===o&&SIGNS[A.signIdx[o]].ruler===pl){
+      var hA=A.houses[pl],hB=A.houses[o];
+      var goodPair=(PEV_GOOD[hA]&&PEV_GOOD[hB]),dusPair=(DUS[hA]&&DUS[hB]);
+      out.push({type:'Parivartana Yoga',nature:(goodPair||dusPair)?'benefic':'mixed',with:o,
+        text:'You and '+o+' host each other. '+(goodPair?'Both sit in supportive houses, so the exchange compounds - the strongest form of it.':
+          dusPair?'Both sit in difficult houses, and two negatives multiply into a positive - the affliction cancels itself.':
+          'One of the pair works from a supportive house and the other from a difficult one, so the exchange costs as much as it gives.')});}
+    if(!link)continue;
+    var myTri=has(mine,TRI),itsTri=has(theirs,TRI),myKen=has(mine,KEN),itsKen=has(theirs,KEN);
+    if(myTri&&itsTri&&(link==='conjunction'||link==='mutual aspect'))
+      out.push({type:'Raja Yoga',nature:'benefic',with:o,
+        text:'Lord of the '+SB_ordinal(myTri)+' with the lord of the '+SB_ordinal(itsTri)+' by '+link+' - two trines in league.'});
+    else if(((myTri&&itsKen)||(myKen&&itsTri))&&(KEN[myH]||TRI[myH]||KEN[A.houses[o]]||TRI[A.houses[o]])&&link)
+      out.push({type:'Raja Yoga',nature:'benefic',with:o,
+        text:'Trine lord and angle lord combining by '+link+', with the pair standing in the '+SB_ordinal(KEN[myH]||TRI[myH]?myH:A.houses[o])+' - the classic royal combination.'});
+    var myDus=has(mine,DUS),itsDus=has(theirs,DUS);
+    if(itsDus&&!myDus&&mine.length&&(link==='conjunction'||link==='mutual aspect'))
+      out.push({type:'Daridra Yoga',nature:'malefic',with:o,
+        text:'Your lordship is tied by '+link+' to the lord of the '+SB_ordinal(itsDus)+' - the reversed royal combination, and it drains what it touches.'});
+    else if(myDus&&itsDus&&(link==='conjunction'||link==='mutual aspect'))
+      out.push({type:'Dusthana Exchange',nature:'benefic',with:o,
+        text:'Two difficult lordships meet by '+link+' - they cancel rather than compound.'});}
+  if(pl==='Rahu'||pl==='Ketu'){
+    for(i=0;i<K.length;i++){var n2=K[i];
+      if(!chart.planets[n2]||A.signIdx[n2]!==A.signIdx[pl])continue;
+      var L=SB_pevaLordOf(A,n2),ken=has(L,KEN),tri=has(L,TRI);
+      if((ken&&TRI[myH])||(tri&&KEN[myH]))
+        out.push({type:'Raja Yoga',nature:'benefic',with:n2,
+          text:pl+' sits with the lord of the '+SB_ordinal(ken||tri)+' in the '+SB_ordinal(myH)+' - a node can carry the royal combination too.'});}}
+  return out;
+}
+
+/* --- one planet, in one chart --------------------------------- */
+function SB_pevaEval(chart,pl,v,Apre){
+  var A=Apre||SB_pevaAsps(chart,v);
+  var p=chart.planets[pl];if(!p)return null;
+  var FULL=(v===1);          /* only D-1 carries dignity and the graded cusp */
+  var dig=vargaDignityFor(pl,chart.planets,v);
+  var fnTable=FN[A.vascSign.name]||{};
+  var fn=fnTable[pl];
+  var sb=chart.shadbala?chart.shadbala[pl]:null;   /* real sky, one value */
+
+  /* 1. the verdict cascade, on this chart's dignity and nature */
+  var verdict,decided;
+  if(dig.points>50){verdict='positive';decided='dignity';}
+  else if(dig.points<50){verdict='negative';decided='dignity';}
+  else if(fn>0){verdict='positive';decided='functional nature';}
+  else if(fn<0){verdict='negative';decided='functional nature';}
+  else if(sb&&sb.final>50){verdict='positive';decided='Shadbala';}
+  else if(sb&&sb.final<50){verdict='negative';decided='Shadbala';}
+  else{verdict='balanced';decided='nothing tips it';}
+
+  /* 2. house placement
+     D-1 keeps the graded term: the cusp alignment, signed by the house.
+     The vargas get the flat judgement only - beneficial, dusthana or neither -
+     because the cusp is a real-sky degree and reusing it in six charts would
+     count one fact six times. Degree precision stays D-1's alone. */
+  var h=A.houses[pl];
+  var kind=PEV_GOOD[h]?'beneficial':PEV_DUS[h]?'dusthana':'neutral';
+  var cusp=SB_pevCusp(chart,pl);
+  var houseTerm=FULL?(kind==='beneficial'?cusp.pct:kind==='dusthana'?-cusp.pct:0)
+                    :(kind==='beneficial'?100:kind==='dusthana'?-100:0);
+
+  /* 3. composite aspects, signed by this chart's functional natures */
+  var recv=A.recv[pl]||[],rows=[],sum=0;
+  for(var i=0;i<recv.length;i++){
+    var from=recv[i].from,str=recv[i].str,rel=SB_pevRel(pl,from),ffn=fnTable[from],signed;
+    if(rel==='friend')signed=str;
+    else if(rel==='enemy')signed=-str;
+    else signed=(ffn>0)?str:(ffn<0)?-str:0;
+    sum+=signed;
+    rows.push({from:from,str:str,rel:rel,fn:ffn,signed:signed});}
+  rows.sort(function(a,b){return Math.abs(b.signed)-Math.abs(a.signed);});
+
+  /* dignity enters the composite in D-1 only. Across the vargas it is already
+     represented, once, by the Shodasa Varga figure in the prominence score -
+     adding it here as well would count the same measurement twice. */
+  var total=(FULL?dig.points:0)+houseTerm+sum;
+  return{point:pl,v:v,dignity:dig,verdict:verdict,decidedBy:decided,funcNature:fn,
+    shadbala:sb?sb.final:null,house:h,houseKind:kind,cusp:cusp,houseTerm:houseTerm,
+    aspects:rows,aspectSum:sum,total:total,full:FULL,vascSign:A.vascSign,
+    signName:SIGNS[A.signIdx[pl]].name,
+    yogas:SB_PEVA_YOGA_V[v]?SB_pevaYogas(chart,pl,A):null};
+}
+
+/* --- the whole collection ------------------------------------- */
+function SB_pevaAll(chart){
+  if(chart.__peva)return chart.__peva;
+  var asps={},byV={},i,j,v,pl;
+  for(i=0;i<SB_HEVA_V.length;i++){
+    v=SB_HEVA_V[i];asps[v]=SB_pevaAsps(chart,v);byV[v]={};
+    for(j=0;j<SB_PEVA_ORDER.length;j++){
+      pl=SB_PEVA_ORDER[j];
+      var e=SB_pevaEval(chart,pl,v,asps[v]);
+      if(e)byV[v][pl]=e;
+    }
+  }
+  /* the D-1 penalty, computed once and applied to the average */
+  var agg=[];
+  for(j=0;j<SB_PEVA_ORDER.length;j++){
+    pl=SB_PEVA_ORDER[j];
+    if(!byV[1][pl])continue;
+    var dg=0,ht=0,ap=0;
+    for(i=0;i<SB_HEVA_V.length;i++){
+      v=SB_HEVA_V[i];var w=SB_HEVA_W[v],r=byV[v][pl];
+      dg+=w*(r.full?r.dignity.points:0);ht+=w*r.houseTerm;ap+=w*r.aspectSum;
+    }
+    /* each component is rounded first, so the printed sum always adds up */
+    dg=Math.round(dg/SB_HEVA_DIV);ht=Math.round(ht/SB_HEVA_DIV);ap=Math.round(ap/SB_HEVA_DIV);
+    var total=dg+ht+ap;
+    var sandhi=SB_pevSandhi(chart,pl),comb=SB_pevCombust(chart,pl),war=SB_pevWar(chart,pl);
+    var penalty=Math.max(sandhi.pct,comb.pct,(war&&!war.won)?50:0);
+    var effective=Math.round(total*(100-penalty)/100);
+    agg.push({point:pl,dig:dg,houseTerm:ht,aspectSum:ap,total:total,
+      penalty:penalty,effective:effective,sandhi:sandhi,combustion:comb,war:war,
+      verdict:byV[1][pl].verdict,decidedBy:byV[1][pl].decidedBy});
+  }
+  chart.__peva={asps:asps,byV:byV,agg:agg};
+  return chart.__peva;
+}
+function SB_pevaReset(chart){if(chart)delete chart.__peva;}
+
+/* --- one chart, all nine planets ------------------------------ */
+function SB_pevaVargaHTML(data,v){
+  var out='',j,yg=!!SB_PEVA_YOGA_V[v];
+  out+='<table class="hevaTbl pevaTbl"><thead><tr><th>Planet</th><th>Sign</th><th>House</th>'
+     +'<th>Dignity</th><th>House term</th><th>Aspects</th><th>Total</th><th>Verdict</th>'
+     +(yg?'<th>Yogas</th>':'')+'</tr></thead><tbody>';
+  for(j=0;j<SB_PEVA_ORDER.length;j++){
+    var pl=SB_PEVA_ORDER[j],e=data.byV[v][pl];if(!e)continue;
+    var cls=e.verdict==='positive'?'hevV1':e.verdict==='negative'?'hevV5':'hevV3';
+    out+='<tr><td class="hevaTh" style="color:'+(PCOL[pl]||'#aaa')+'">'+pl+'</td>'
+      +'<td>'+e.signName+'</td>'
+      +'<td>'+e.house+' <span class="pevaKind">'+e.houseKind.charAt(0)+'</span></td>'
+      +'<td>'+e.dignity.points+'</td>'
+      +'<td class="'+(e.houseTerm>0?'hevPos':e.houseTerm<0?'hevNeg':'')+'">'
+        +(e.houseTerm>0?'+':'')+e.houseTerm+'</td>'
+      +'<td class="'+(e.aspectSum>0?'hevPos':e.aspectSum<0?'hevNeg':'')+'">'
+        +(e.aspectSum>0?'+':'')+e.aspectSum+'</td>'
+      +'<td class="'+cls+'"><b>'+e.total+'</b></td>'
+      +'<td class="'+cls+'">'+e.verdict+'</td>'
+      +(yg?'<td>'+(e.yogas&&e.yogas.length?e.yogas.length:'&ndash;')+'</td>':'')
+      +'</tr>';
+  }
+  out+='</tbody></table>';
+  if(yg){
+    var names=[],seen={};
+    for(j=0;j<SB_PEVA_ORDER.length;j++){
+      var ee=data.byV[v][SB_PEVA_ORDER[j]];if(!ee||!ee.yogas)continue;
+      for(var k=0;k<ee.yogas.length;k++){
+        var t=ee.yogas[k].type+' - '+SB_PEVA_ORDER[j]+' with '+ee.yogas[k].with;
+        if(!seen[t]){seen[t]=1;names.push(t);}
+      }
+    }
+    out+='<p class="hevaBodyNote">'+(names.length
+      ? 'Yogas in this chart: '+names.join(' &middot; ')+'.'
+      : 'No lordship yoga forms in this chart.')+'</p>';
+  }
+  return out;
+}
+
+/* --- the panel ------------------------------------------------ */
+function SB_planetEvalAllHTML(chart){
+  var head='<div class="section sbLockWrap" id="secPEvalAll">'
+    +'<p class="section-label">Complete Planetary Evaluation</p>'
+    +'<p class="section-title">All Nine Bodies, Across Six Charts</p>';
+
+  if(typeof SB_hasPremium==='function'&&!SB_hasPremium())
+    return head+SB_lockedBodyHTML('planet-eval',
+      'The single-planet evaluation stays open to everyone, at the top of every planet page. '
+      +'This is the collection: how loud each of the nine bodies is in this life, weighed across '
+      +'six charts and ranked from the one that runs it to the one barely heard.',
+      9)+'</div>';
+
+  var data=SB_pevaAll(chart),prom=SB_promAll(chart),out=head+'<div class="section-body">';
+
+  /* --- prominence first: it is the answer most people came for --- */
+  out+='<p class="hevaLead"><b>Prominence</b> asks how loud a body is in a life, which is '
+    +'not the same question as whether it is kind. Four instruments are read together: the '
+    +'six-chart force reading below at <b>40</b>, alignment to the house cusp at <b>30</b>, '
+    +'Shadbala at <b>20</b>, and dignity across nine charts at <b>10</b>. Dignity is given '
+    +'the smallest share on purpose - it turns out to be a poor guide to how much room a '
+    +'planet takes up.</p>';
+  out+=SB_promTotalHTML(chart,prom);
+  out+='<p class="hevaFoot">The cusp figure also sits inside the force reading, through the '
+    +'D-1 house term, so its true share is about <b>40</b> - the heaviest single input. '
+    +'The figure that feeds it is the penalised one: Sandhi, combustion and Graha Yuddha are '
+    +'read once in D-1 and applied to the six-chart average, never recomputed per chart - '
+    +'they are facts about the real sky, and repeating them would turn one fact into six. '
+    +'Scores are on a fixed scale, not on this chart\'s own high and low, so a 72 here and '
+    +'a 72 in another chart mean the same thing; the percentile beside each score says where '
+    +'it falls among 8,100 readings. Rahu and Ketu have no Shadbala of their own - '
+    +'calcShadbala walks the seven classical planets - so each borrows its dispositor\'s, '
+    +'marked &#8226;. Both nodes always share one cusp figure, because they stand 180&#176; '
+    +'apart and therefore on the same degree of their signs.</p>';
+
+  out+='<p class="hevaSub">Chart by chart</p>';
+  for(var i=0;i<SB_HEVA_V.length;i++){
+    var v=SB_HEVA_V[i],dbl=(SB_HEVA_W[v]===2);
+    out+='<button class="hevaBar" id="pevaBar-'+v+'" type="button" onclick="SB_pevaFold('+v+')">'
+      +'<span class="hevaBarT">'+SB_HEVA_NAME[v]+'</span>'
+      +(SB_PEVA_YOGA_V[v]?'<span class="hevaBarW">yogas read</span>':'')
+      +(dbl?'<span class="hevaBarW">weighted &#215;2</span>':'')
+      +'<span class="hevaCaret">&#9662;</span></button>'
+      +'<div class="hevaBody" id="pevaBody-'+v+'" style="display:none">'
+      +'<p class="hevaBodyNote">Lagna of this chart: <b>'+data.asps[v].vascSign.name
+      +'</b>, so functional nature is read from '+data.asps[v].vascSign.name
+      +' here. House column: <span class="pevaKind">b</span> beneficial, '
+      +'<span class="pevaKind">d</span> dusthana, <span class="pevaKind">n</span> neither. '
+      +'Verdict and total answer different questions and can point opposite ways: the verdict '
+      +'asks whether this body\'s nature suits the lagna, the total how much force it carries. '
+      +'Neither is a correction of the other.</p>'
+      +SB_pevaVargaHTML(data,v)+'</div>';
+  }
+  out+='</div></div>';
+  return out;
+}
+
+function SB_pevaFold(v){
+  var b=document.getElementById('pevaBar-'+v),w=document.getElementById('pevaBody-'+v);
+  if(!b||!w)return;
+  var open=w.style.display!=='none';
+  w.style.display=open?'none':'block';
+  b.classList.toggle('open',!open);
+}
+
+/* --- routing -------------------------------------------------- */
+function SB_pickPlanetAll(btn){
+  var lbl=document.getElementById('sbDDPlanetsLbl');
+  if(lbl)lbl.textContent='Complete Evaluation';
+  if(btn){var sibs=btn.parentNode.querySelectorAll('.sbDDItem');
+    for(var i=0;i<sibs.length;i++)sibs[i].classList.remove('cur');
+    btn.classList.add('cur');}
+  if(typeof SB_isDesk==='function'&&SB_isDesk()){
+    var hl=document.getElementById('sbDDHousesLbl');
+    if(hl)hl.textContent='Houses';
+    SB_markItems('sbDDHouses',-1);SB_deskExitFull();
+    SB_deskShowPH('pgPlanetAll');SB_closeDD();return;}
+  SB_nav('pgPlanetAll');
+}
+
+/* ============================================================
+   PROMINENCE
+   ------------------------------------------------------------
+   How loud a body is in a life, which is not the same question as
+   whether it is kind. Dignity answers the second and answers the
+   first badly: across three worked charts Mars carried the highest
+   Shodasa figure and nearly the lowest force, while Venus sat mid
+   table on dignity and led everything else. So dignity is given the
+   smallest share and four instruments are read together.
+
+   THE FOUR SHARES
+     40  composite   the six-chart reading above
+     30  cusp        alignment to the house cusp, real degrees
+     20  bala        Shadbala
+     10  shodasa     dignity across nine charts
+
+   Cusp is also inside the composite, through D-1's house term, and
+   D-1 is two of the eight weights. Its true share is therefore
+   about 40% - the largest single input. That is deliberate.
+
+   THE SCALE
+   Three of the four already run 0-100. The composite does not: over
+   400 charts and 3,600 readings it runs -217 to 309, median 58. It
+   is mapped onto 0-100 through a FIXED window, not through each
+   chart's own high and low, because a prominence figure has to mean
+   the same thing in two different charts - otherwise every chart
+   would have a 100 and a 0 and nothing could be compared. The
+   window below is the 1st to 99th percentile of that sample,
+   rounded outward; it clamps 1.16% of readings.
+
+   THE NODES
+   calcShadbala walks the seven classical planets only, so Rahu and
+   Ketu have no Shadbala at all. Rather than drop a fifth of their
+   score, each node borrows the Shadbala of its dispositor - the
+   ruler of the sign it occupies - which is how the tradition reads
+   a node's strength anyway.
+   ============================================================ */
+var SB_PROM_W={composite:40,cusp:30,bala:20,shodasa:10};
+var SB_PROM_LO=-125,SB_PROM_HI=225;    /* measured on the penalised figure, see the header */
+
+function SB_promScale(total){
+  var n=(total-SB_PROM_LO)/(SB_PROM_HI-SB_PROM_LO)*100;
+  return Math.max(0,Math.min(100,Math.round(n)));
+}
+/* a node has no Shadbala of its own, so it carries its dispositor's */
+function SB_promBala(chart,pl){
+  var sb=chart.shadbala;
+  if(sb&&sb[pl]&&isFinite(sb[pl].final))return{val:sb[pl].final,via:null};
+  var p=chart.planets[pl];if(!p)return{val:null,via:null};
+  var disp=SIGNS[p.index].ruler;
+  if(sb&&sb[disp]&&isFinite(sb[disp].final))return{val:sb[disp].final,via:disp};
+  return{val:null,via:null};
+}
+function SB_promOf(chart,agg){
+  var pl=agg.point,W=SB_PROM_W;
+  /* the penalised figure, not the raw one: a combust or sandhi-struck body is
+     genuinely quieter, and that is exactly what prominence is measuring */
+  var comp=SB_promScale(agg.effective);
+  var cusp=SB_pevCusp(chart,pl).pct;
+  var bala=SB_promBala(chart,pl);
+  var sv=(chart.shodasavarga&&chart.shodasavarga[pl]&&isFinite(chart.shodasavarga[pl].final))
+        ?chart.shodasavarga[pl].final:null;
+  /* if an instrument is genuinely missing its share is spread over the rest,
+     so a body is never punished for a measurement the engine cannot make */
+  var parts=[{k:'composite',v:comp,w:W.composite},{k:'cusp',v:cusp,w:W.cusp},
+             {k:'bala',v:bala.val,w:W.bala},{k:'shodasa',v:sv,w:W.shodasa}];
+  var wsum=0,acc=0,i;
+  for(i=0;i<parts.length;i++)if(parts[i].v!==null){wsum+=parts[i].w;acc+=parts[i].w*parts[i].v;}
+  var score=wsum?Math.round(acc/wsum):0;
+  return{point:pl,score:score,composite:comp,rawComposite:agg.effective,penalty:agg.penalty,cusp:cusp,
+         bala:bala.val,balaVia:bala.via,shodasa:sv,weightUsed:wsum,parts:parts};
+}
+/* the nine, ranked by prominence rather than by force */
+function SB_promAll(chart){
+  if(chart.__prom)return chart.__prom;
+  var d=SB_pevaAll(chart),out=[],i;
+  for(i=0;i<d.agg.length;i++)out.push(SB_promOf(chart,d.agg[i]));
+  var rank=out.slice().sort(function(a,b){return b.score-a.score;});
+  var BANDS=[{n:'Runs the life',k:'hevB1'},{n:'Audible',k:'hevB2'},{n:'Quiet',k:'hevB4'}];
+  for(i=0;i<rank.length;i++){
+    rank[i].rank=i+1;
+    var b=BANDS[Math.min(2,Math.floor(i/3))];
+    rank[i].band=b.n;rank[i].bandCls=b.k;
+  }
+  chart.__prom={list:out,rank:rank};
+  return chart.__prom;
+}
+function SB_promReset(chart){if(chart){delete chart.__prom;delete chart.__peva;}}
+
+/* Prominence is a weighted mean of four figures, and a mean always pulls its
+   tails in: over 900 charts and 8,100 readings the scores run 29 to 93 with
+   the middle ninety per cent inside thirty points. So a bare "58" reads as
+   middling on a 0-100 scale when it is really bottom-half. The number stays
+   as it is - it has to, or two charts could not be compared - and the
+   percentile is printed beside it so it can be read correctly. */
+var SB_PROM_PCT=[29,45,48,50,52,53,55,56,57,58,59,60,62,63,64,65,67,69,71,75,93];
+function SB_promPct(score){
+  for(var i=SB_PROM_PCT.length-1;i>=0;i--)if(score>=SB_PROM_PCT[i])return i*5;
+  return 0;
+}
+function SB_promPctWord(p){
+  if(p>=95)return'louder than almost every planet in any chart';
+  if(p>=80)return'louder than four in five';
+  if(p>=60)return'above the common run';
+  if(p>=40)return'about as loud as most';
+  if(p>=20)return'quieter than most';
+  return'quieter than four in five';
+}
+
+/* --- the prominence table ------------------------------------- */
+function SB_promTotalHTML(chart,data){
+  var out='',i,mx=0;
+  for(i=0;i<data.rank.length;i++)if(data.rank[i].score>mx)mx=data.rank[i].score;
+  out+='<div class="promTot">';
+  for(i=0;i<data.rank.length;i++){
+    var r=data.rank[i],pl=r.point,p=SB_promPct(r.score);
+    var sym=(typeof PLANET_KW!=='undefined'&&PLANET_KW[pl])?PLANET_KW[pl].sym:'';
+    out+='<div class="promRow">'
+      +'<div class="promRk">#'+r.rank+'</div>'
+      +'<div class="promGl" style="color:'+(PCOL[pl]||'#aaa')+'">'+sym+'</div>'
+      +'<div class="promNm">'+pl+'</div>'
+      +'<div class="promBarW"><i style="width:'+Math.round(r.score/(mx||1)*100)+'%"></i></div>'
+      +'<div class="promSc '+r.bandCls+'">'+r.score+'<em>'+p+'th</em></div>'
+      +'<div class="promParts">'
+        +'<span title="the six-chart reading, mapped onto 0-100">c '+r.composite+'</span>'
+        +'<span title="alignment to the house cusp">u '+r.cusp+'</span>'
+        +'<span title="Shadbala'+(r.balaVia?', borrowed from '+r.balaVia:'')+'">b '
+          +(r.bala===null?'&ndash;':r.bala)+(r.balaVia?'<sup>&#8226;</sup>':'')+'</span>'
+        +'<span title="dignity across nine charts">d '+(r.shodasa===null?'&ndash;':r.shodasa)+'</span>'
+      +'</div>'
+      +'<div class="promBand '+r.bandCls+'">'+r.band+'<em>'+SB_promPctWord(p)+'</em></div>'
+      +'</div>';
+  }
+  out+='</div>';
+  return out;
+}
+
+/* ============================================================
+   TIME BOMBS - scored Vimshottari periods  (premium)
+   ------------------------------------------------------------
+   Everything else in this app answers "what". This answers "when".
+
+   A period is scored from two things already built, both read in
+   D-1 - rulership is taken from the natal lagna, never from a varga:
+
+     the lord's PROMINENCE   (SB_promAll, 0-100)
+     the houses it RULES     (SB_hevaAll net, scaled 0-100)
+
+     mahadasha   = 50% prominence + 50% ruled houses
+     antardasha  = 50% of the sub-lord's own figure
+                 + 50% of the mahadasha lord's figure
+                 which unfolds to 25 / 25 / 25 / 25
+
+   Two houses are shared inside their half - 25 and 25 for a
+   mahadasha, 12.5 and 12.5 inside an antardasha - exactly as the
+   owner specified.
+
+   THE NODES
+   Rahu and Ketu rule no sign, yet they hold 18 and 7 years of the
+   120-year cycle - better than a fifth of a life. Rather than let
+   half the formula vanish for them, each borrows the houses of its
+   dispositor, the ruler of the sign it stands in. That is the same
+   fallback the prominence score uses for their Shadbala.
+
+   THE HOUSE SCALE
+   House nets are not 0-100: over 3,120 readings they run -47 to
+   322, median 108. They are mapped through a fixed window, so a
+   house figure means the same thing in two different charts.
+
+   WHAT THIS DOES NOT WEIGH
+   Maraka lordship, Kendradhipati dosha, the lord's position from
+   the Moon, whether a lord aspects its own house, and transits.
+   This is a two-ingredient reading, and the panel says so.
+   ============================================================ */
+
+var SB_DASH_HLO=0,SB_DASH_HHI=275;      /* measured, see the header */
+var SB_DASH_W={rank:50,houses:50};
+
+function SB_dashHouseScale(net){
+  var n=(net-SB_DASH_HLO)/(SB_DASH_HHI-SB_DASH_HLO)*100;
+  return Math.max(0,Math.min(100,Math.round(n)));
+}
+/* the houses a dasha lord answers for; a node answers for its dispositor's */
+function SB_dashRuled(chart,pl){
+  var r=SB_ruledHouses(pl,chart.asc.index);
+  if(r.length)return{houses:r,via:null};
+  var p=chart.planets[pl];if(!p)return{houses:[],via:null};
+  var disp=SIGNS[p.index].ruler;
+  return{houses:SB_ruledHouses(disp,chart.asc.index),via:disp};
+}
+/* one lord's figure: half its own loudness, half the ground it answers for */
+function SB_dashLord(chart,pl,cache){
+  if(cache[pl])return cache[pl];
+  var prom=SB_promAll(chart),hev=SB_hevaAll(chart),i;
+  var rank=0;
+  for(i=0;i<prom.list.length;i++)if(prom.list[i].point===pl)rank=prom.list[i].score;
+  var rd=SB_dashRuled(chart,pl),parts=[],hsum=0;
+  for(i=0;i<rd.houses.length;i++){
+    var h=rd.houses[i].h,sc=SB_dashHouseScale(hev.agg[h-1].net);
+    parts.push({house:h,sign:rd.houses[i].sign,score:sc,
+                share:SB_DASH_W.houses/rd.houses.length});
+    hsum+=sc/rd.houses.length;
+  }
+  var houses=parts.length?Math.round(hsum):null;
+  var score=(houses===null)?rank
+      :Math.round((SB_DASH_W.rank*rank+SB_DASH_W.houses*houses)/100);
+  cache[pl]={point:pl,rank:rank,houses:houses,parts:parts,via:rd.via,score:score};
+  return cache[pl];
+}
+
+function SB_dashBand(s){
+  if(s>=62)return{n:'Strong ground',k:'hevB1'};
+  if(s>=52)return{n:'Workable',k:'hevB2'};
+  if(s>=44)return{n:'Mixed',k:'hevV3'};
+  return{n:'Hard ground',k:'hevB4'};
+}
+function SB_dashYr(d){return d.getUTCFullYear();}
+function SB_dashDate(d){
+  var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return M[d.getUTCMonth()]+' '+d.getUTCFullYear();
+}
+
+function SB_dashAll(chart){
+  if(chart.__dash)return chart.__dash;
+  var seq=chart.dashaSeq||[],cache={},now=new Date(),i,j;
+  var maha=[],antar=[];
+  for(i=0;i<seq.length&&i<9;i++){
+    var ds=seq[i],L=SB_dashLord(chart,ds.planet,cache);
+    var when=(now<ds.startDate)?'future':(now>=ds.endDate)?'past':'current';
+    var m={planet:ds.planet,lord:L,score:L.score,startDate:ds.startDate,endDate:ds.endDate,
+           when:when,band:SB_dashBand(L.score),subs:[]};
+    var ads=(typeof calcAntardasha==='function')?calcAntardasha(ds):[];
+    for(j=0;j<ads.length;j++){
+      var a=ads[j],S=SB_dashLord(chart,a.planet,cache);
+      /* half the sub-lord's figure, half the mahadasha lord's: 25/25/25/25 */
+      var sc=Math.round((S.score+L.score)/2);
+      var aw=(now<a.startDate)?'future':(now>=a.endDate)?'past':'current';
+      var rec={maha:ds.planet,planet:a.planet,sub:S,mahaLord:L,score:sc,
+               startDate:a.startDate,endDate:a.endDate,when:aw,band:SB_dashBand(sc)};
+      m.subs.push(rec);antar.push(rec);
+    }
+    m.bestSub=m.subs.slice().sort(function(x,y){return y.score-x.score;})[0]||null;
+    maha.push(m);
+  }
+  function byScore(a,b){return b.score-a.score;}
+  var ahead=function(r){return r.when!=='past';};
+  var out={
+    maha:maha,antar:antar,
+    mahaRank:maha.slice().sort(byScore),
+    antarRank:antar.slice().sort(byScore),
+    mahaAhead:maha.filter(ahead).sort(byScore),
+    antarAhead:antar.filter(ahead).sort(byScore),
+    currentMaha:maha.filter(function(m){return m.when==='current';})[0]||null,
+    currentAntar:antar.filter(function(a){return a.when==='current';})[0]||null
+  };
+  chart.__dash=out;return out;
+}
+function SB_dashReset(chart){if(chart)delete chart.__dash;}
+
+/* --- rendering ------------------------------------------------ */
+function SB_dashLordCell(L){
+  var s='<span class="tbWhy">rank '+L.rank;
+  if(L.houses!==null){
+    s+=' &middot; ';
+    for(var i=0;i<L.parts.length;i++)
+      s+=(i?' + ':'')+'h'+L.parts[i].house+' '+L.parts[i].score;
+    if(L.via)s+=' <i title="Rahu and Ketu rule no sign, so this reads the houses of the '
+      +'dispositor, '+L.via+'">via '+L.via+'</i>';
+  }
+  return s+'</span>';
+}
+function SB_dashRowHTML(r,showMaha){
+  var sym=(typeof PLANET_KW!=='undefined'&&PLANET_KW[r.planet])?PLANET_KW[r.planet].sym:'';
+  return '<div class="tbRow tb-'+r.when+'">'
+    +'<div class="tbGl" style="color:'+(PCOL[r.planet]||'#aaa')+'">'+sym+'</div>'
+    +'<div class="tbNm">'+(showMaha?r.maha+' / ':'')+r.planet
+      +'<em>'+SB_dashDate(r.startDate)+' &ndash; '+SB_dashDate(r.endDate)
+      +(r.when==='current'?' &middot; running now':r.when==='past'?' &middot; past':'')+'</em></div>'
+    +'<div class="tbBar"><i style="width:'+Math.max(2,r.score)+'%"></i></div>'
+    +'<div class="tbSc '+r.band.k+'">'+r.score+'</div>'
+    +'<div class="tbBd '+r.band.k+'">'+r.band.n
+      +(showMaha?SB_dashLordCell(r.sub):SB_dashLordCell(r.lord))+'</div>'
+    +'</div>';
+}
+
+function SB_timeBombsHTML(chart){
+  var head='<div class="section sbLockWrap" id="secTimeBombs">'
+    +'<p class="section-label">Time Bombs</p>'
+    +'<p class="section-title">Which Periods Carry the Chart</p>';
+  if(typeof SB_hasPremium==='function'&&!SB_hasPremium())
+    return head+SB_lockedBodyHTML('time-bombs',
+      'Every Vimshottari period scored from two things this chart already knows: '
+      +'how loud its lord is, and how good the ground that lord answers for. '
+      +'Ranked, dated, and marked with the one running now.')+'</div>';
+
+  var d=SB_dashAll(chart),out=head+'<div class="section-body">',i;
+  out+='<p class="hevaLead">A period is scored half on its lord\'s <b>prominence</b> and half '
+    +'on the <b>houses it rules</b>, both read in D-1. A sub-period takes half its own figure '
+    +'and half its mahadasha lord\'s - twenty-five each way. Where a lord rules two houses they '
+    +'share their half between them.</p>';
+
+  if(d.currentMaha){
+    out+='<p class="hevaSub">Running now</p><div class="tbTot">';
+    out+=SB_dashRowHTML(d.currentMaha,false);
+    if(d.currentAntar)out+=SB_dashRowHTML(d.currentAntar,true);
+    out+='</div>';
+  }
+  if(d.mahaAhead.length){
+    out+='<p class="hevaSub">Strongest still ahead</p><div class="tbTot">';
+    out+=SB_dashRowHTML(d.mahaAhead[0],false);
+    if(d.antarAhead.length)out+=SB_dashRowHTML(d.antarAhead[0],true);
+    out+='</div>';
+    out+='<p class="hevaFoot">A ranking that mixes what has already happened with what has not '
+      +'is half useless, so the strongest period still in front of you is named separately. '
+      +'The full ranking below keeps everything, with the past greyed.</p>';
+  } else {
+    out+='<p class="hevaFoot">Every period in the first hundred years has already run.</p>';
+  }
+
+  out+='<p class="hevaSub">All nine mahadashas, ranked</p><div class="tbTot">';
+  for(i=0;i<d.mahaRank.length;i++)out+=SB_dashRowHTML(d.mahaRank[i],false);
+  out+='</div>';
+
+  out+='<p class="hevaSub">The best sub-period inside each</p><div class="tbTot">';
+  for(i=0;i<d.maha.length;i++)if(d.maha[i].bestSub)
+    out+=SB_dashRowHTML(d.maha[i].bestSub,true);
+  out+='</div>';
+  out+='<p class="hevaFoot">Because half a sub-period\'s figure comes from its mahadasha lord, '
+    +'the highest scores overall cluster inside the best mahadasha. A good sub-period inside a '
+    +'hard one is the more interesting find, so each mahadasha names its own best here.</p>';
+
+  out+='<p class="hevaFoot hevaMethod"><b>What this does not weigh.</b> Maraka lordship, '
+    +'Kendradhipati dosha, the lord\'s position from the Moon, whether a lord aspects the house '
+    +'it rules, and transits entirely. Two ingredients are weighed here - how loud the lord is '
+    +'and how good the ground it answers for - and a period can still turn on something this '
+    +'does not see.</p>';
+  return out+'</div></div>';
+}
+
+/* --- the button that lives under the dasha table -------------- */
+function SB_timeBombsOpen(){
+  var w=document.getElementById('sbTBWrap');if(!w)return;
+  var open=w.style.display!=='none'&&w.style.display!=='';
+  w.style.display=open?'none':'block';
+  var b=document.getElementById('sbTBBtn');
+  if(b)b.classList.toggle('open',!open);
+  if(!open&&w.scrollIntoView)w.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function SB_timeBombsButtonHTML(){
+  var lock=(typeof SB_hasPremium==='function'&&!SB_hasPremium());
+  return '<button class="sbTBBtn'+(lock?' locked':'')+'" id="sbTBBtn" type="button" '
+    +'onclick="SB_timeBombsOpen()">'+(lock?SB_lockGlyph():'')
+    +'<span>Explore Time Bombs</span><span class="sbTBCar">&#9662;</span></button>'
+    +'<div id="sbTBWrap" style="display:none"></div>';
+}
+
 /* ---------- bottom dock ---------- */
 function SB_dockSVGs(){
   var spokes='';for(var i=0;i<12;i++){var a=i*30*Math.PI/180,x1=60+32*Math.cos(a),y1=60+32*Math.sin(a),x2=60+46*Math.cos(a),y2=60+46*Math.sin(a);
@@ -4987,9 +6244,11 @@ function SB_buildPages(chart,out,b3,rb){
     :[['transit','Western Transit'],['D-1','D-1 - Natal Chart'],['D-9','D-9 - Navamsha'],['D-2','D-2 - Hora'],['D-3','D-3 - Drekkana'],['D-7','D-7 - Saptamsha'],['D-10','D-10 - Dashamsha'],['D-12','D-12 - Dwadashamsha'],['D-16','D-16 - Shodashamsha'],['D-30','D-30 - Trimshamsha']];
   var chItems='';for(var i=0;i<chartDefs.length;i++){chItems+='<button class="sbDDItem'+(i===0?' cur':'')+'" type="button" onclick="SB_pickChart(\''+chartDefs[i][0]+'\',this)">'+chartDefs[i][1]+'</button>';}
   var PORD=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
-  var plItems='';for(var pi=0;pi<PORD.length;pi++){var pn=PORD[pi],sym=(typeof PLANET_KW!=='undefined'&&PLANET_KW[pn])?PLANET_KW[pn].sym:'';
+  var plItems='<button class="sbDDItem" type="button" onclick="SB_pickPlanetAll(this)">Complete Planetary Evaluation</button>';
+  for(var pi=0;pi<PORD.length;pi++){var pn=PORD[pi],sym=(typeof PLANET_KW!=='undefined'&&PLANET_KW[pn])?PLANET_KW[pn].sym:'';
     plItems+='<button class="sbDDItem" type="button" onclick="SB_pickPlanet(\''+pn+'\',this)"><span style="color:'+(PCOL[pn]||'#aaa')+'">'+sym+'</span> '+pn+'</button>';}
-  var hItems='';for(var hi=1;hi<=12;hi++){hItems+='<button class="sbDDItem" type="button" onclick="SB_pickHouse('+hi+',this)">'+SB_ORD[hi-1]+' House</button>';}
+  var hItems='<button class="sbDDItem" type="button" onclick="SB_pickHouseAll(this)">Complete House Evaluation</button>';
+  for(var hi=1;hi<=12;hi++){hItems+='<button class="sbDDItem" type="button" onclick="SB_pickHouse('+hi+',this)">'+SB_ORD[hi-1]+' House</button>';}
   var bar=document.createElement('div');bar.className='sbBar';bar.id='sbBar';
   bar.innerHTML=SB_ddBlock('sbDDCharts','Charts',chItems)+SB_ddBlock('sbDDPlanets','Planets',plItems)+SB_ddBlock('sbDDHouses','Houses',hItems);
   var hdr=out.querySelector('.reading-header');
@@ -5020,7 +6279,13 @@ function SB_buildPages(chart,out,b3,rb){
       if(r&&r.getAttribute('data-ad'))toggleAntar(r.getAttribute('data-ad'));
     });
   }
+  var tbHost=document.createElement('div');
+  tbHost.innerHTML=SB_timeBombsButtonHTML();
+  pgDasha.appendChild(tbHost);
+  var tbW=tbHost.querySelector('#sbTBWrap');
+  if(tbW)tbW.innerHTML=SB_timeBombsHTML(chart);
   var sDC=grab('secDashaCh');if(sDC)pgDasha.appendChild(sDC);
+  var pgPA=mk('pgPlanetAll');out.appendChild(pgPA);pgPA.innerHTML=SB_planetEvalAllHTML(chart);
   /* planet pages: Moon & Sun reuse their rich sections, plus a breakdown addendum */
   var pgMoon=mk('pgPlanet-Moon');out.appendChild(pgMoon);
   var sM=grab('secMoon');if(sM)pgMoon.appendChild(sM);
@@ -5031,6 +6296,8 @@ function SB_buildPages(chart,out,b3,rb){
   var REST=['Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
   for(var ri=0;ri<REST.length;ri++){var rp=REST[ri],pg=mk('pgPlanet-'+rp);out.appendChild(pg);
     pg.innerHTML=SB_planetSectionHTML(chart,rp)+SB_planetEvalHTML(chart,rp)+SB_planetExtraHTML(chart,rp);}
+  /* the collection first, so DOM order matches the dropdown */
+  var pgHA=mk('pgHouseAll');out.appendChild(pgHA);pgHA.innerHTML=SB_houseEvalAllHTML(chart);
   /* house pages (built while the profile cards are still in the document) */
   for(var h=1;h<=12;h++){var pgh=mk('pgHouse-'+h);out.appendChild(pgh);pgh.innerHTML=SB_houseSectionHTML(chart,h)+SB_houseEvalHTML(chart,h);}
   /* stub pages */
@@ -5057,7 +6324,7 @@ function SB_buildPages(chart,out,b3,rb){
    page router are left completely untouched.
    ============================================================ */
 var SB_CHART_PAGES=['pgMain','pgVarga'];
-var SB_PH_PAGES=(function(){var a=[],P=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];for(var i=0;i<P.length;i++)a.push('pgPlanet-'+P[i]);for(var h=1;h<=12;h++)a.push('pgHouse-'+h);return a;})();
+var SB_PH_PAGES=(function(){var a=['pgPlanetAll'],P=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];for(var i=0;i<P.length;i++)a.push('pgPlanet-'+P[i]);a.push('pgHouseAll');for(var h=1;h<=12;h++)a.push('pgHouse-'+h);return a;})();
 var SB_FULL_PAGES=['pgReports','pgBook'];
 var SB_deskMQ=null;
 function SB_isDesk(){try{return window.matchMedia('(min-width:900px)').matches;}catch(e){return false;}}
@@ -5488,6 +6755,12 @@ function SB_premiumGate(what){
   var lines={
     'divisional-sky':['The divisional skies are part of premium',
       'Walk through the D-9, D-10 and the other divisional charts in three dimensions. The D-1 sky, and every reading, stay free.'],
+    'planet-eval':['The complete planetary evaluation is part of premium',
+      'Prominence across six charts - how loud each body is in the life, not merely how well dignified. The single-planet evaluation stays free on every planet page.'],
+    'time-bombs':['Time Bombs is part of premium',
+      'Every Vimshottari period scored and ranked, dated, with the one running now marked and the strongest still ahead named separately.'],
+    'house-eval':['The complete evaluation is part of premium',
+      'Every house weighed again in the Saptamsha, the Navamsa, the Dashamsha, the Dwadashamsha and the Shodashamsha, then ranked from the strongest ground to the hardest. The single-house evaluation stays free on every house page.'],
     'avatars':['Ten saved charts come with premium',
       'Keep up to ten charts and carry them across your devices. Reading any chart is always free.'],
     'default':['This is part of premium','Unlock the full instrument.']
@@ -5505,7 +6778,7 @@ function SB_premiumGate(what){
     +'<div class="sbGatePrice"><span class="sbGateAmt">$7.99</span><span class="sbGatePer">/ month</span>'
     +'<span class="sbGateOr">or</span><span class="sbGateAmt">$80</span><span class="sbGatePer">/ year</span></div>'
     +'<button class="sbTxtBuy sbGateBuy" onclick="SB_openCheckout()">Go premium</button>'
-    +'<p class="sbGateNote">One subscription opens the library, the divisional skies and ten saved charts.</p>'
+    +'<p class="sbGateNote">One subscription opens the library, the divisional skies, ten saved charts and the complete house evaluation.</p>'
     +'</div>';
   ov.classList.add('on');document.body.classList.add('sbTxtOpen');
   if(LANG==='ka'&&window.translatePage)translatePage();
