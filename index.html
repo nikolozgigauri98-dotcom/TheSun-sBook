@@ -6164,6 +6164,50 @@ function SB_timeBombsButtonHTML(){
     +'<div id="sbTBWrap" style="display:none"></div>';
 }
 
+/* ============================================================
+   LATE PLAN CHANGES
+   The divisional skies test SB_hasPremium() when they are clicked and
+   the avatars are redrawn by SB_cloudPull, so both pick up a plan that
+   arrives late. The three collection panels do not: they are written
+   into the DOM once, by SB_buildPages, and Firebase is lazy-loaded, so
+   on a reload the pages are usually built while SB_PLAN is still
+   'free'. The locked markup then stays locked for the whole session.
+
+   So the panels are rewritten whenever the plan actually moves. The
+   score caches are untouched - none of them depend on the plan, only
+   the gate around them does.
+   ============================================================ */
+var SB_PAGE_CHART=null,SB_PLAN_SEEN=null;
+function SB_premiumRefresh(force){
+  var now=(typeof SB_hasPremium==='function'&&SB_hasPremium())?'premium':'free';
+  if(!force&&now===SB_PLAN_SEEN)return;
+  SB_PLAN_SEEN=now;
+  var c=SB_PAGE_CHART;if(!c)return;
+  try{
+    var ph=document.getElementById('pgHouseAll');
+    if(ph&&typeof SB_houseEvalAllHTML==='function')ph.innerHTML=SB_houseEvalAllHTML(c);
+    var pp=document.getElementById('pgPlanetAll');
+    if(pp&&typeof SB_planetEvalAllHTML==='function')pp.innerHTML=SB_planetEvalAllHTML(c);
+    var tw=document.getElementById('sbTBWrap');
+    if(tw&&typeof SB_timeBombsHTML==='function'){
+      var wasOpen=tw.style.display==='block';
+      tw.innerHTML=SB_timeBombsHTML(c);
+      tw.style.display=wasOpen?'block':'none';
+    }
+    var tb=document.getElementById('sbTBBtn');
+    if(tb&&typeof SB_timeBombsButtonHTML==='function'){
+      var lock=(now!=='premium');
+      tb.classList.toggle('locked',lock);
+      var lab=tb.querySelector('span');
+      if(lab){
+        var ic=tb.querySelector('.sbLockIcon');
+        if(lock&&!ic)tb.insertAdjacentHTML('afterbegin',SB_lockGlyph());
+        if(!lock&&ic&&ic.parentNode)ic.parentNode.removeChild(ic);
+      }
+    }
+  }catch(e){}
+}
+
 /* ---------- bottom dock ---------- */
 function SB_dockSVGs(){
   var spokes='';for(var i=0;i<12;i++){var a=i*30*Math.PI/180,x1=60+32*Math.cos(a),y1=60+32*Math.sin(a),x2=60+46*Math.cos(a),y2=60+46*Math.sin(a);
@@ -6234,6 +6278,7 @@ function SB_buildDock(){
 
 /* ---------- page assembly (called at the end of renderReading) ---------- */
 function SB_buildPages(chart,out,b3,rb){
+  SB_PAGE_CHART=chart;   /* so a late plan change can re-render the premium panels */
   var asc=chart.asc;
   function grab(id){return document.getElementById(id);}
   function mk(id){var d=document.createElement('div');d.id=id;d.className='sbPage';return d;}
@@ -6550,8 +6595,10 @@ function SB_fbInit(){
         try{window.SB_RESTORED=false;}catch(e){}
       }
       if(u&&!was){try{if(typeof SB_cloudPull==='function')SB_cloudPull(true);}catch(e){}}
-      if(!u&&was){try{SB_SLOTS=null;SB_PLAN='free';SB_EDIT_SLOT=null;
-        if(typeof SB_avatarRender==='function')SB_avatarRender();}catch(e){}}
+      if(!u&&was){try{SB_SLOTS=null;SB_PLAN='free';SB_EDIT_SLOT=null;SB_PLAN_UNTIL=0;
+        SB_BOOKS={part2:false,part3:false};
+        if(typeof SB_avatarRender==='function')SB_avatarRender();
+        if(typeof SB_premiumRefresh==='function')SB_premiumRefresh();}catch(e){}}
       SB_authRender();
       try{if(typeof SB_refreshNotice==='function')SB_refreshNotice();}catch(e){}
     });
@@ -6844,7 +6891,7 @@ function SB_cloudPull(restoreFirst){
         var i=parseInt(m[1],10)-1;
         if(i>=0&&i<SB_SLOT_MAX)a[i]=doc.data();
       });
-      SB_SLOTS=a;SB_slotsSaveLocal();SB_avatarRender();
+      SB_SLOTS=a;SB_slotsSaveLocal();SB_avatarRender();SB_premiumRefresh();
       if(restoreFirst&&a[0]&&a[0].date){
         var out=document.getElementById('reading');
         var onChart=out&&out.style.display!=='none'&&out.innerHTML;
