@@ -181,6 +181,42 @@ body.sb-read .app{padding-bottom:150px}
 .sbRestored button:hover{border-color:var(--gold);background:var(--glow)}
 .sbRestored.sbAskSave{border-color:rgba(201,168,76,.4);background:linear-gradient(180deg,rgba(201,168,76,.07),transparent)}
 .sbRestored.sbAskSave span{color:var(--cream)}
+/* --- avatars --- */
+#sbAvCorner{width:36px;height:36px;padding:0!important;display:flex;align-items:center;justify-content:center;border-radius:50%!important}
+#sbAvCorner svg{width:18px;height:18px}
+#sbAvatars{position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,4,12,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#sbAvatars.sbOn{display:flex;animation:sbFade .28s ease}
+.sbAvCard{max-width:660px!important;max-height:86vh;overflow-y:auto}
+.sbAvIntro{color:var(--silver);font-style:italic;font-size:12.5px;line-height:1.7;margin-bottom:18px}
+.sbAvGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:10px}
+.sbAv{border:1px solid var(--border);border-radius:8px;padding:11px 13px;background:var(--deep);display:flex;flex-direction:column;gap:6px}
+.sbAvTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sbAvN{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.09em;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbAvSub{font-size:11.5px;color:var(--silver);line-height:1.55}
+.sbAvBtns{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.sbAvBtns button{background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;padding:4px 9px;border-radius:12px;cursor:pointer;transition:all .2s}
+.sbAvBtns button:hover{border-color:var(--gold);background:var(--glow)}
+.sbAvBtns .sbAvDel{border-color:rgba(163,59,59,.5);color:#d16a6a}
+.sbAvBtns .sbAvDel:hover{border-color:#a33b3b;background:rgba(163,59,59,.12)}
+.sbAvFull{border-color:rgba(201,168,76,.36)}
+.sbAvEmpty{opacity:.9;border-style:dashed}
+.sbAvLock{opacity:.45}
+.sbAvBadge{font-size:13px}
+.sbAvNote{font-size:11px;color:var(--gold-dim);font-style:italic;margin-top:16px;text-align:center;line-height:1.6}
+/* --- premium gate --- */
+#sbGateOv{position:fixed;inset:0;z-index:10060;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(4,4,12,.84);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#sbGateOv.on{display:flex;animation:sbFade .28s ease}
+.sbGateWin{position:relative;width:100%;max-width:440px;background:linear-gradient(180deg,rgba(20,20,40,.99),rgba(10,10,22,.99));border:1px solid rgba(201,168,76,.45);border-radius:14px;box-shadow:0 30px 70px -18px rgba(0,0,0,.95);padding:30px 30px 26px;text-align:center}
+.sbGateK{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:12px}
+.sbGateT{font-family:'Cinzel',serif;font-size:20px;color:var(--gold);font-weight:600;margin:0 0 12px;line-height:1.35}
+.sbGateB{font-family:'EB Garamond',serif;font-size:15px;line-height:1.75;color:var(--cream);margin-bottom:22px}
+.sbGatePrice{display:flex;align-items:baseline;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.sbGateAmt{font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:var(--gold)}
+.sbGatePer{font-size:12px;color:var(--silver)}
+.sbGateOr{font-size:11px;color:var(--gold-dim);font-style:italic;margin:0 4px}
+.sbGateBuy{width:100%;padding:12px}
+.sbGateNote{font-size:11px;color:var(--gold-dim);font-style:italic;margin-top:16px;line-height:1.6}
+body.sb-light .sbGateWin{background:linear-gradient(180deg,rgba(255,252,244,.99),rgba(248,244,232,.99))}
 #sbCorner{position:fixed;top:10px;left:10px;z-index:60;display:flex;gap:8px;align-items:center}
 #sbCorner button{background:rgba(10,10,22,.72);border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.12em;padding:6px 14px;cursor:pointer;border-radius:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:all .25s}
 #sbCorner button:hover{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.3)}
@@ -571,7 +607,7 @@ body.sb-light .zdNote{border-color:rgba(60,44,16,.3)}
   <p class="subtitle">When Algebra Meets the Planets</p>
   <p class="author-line">by Nikoloz Gigauri</p>
 </header>
-<div id="sbCorner"><button id="langBtn" onclick="toggleLang()">ქართული</button><button id="sbMuteBtn" onclick="SB_toggleMute()" title="Sound" aria-label="Sound">🔊</button><button id="sbGearBtn" onclick="SB_openSettings()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/><circle cx="12" cy="12" r="7" stroke-dasharray="2.4 3.4"/></svg></button><button id="sbAcctCorner" onclick="SB_openAccount()" title="Account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.3 7-6.3s7 2.6 7 6.3"/></svg></button><button id="sbTermsBtn" onclick="SB_openTerms()">Terms</button></div>
+<div id="sbCorner"><button id="langBtn" onclick="toggleLang()">ქართული</button><button id="sbAvCorner" onclick="SB_openAvatars()" title="Avatars" aria-label="Avatars"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="3"/><path d="M3 19c0-3 2.5-4.6 5.5-4.6S14 16 14 19"/><circle cx="17" cy="7" r="2.1"/><path d="M14.6 13.4c2.6-.6 4.9.9 4.9 3.4"/></svg></button><button id="sbMuteBtn" onclick="SB_toggleMute()" title="Sound" aria-label="Sound">🔊</button><button id="sbGearBtn" onclick="SB_openSettings()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/><circle cx="12" cy="12" r="7" stroke-dasharray="2.4 3.4"/></svg></button><button id="sbAcctCorner" onclick="SB_openAccount()" title="Account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.3 7-6.3s7 2.6 7 6.3"/></svg></button><button id="sbTermsBtn" onclick="SB_openTerms()">Terms</button></div>
 <div class="form-card" id="formCard">
   <p class="form-title">Cast Your Chart</p>
   <div class="form-grid">
@@ -3324,7 +3360,10 @@ function SB_refreshNotice(){
       var f=document.getElementById('formCard');
       if(!f)return;
       if(!SB_isSignedIn()){f.style.display='block';return;}   /* start clean */
-      if(!SB_restoreBirth())f.style.display='block';
+      if(SB_restoreBirth())return;                            /* local chart came back instantly */
+      /* signed in but nothing local yet - fetch the library and open avatar 1 */
+      f.style.display='block';
+      try{if(typeof SB_cloudPull==='function')SB_cloudPull(true);}catch(e){}
     }catch(e){var f2=document.getElementById('formCard');if(f2)f2.style.display='block';}
   };
   try{
@@ -3355,8 +3394,24 @@ async function castChart(){
   try{chart=calculateChart(date,time,place,_tzOv,_geo,noTime?'Sun':null);}
   catch(e){document.getElementById('formCard').style.display='block';errEl.textContent='Calc error: '+e.message;errEl.style.display='block';return;}
   window.SB3D_STATE={chart:chart,birth:{date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime}};
-  SB_saveBirth({date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime,
-                gender:((document.getElementById('iGender')||{}).value||'u'),saved:Date.now()});
+  var _rec={date:date,time:time,place:place,name:name,tzOv:_tzOv,geo:_geo,noTime:noTime,
+            gender:((document.getElementById('iGender')||{}).value||'u'),saved:Date.now()};
+  SB_saveBirth(_rec);
+  try{
+    if(SB_isSignedIn()&&typeof SB_slotWrite==='function'){
+      if(!SB_SLOTS)SB_SLOTS=SB_slotsLoadLocal();
+      if(SB_EDIT_SLOT!==null&&SB_EDIT_SLOT!==undefined){
+        var _old=SB_SLOTS[SB_EDIT_SLOT],_i=SB_EDIT_SLOT;SB_EDIT_SLOT=null;
+        var _r=JSON.parse(JSON.stringify(_rec));
+        _r.label=(_old&&_old.label)||name||('Avatar '+(_i+1));
+        SB_slotWrite(_i,_r);
+      }else if(!SB_SLOTS[0]){
+        /* the first chart an account casts becomes its own avatar */
+        var _r0=JSON.parse(JSON.stringify(_rec));_r0.label=name||'Avatar 1';
+        SB_slotWrite(0,_r0);
+      }
+    }
+  }catch(e){}
   renderReading(name,date,time,place,chart,'');
   document.getElementById('reading').style.display='block';
   document.body.classList.remove('sb-cast');document.body.classList.add('sb-read');
@@ -5030,6 +5085,7 @@ function SB_buildDeskBar(){
   var gear='<svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/><circle cx="12" cy="12" r="7" stroke-dasharray="2.4 3.4"/></svg>';
   var acct='<svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.3 7-6.3s7 2.6 7 6.3"/></svg>';
   var terms='<svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6M9.5 8h1.5"/></svg>';
+  var avatar='<svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="3"/><path d="M3 19c0-3 2.5-4.6 5.5-4.6S14 16 14 19"/><circle cx="17" cy="7" r="2.1"/><path d="M14.6 13.4c2.6-.6 4.9.9 4.9 3.4"/></svg>';
   function b(id,lbl,svg){return '<button class="sbDbBtn" id="'+id+'" type="button">'+svg+'<span class="sbDbLbl">'+lbl+'</span></button>';}
   var coll='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>';
   var bar=document.createElement('div');bar.id='sbDeskBar';
@@ -5041,6 +5097,7 @@ function SB_buildDeskBar(){
     +b('sbDbWhen','When?',sv.when)
     +b('sbDbBook',"Sun's Book",sv.book)
     +'<div class="sbDbSpace"></div>'
+    +b('sbDbAv','Avatars',avatar)
     +b('sbDbAcct','Account',acct)
     +b('sbDbTerms','Terms',terms);
   document.body.appendChild(bar);
@@ -5054,6 +5111,7 @@ function SB_buildDeskBar(){
   SB_$('sbDbSky').onclick=function(){if(window.SB3D_open)SB3D_open();};
   SB_$('sbDbWhen').onclick=function(){SB_deskToggleWhen();};
   SB_$('sbDbBook').onclick=function(){SB_deskEnterFull('pgBook','sbDbBook');};
+  SB_$('sbDbAv').onclick=function(){SB_openAvatars();};
   SB_$('sbDbAcct').onclick=function(){SB_openAccount();};
   SB_$('sbDbTerms').onclick=function(){SB_openTerms();};
 }
@@ -5196,6 +5254,7 @@ function SB_fbInit(){
     var base='https://www.gstatic.com/firebasejs/'+SB_FB_VER[i++]+'/';
     return SB_fbScript(base+'firebase-app-compat.js')
       .then(function(){return SB_fbScript(base+'firebase-auth-compat.js');})
+      .then(function(){return SB_fbScript(base+'firebase-firestore-compat.js');})
       .catch(function(){return attempt();});
   }
   SB_fbReady=attempt().then(function(){
@@ -5223,6 +5282,9 @@ function SB_fbInit(){
         try{if(typeof SB_forgetBirth==='function')SB_forgetBirth();}catch(e){}
         try{window.SB_RESTORED=false;}catch(e){}
       }
+      if(u&&!was){try{if(typeof SB_cloudPull==='function')SB_cloudPull(true);}catch(e){}}
+      if(!u&&was){try{SB_SLOTS=null;SB_PLAN='free';SB_EDIT_SLOT=null;
+        if(typeof SB_avatarRender==='function')SB_avatarRender();}catch(e){}}
       SB_authRender();
       try{if(typeof SB_refreshNotice==='function')SB_refreshNotice();}catch(e){}
     });
@@ -5385,6 +5447,291 @@ function SB_toggleMute(){
   SB_muteIcon();
 }
 try{SB_muteIcon();}catch(e){}
+
+/* ============================================================
+   Avatars — the chart library
+   ------------------------------------------------------------
+   Ten slots. Casting and reading charts is never limited: the
+   free plan simply keeps one of them. What premium buys is
+   memory, not calculation.
+
+   Each slot lives at users/{uid}/charts/slotN in Firestore and
+   is mirrored to this browser so the library opens instantly
+   and survives a lost connection. The mirror is keyed by uid,
+   so two people sharing a computer never see each other's.
+   ============================================================ */
+var SB_SLOT_MAX=10, SB_FREE_SLOTS=1;
+var SB_SLOTS=null;        /* array(10) of record|null */
+var SB_PLAN='free';
+var SB_PLAN_UNTIL=0;      /* ms; the subscription lapses when the clock passes it */
+var SB_BOOKS={part2:false,part3:false};
+var SB_EDIT_SLOT=null;    /* slot the next cast should be written back to */
+
+/* ---------- what a person is entitled to ----------
+   One place the whole app asks. A subscription that has run past its date
+   counts as free until the server says otherwise. Books, once bought, are
+   permanent and independent of the subscription. */
+function SB_hasPremium(){
+  if(SB_PLAN!=='premium')return false;
+  if(SB_PLAN_UNTIL&&Date.now()>SB_PLAN_UNTIL)return false;
+  return true;
+}
+function SB_hasBook(part){
+  if(SB_hasPremium())return true;             /* the library is open while subscribed */
+  return part==2?!!SB_BOOKS.part2:part==3?!!SB_BOOKS.part3:false;
+}
+
+/* ---------- the gate ----------
+   Shown when a free visitor reaches for something premium. It never blocks
+   in place with a dead end; it explains and offers the way through. */
+function SB_premiumGate(what){
+  var lines={
+    'divisional-sky':['The divisional skies are part of premium',
+      'Walk through the D-9, D-10 and the other divisional charts in three dimensions. The D-1 sky, and every reading, stay free.'],
+    'avatars':['Ten saved charts come with premium',
+      'Keep up to ten charts and carry them across your devices. Reading any chart is always free.'],
+    'default':['This is part of premium','Unlock the full instrument.']
+  };
+  var t=lines[what]||lines['default'];
+  var ov=document.getElementById('sbGateOv');
+  if(!ov){ov=document.createElement('div');ov.id='sbGateOv';
+    ov.onclick=function(e){if(e.target===ov)SB_closeGate();};
+    document.body.appendChild(ov);}
+  ov.innerHTML='<div class="sbGateWin" role="dialog" aria-modal="true">'
+    +'<button class="sbTxtX" onclick="SB_closeGate()" aria-label="Close">&times;</button>'
+    +'<p class="sbGateK">Premium</p>'
+    +'<h3 class="sbGateT">'+t[0]+'</h3>'
+    +'<p class="sbGateB">'+t[1]+'</p>'
+    +'<div class="sbGatePrice"><span class="sbGateAmt">$7.99</span><span class="sbGatePer">/ month</span>'
+    +'<span class="sbGateOr">or</span><span class="sbGateAmt">$80</span><span class="sbGatePer">/ year</span></div>'
+    +'<button class="sbTxtBuy sbGateBuy" onclick="SB_openCheckout()">Go premium</button>'
+    +'<p class="sbGateNote">One subscription opens the library, the divisional skies and ten saved charts.</p>'
+    +'</div>';
+  ov.classList.add('on');document.body.classList.add('sbTxtOpen');
+  if(LANG==='ka'&&window.translatePage)translatePage();
+}
+function SB_closeGate(){var ov=document.getElementById('sbGateOv');if(ov)ov.classList.remove('on');document.body.classList.remove('sbTxtOpen');}
+/* payment arrives later (PayPro); for now the gate simply explains */
+function SB_openCheckout(){SB_closeGate();}
+
+
+
+function SB_slotKey(){
+  var uid=(window.SB_user&&SB_user.uid)||'anon';
+  return 'sb_slots_'+uid;
+}
+function SB_slotsLoadLocal(){
+  var a=new Array(SB_SLOT_MAX);
+  try{
+    var s=localStorage.getItem(SB_slotKey());
+    if(s){var o=JSON.parse(s);for(var i=0;i<SB_SLOT_MAX;i++)a[i]=o[i]||null;}
+  }catch(e){}
+  return a;
+}
+function SB_slotsSaveLocal(){
+  try{localStorage.setItem(SB_slotKey(),JSON.stringify(SB_SLOTS||[]));}catch(e){}
+}
+function SB_slotUnlocked(i){return SB_hasPremium()?i<SB_SLOT_MAX:i<SB_FREE_SLOTS;}
+function SB_slotLabel(i){
+  var r=SB_SLOTS&&SB_SLOTS[i];
+  return (r&&r.label)||('Avatar '+(i+1));
+}
+
+/* ---------- Firestore ---------- */
+function SB_db(){
+  return SB_fbInit().then(function(){
+    if(!window.firebase||!firebase.firestore)throw new Error('sdk-unavailable');
+    return firebase.firestore();
+  });
+}
+/* Reads the plan and the whole library, then repaints. When restoreFirst is
+   set (a fresh sign-in), avatar 1 is placed on the main screen if the reader
+   is not already looking at a chart - this is what makes a returning device
+   open straight onto the saved chart. */
+function SB_cloudPull(restoreFirst){
+  if(!window.SB_user)return Promise.resolve();
+  var uid=SB_user.uid;
+  return SB_db().then(function(db){
+    var ref=db.collection('users').doc(uid);
+    return ref.get().then(function(snap){
+      if(!snap.exists){
+        return ref.set({plan:'free',createdAt:Date.now(),updatedAt:Date.now()})
+                  .then(function(){SB_PLAN='free';}).catch(function(){SB_PLAN='free';});
+      }
+      var d=snap.data()||{};
+      SB_PLAN=(d.plan==='premium')?'premium':'free';
+      SB_PLAN_UNTIL=(typeof d.planUntil==='number')?d.planUntil:0;
+      SB_BOOKS={part2:!!(d.books&&d.books.part2),part3:!!(d.books&&d.books.part3)};
+    }).then(function(){
+      return ref.collection('charts').get();
+    }).then(function(qs){
+      var a=new Array(SB_SLOT_MAX);
+      qs.forEach(function(doc){
+        var m=/^slot(\d+)$/.exec(doc.id);if(!m)return;
+        var i=parseInt(m[1],10)-1;
+        if(i>=0&&i<SB_SLOT_MAX)a[i]=doc.data();
+      });
+      SB_SLOTS=a;SB_slotsSaveLocal();SB_avatarRender();
+      if(restoreFirst&&a[0]&&a[0].date){
+        var out=document.getElementById('reading');
+        var onChart=out&&out.style.display!=='none'&&out.innerHTML;
+        if(!onChart&&typeof SB_restoreBirth==='function'){
+          SB_RESTORED=true;
+          try{SB_restoreBirth(a[0]);}catch(e){}
+        }
+      }
+    });
+  }).catch(function(){/* offline: the local mirror stands */});
+}
+function SB_cloudPutSlot(i,rec){
+  if(!window.SB_user)return Promise.resolve();
+  return SB_db().then(function(db){
+    return db.collection('users').doc(SB_user.uid)
+             .collection('charts').doc('slot'+(i+1)).set(rec);
+  }).catch(function(){});
+}
+function SB_cloudDelSlot(i){
+  if(!window.SB_user)return Promise.resolve();
+  return SB_db().then(function(db){
+    return db.collection('users').doc(SB_user.uid)
+             .collection('charts').doc('slot'+(i+1)).delete();
+  }).catch(function(){});
+}
+
+/* ---------- reading and writing a slot ---------- */
+function SB_currentRecord(){
+  var st=window.SB3D_STATE;
+  if(!st||!st.birth||!st.birth.date)return null;
+  var g=document.getElementById('iGender');
+  return {name:st.birth.name||'',date:st.birth.date,time:st.birth.time||'',
+          place:st.birth.place||'',geo:st.birth.geo||null,
+          tzOv:(st.birth.tzOv===undefined?null:st.birth.tzOv),
+          noTime:!!st.birth.noTime,gender:(g&&g.value)||'u',saved:Date.now()};
+}
+function SB_slotWrite(i,rec){
+  if(!SB_SLOTS)SB_SLOTS=SB_slotsLoadLocal();
+  SB_SLOTS[i]=rec;SB_slotsSaveLocal();SB_cloudPutSlot(i,rec);SB_avatarRender();
+}
+function SB_slotSaveCurrent(i){
+  if(!SB_isSignedIn()){SB_openAccount();return;}
+  if(!SB_slotUnlocked(i)){SB_closeAvatars();SB_premiumGate('avatars');return;}
+  var rec=SB_currentRecord();
+  if(!rec){SB_avatarNote('Cast a chart first, then save it here.');return;}
+  if(!SB_SLOTS)SB_SLOTS=SB_slotsLoadLocal();
+  var old=SB_SLOTS[i];
+  rec.label=(old&&old.label)||rec.name||('Avatar '+(i+1));
+  SB_slotWrite(i,rec);
+  SB_avatarNote('Saved to '+rec.label+'.');
+}
+function SB_slotOpen(i){
+  var r=SB_SLOTS&&SB_SLOTS[i];if(!r)return;
+  SB_EDIT_SLOT=null;
+  SB_closeAvatars();
+  SB_restoreBirth(r);
+}
+function SB_slotEdit(i){
+  var r=SB_SLOTS&&SB_SLOTS[i];if(!r)return;
+  SB_EDIT_SLOT=i;
+  SB_closeAvatars();
+  var out=document.getElementById('reading');
+  if(out){out.style.display='none';out.innerHTML='';}
+  var f=document.getElementById('formCard');if(f)f.style.display='block';
+  document.body.classList.remove('sb-read');document.body.classList.add('sb-cast');
+  var set=function(id,v){var e=document.getElementById(id);if(e)e.value=(v===undefined||v===null)?'':v;};
+  set('iName',r.name);set('iDate',r.date);set('iTime',r.noTime?'':r.time);
+  set('iPlace',r.place);set('iGender',r.gender||'u');
+  var nt=document.getElementById('iNoTime');if(nt)nt.checked=!!r.noTime;
+  if(r.geo)window.SB_GEO=r.geo;
+  try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}
+}
+function SB_slotRename(i){
+  var r=SB_SLOTS&&SB_SLOTS[i];if(!r)return;
+  var v=window.prompt('Name this avatar',r.label||('Avatar '+(i+1)));
+  if(v===null)return;
+  v=String(v).trim().slice(0,40);
+  r.label=v||('Avatar '+(i+1));
+  SB_slotWrite(i,r);
+}
+function SB_slotDelete(i){
+  var r=SB_SLOTS&&SB_SLOTS[i];if(!r)return;
+  if(!window.confirm('Remove '+(r.label||('Avatar '+(i+1)))+' from your library?'))return;
+  SB_SLOTS[i]=null;SB_slotsSaveLocal();SB_cloudDelSlot(i);SB_avatarRender();
+  SB_avatarNote('Removed.');
+}
+
+/* ---------- the panel ---------- */
+function SB_avatarNote(msg){
+  var m=document.getElementById('sbAvMsg');if(m)m.textContent=msg||'';
+}
+function SB_avatarHTML(){
+  if(!SB_SLOTS)SB_SLOTS=SB_slotsLoadLocal();
+  var close='<button type="button" onclick="SB_closeAvatars()" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:Cinzel,serif;font-size:11px;letter-spacing:0.15em;padding:7px 16px;cursor:pointer;border-radius:20px">&#10005; Close</button>';
+  var h='<div class="sbSetCard sbAvCard">'
+   +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+   +'<p style="font-family:Cinzel,serif;font-size:15px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase">Avatars</p>'+close+'</div>';
+
+  if(!SB_isSignedIn()){
+    h+='<p class="sbAvIntro">Charts you cast are always free to read. An account is what keeps one of them; premium keeps ten.</p>'
+      +'<button class="sbAuthBtn sbAuthMail" onclick="SB_closeAvatars();SB_openAccount();">Create an account</button></div>';
+    return h;
+  }
+  h+='<p class="sbAvIntro">'+(SB_hasPremium()
+      ? 'Ten slots. Open one to read it, edit it to change anything, including the time you were born.'
+      : 'One slot on the free plan. Reading charts is never limited &mdash; only keeping them.')+'</p>';
+  h+='<div class="sbAvGrid">';
+  for(var i=0;i<SB_SLOT_MAX;i++){
+    var r=SB_SLOTS[i],open=SB_slotUnlocked(i);
+    if(!open){
+      h+='<div class="sbAv sbAvLock"><div class="sbAvTop"><span class="sbAvN">Avatar '+(i+1)+'</span>'
+        +'<span class="sbAvBadge">&#128274;</span></div>'
+        +'<p class="sbAvSub">Premium</p></div>';
+      continue;
+    }
+    if(r){
+      var when=r.date+(r.noTime?'':(r.time?' &middot; '+r.time:''));
+      h+='<div class="sbAv sbAvFull"><div class="sbAvTop"><span class="sbAvN">'+SB_slotLabel(i)+'</span></div>'
+        +'<p class="sbAvSub">'+when+'<br>'+(r.place||'')+'</p>'
+        +'<div class="sbAvBtns">'
+        +'<button onclick="SB_slotOpen('+i+')">Open</button>'
+        +'<button onclick="SB_slotEdit('+i+')">Edit</button>'
+        +'<button onclick="SB_slotRename('+i+')">Rename</button>'
+        +'<button class="sbAvDel" onclick="SB_slotDelete('+i+')">Remove</button>'
+        +'</div></div>';
+    }else{
+      h+='<div class="sbAv sbAvEmpty"><div class="sbAvTop"><span class="sbAvN">Avatar '+(i+1)+'</span></div>'
+        +'<p class="sbAvSub">Empty</p>'
+        +'<div class="sbAvBtns"><button onclick="SB_slotSaveCurrent('+i+')">Save current chart</button></div></div>';
+    }
+  }
+  h+='</div><p id="sbAvMsg" class="info"></p>';
+  if(!SB_hasPremium())
+    h+='<p class="sbAvNote">Premium keeps ten charts and syncs them across your devices.</p>';
+  h+='</div>';
+  return h;
+}
+function SB_avatarRender(){
+  var el=document.getElementById('sbAvatars');
+  if(el&&el.classList.contains('sbOn')){
+    var keep=(document.getElementById('sbAvMsg')||{}).textContent||'';
+    el.innerHTML=SB_avatarHTML();
+    if(keep)SB_avatarNote(keep);
+    if(typeof SB_applyFont==='function')SB_applyFont();
+  }
+}
+function SB_openAvatars(){
+  var el=document.getElementById('sbAvatars');
+  if(!el){el=document.createElement('div');el.id='sbAvatars';
+    el.onclick=function(e){if(e.target===el)SB_closeAvatars();};
+    document.body.appendChild(el);}
+  if(!SB_SLOTS)SB_SLOTS=SB_slotsLoadLocal();
+  el.innerHTML=SB_avatarHTML();
+  if(typeof SB_applyFont==='function')SB_applyFont();
+  el.classList.add('sbOn');
+  if(SB_isSignedIn())SB_cloudPull();
+}
+function SB_closeAvatars(){
+  var el=document.getElementById('sbAvatars');if(el)el.classList.remove('sbOn');
+}
 
 /* ---------- settings ---------- */
 function SB_settingsHTML(){
@@ -7557,6 +7904,12 @@ function SB3D_open(divV){
   try{document.documentElement.style.zoom='';}catch(e0){} /* the sky owns the whole screen */
   divV=(typeof divV==='number')?divV:0; /* report button passes nothing */
   if(!window.SB3D_STATE||!window.SB3D_STATE.chart){alert('Cast a chart first.');return;}
+  /* D-1 (divV 0) and its tour are always free. Only the divisional worlds -
+     the D-9 sky, the D-10 sky and so on - belong to premium. */
+  if(divV&&typeof SB_hasPremium==='function'&&!SB_hasPremium()){
+    if(typeof SB_premiumGate==='function')SB_premiumGate('divisional-sky');
+    return;
+  }
   if(!window.THREE){alert('3D engine failed to load.');return;}
   SB3D_injectStyles();
   var st=window.SB3D_STATE;
