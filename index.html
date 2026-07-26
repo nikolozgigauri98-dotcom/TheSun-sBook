@@ -5156,6 +5156,51 @@ function SB_houseEvalHTML(chart,h){
    asserts it.
    ============================================================ */
 
+/* THE TILT — measured, not derived.
+   The functional-nature tables hand out 78 points of benefic weight against
+   48 of demanding across the twelve lagnas, which is 1.63 to one. That was my
+   first guess at the correction and it was half the story: over 3,600 houses
+   the support-to-strain ratio actually lands at a median of 3.31, because the
+   aspect counts and the two halving rules push it further the same way. So the
+   number below is the one the charts deliver, not the one the tables predict.
+   r = 1 means "as balanced as a house normally gets", and the whole premium
+   cascade is measured from there. The free engine is untouched. */
+var SB_HEVA_TILT = 3.31;
+
+/* Where a house net falls among all house nets ever measured: the score at
+   each 5th percentile, from the same 3,600 readings. Mapping through this
+   rather than linearly is what lets the five bands hold a fifth each -
+   a linear scale put 71% of houses in the two middle bands and 3% in the top. */
+var SB_HEV_PCT=[-74,24,40,52,61,69,77,84,90,96,102,109,115,123,130,140,149,162,175,197,318];
+function SB_hevPctOf(net){
+  for(var i=SB_HEV_PCT.length-1;i>=0;i--)if(net>=SB_HEV_PCT[i])return i*5;
+  return 0;
+}
+var SB_HEV_BANDS=[
+  {lo:80,n:'Open ground', k:'hevB1',t:'among the most supported houses in any chart'},
+  {lo:60,n:'Good footing',k:'hevB2',t:'gives back more than it asks'},
+  {lo:40,n:'Even ground', k:'hevV3',t:'neither helped nor hindered'},
+  {lo:20,n:'Uphill',      k:'hevB3',t:'asks more than it returns'},
+  {lo:0, n:'Hard ground', k:'hevB4',t:'among the most contested houses in any chart'}];
+function SB_hevBandOf(pct){
+  for(var i=0;i<SB_HEV_BANDS.length;i++)if(pct>=SB_HEV_BANDS[i].lo)return SB_HEV_BANDS[i];
+  return SB_HEV_BANDS[SB_HEV_BANDS.length-1];
+}
+/* ONE verdict cascade for the whole premium collection.
+   It lived in two places and they drifted, so it lives here now.
+   r is the ratio of support to strain measured against the tilt the
+   functional-nature tables actually hand out: r = 1 is the expected
+   balance, not parity. */
+function SB_hevaVerdict(pos,neg){
+  var r;
+  if(neg<=0)r=(pos>0)?Infinity:1;
+  else r=pos/(neg*SB_HEVA_TILT);
+  if(r>=2)      return{v:'Strongly Favourable',c:'#7ac87a',k:'hevV1',r:r};
+  if(r>1.15)    return{v:'Favourable',         c:'#8fbf70',k:'hevV2',r:r};
+  if(r<=0.5)    return{v:'Strongly Demanding', c:'#d05a3a',k:'hevV5',r:r};
+  if(r<1/1.15)  return{v:'Demanding',          c:'#e07a5a',k:'hevV4',r:r};
+  return{v:'Mixed - Tested Ground',c:'#c9a84c',k:'hevV3',r:r};
+}
 var SB_HEVA_V   = [1,7,9,10,12,16];
 var SB_HEVA_W   = {1:2, 7:1, 9:2, 10:1, 12:1, 16:1};
 var SB_HEVA_DIV = 8;                     /* 2+1+2+1+1+1 */
@@ -5189,7 +5234,7 @@ function SB_hevaRotate(chart,h,v){
 }
 
 /* --- steps 2 to 4: the arithmetic, in any varga -------------- */
-function SB_hevaEval(chart,h,v){
+function SB_hevaEval(chart,h,v,legacy){
   var rot=SB_hevaRotate(chart,h,v),planets=chart.planets;
   var fn=FN[rot.sign.name]||{};
   var rows=[],nodes=[],silent=[],pos=0,neg=0,nPos=0,nNeg=0,nZero=0;
@@ -5219,8 +5264,14 @@ function SB_hevaEval(chart,h,v){
     else if(fnv<0){dir=-1;w=-fnv;
       if(dp>=50){w=w/2;rule='demanding but well dignified - its harm halved';}
       else rule='functionally demanding';}
-    else{w=1;dir=(dp>=50)?1:-1;
+    else if(legacy){w=1;dir=(dp>=50)?1:-1;
       rule='neutral - dignity decides ('+dp+(dp>=50?' &gt;= 50, so positive)':' &lt; 50, so negative)');}
+    else if(dp>50){w=1;dir=1;
+      rule='neutral in nature - dignity '+dp+' stands above the middle, so it reads positive';}
+    else if(dp<50){w=1;dir=-1;
+      rule='neutral in nature - dignity '+dp+' falls below the middle, so it reads negative';}
+    else{w=0;dir=1;
+      rule='neutral in nature and exactly at the middle in dignity - it reaches the house and weighs nothing';}
     var mag=Math.floor(w*dp*pct/100),score=mag*dir;   /* the book truncates */
     var lb=isNode?{label:'Shadow Node',col:SB_hevPC(pl)}:SB_hevFNLabel(fnv);
     return{planet:pl,fromHouse:fromH,signName:vp.sign.name,off:off,pct:pct,base:base,
@@ -5237,13 +5288,16 @@ function SB_hevaEval(chart,h,v){
   for(var j=0;j<HEV_NODES.length;j++){var rn=build(HEV_NODES[j],true);if(rn)nodes.push(rn);}
   rows.sort(function(a,b){return b.score-a.score;});
 
-  var net=pos-neg,tot=pos+neg,verdict,vcol,vcls;
-  if(pos>=2*neg&&pos>0){verdict='Strongly Favourable';vcol='#7ac87a';vcls='hevV1';}
-  else if(pos>neg*1.15){verdict='Favourable';vcol='#8fbf70';vcls='hevV2';}
-  else if(neg>=2*pos&&neg>0){verdict='Strongly Demanding';vcol='#d05a3a';vcls='hevV5';}
-  else if(neg>pos*1.15){verdict='Demanding';vcol='#e07a5a';vcls='hevV4';}
-  else{verdict='Mixed - Tested Ground';vcol='#c9a84c';vcls='hevV3';}
-
+  /* The free engine keeps the book's cascade. This one does not, and here is
+     why: across all twelve lagnas the functional-nature tables hand out 78
+     points of benefic weight against 48 of demanding - 1.63 to one. A test
+     written as "positive beats negative twice over" is therefore met almost
+     always, and 84% of houses in 3,600 readings came out Strongly Favourable.
+     A label that fires five times in six says nothing. So the whole cascade is
+     re-centred on the income it actually receives. Nothing in the arithmetic
+     moves; only the point at which a house counts as favourable. */
+  var net=pos-neg,tot=pos+neg,V=SB_hevaVerdict(pos,neg);
+  var verdict=V.v,vcol=V.c,vcls=V.k;
   return{house:h,v:v,sign:rot.sign,signIdx:rot.signIdx,vascSign:rot.vascSign,
     ascDeg:rot.degInSign,rows:rows,nodes:nodes,silent:silent,fnTable:fn,
     positive:pos,negative:neg,net:net,total:tot,ratio:tot?pos/tot:0.5,
@@ -5270,12 +5324,7 @@ function SB_hevaAll(chart){
     }
     p=Math.round(p/SB_HEVA_DIV);n=Math.round(n/SB_HEVA_DIV);
     if(p>maxAbs)maxAbs=p;if(n>maxAbs)maxAbs=n;
-    var net=p-n,vd,vc,vcl;
-    if(p>=2*n&&p>0){vd='Strongly Favourable';vc='#7ac87a';vcl='hevV1';}
-    else if(p>n*1.15){vd='Favourable';vc='#8fbf70';vcl='hevV2';}
-    else if(n>=2*p&&n>0){vd='Strongly Demanding';vc='#d05a3a';vcl='hevV5';}
-    else if(n>p*1.15){vd='Demanding';vc='#e07a5a';vcl='hevV4';}
-    else{vd='Mixed - Tested Ground';vc='#c9a84c';vcl='hevV3';}
+    var net=p-n,AV=SB_hevaVerdict(p,n),vd=AV.v,vc=AV.c,vcl=AV.k;
     agg.push({house:h,positive:p,negative:n,net:net,verdict:vd,verdictCol:vc,verdictCls:vcl});
   }
   /* ranking, so the reading can name the strongest and the hardest */
@@ -5291,13 +5340,12 @@ function SB_hevaAll(chart){
      So the aggregate - and only the aggregate - also carries where
      each house stands among the other eleven. The absolute verdict is
      still printed beside it; nothing is replaced. */
-  var BANDS=[{n:'Strongest ground',c:'#7ac87a',k:'hevB1'},{n:'Above the middle',c:'#8fbf70',k:'hevB2'},
-             {n:'Below the middle',c:'#e07a5a',k:'hevB3'},{n:'Hardest ground',c:'#d05a3a',k:'hevB4'}];
+  /* the band is now a percentile band, not a within-chart quartile: it means
+     the same thing in two different charts, and each of the five holds a fifth */
   for(i=0;i<12;i++){
     rank[i].rank=i+1;
-    rank[i].band=BANDS[Math.floor(i/3)].n;
-    rank[i].bandCol=BANDS[Math.floor(i/3)].c;   /* kept for the console / any caller */
-    rank[i].bandCls=BANDS[Math.floor(i/3)].k;   /* what the panel actually uses */
+    var pc=SB_hevPctOf(rank[i].net),bd=SB_hevBandOf(pc);
+    rank[i].pct=pc;rank[i].band=bd.n;rank[i].bandCls=bd.k;rank[i].bandNote=bd.t;
   }
   chart.__heva={byV:byV,agg:agg,maxAbs:maxAbs||1,rank:rank};
   return chart.__heva;
@@ -5324,7 +5372,7 @@ function SB_hevaTotalHTML(data){
       +'<div class="hevaR"><i style="width:'+rw+'%"></i></div>'
       +'<div class="hevaNum hevaNumR">'+(a.positive?a.positive:'')+'</div>'
       +'<div class="hevaBand '+a.bandCls+'">'+a.band
-      +'<em>net '+(a.net>=0?'+':'')+a.net+' &middot; '+a.verdict+'</em></div>'
+      +'<em>'+a.pct+'th &middot; net '+(a.net>=0?'+':'')+a.net+' &middot; '+a.verdict+'</em></div>'
       +'</div>';
   }
   out+='</div>';
@@ -5986,10 +6034,10 @@ function SB_promTotalHTML(chart,data){
 var SB_DASH_HLO=0,SB_DASH_HHI=275;      /* measured, see the header */
 var SB_DASH_W={rank:50,houses:50};
 
-function SB_dashHouseScale(net){
-  var n=(net-SB_DASH_HLO)/(SB_DASH_HHI-SB_DASH_HLO)*100;
-  return Math.max(0,Math.min(100,Math.round(n)));
-}
+/* the same percentile the house panel bands on. A linear window squeezed the
+   middle ninety per cent into 11-75, so half of a period's score barely moved;
+   on the percentile it uses the whole range. */
+function SB_dashHouseScale(net){return SB_hevPctOf(net);}
 /* the houses a dasha lord answers for; a node answers for its dispositor's */
 function SB_dashRuled(chart,pl){
   var r=SB_ruledHouses(pl,chart.asc.index);
