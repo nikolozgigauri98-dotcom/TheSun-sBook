@@ -800,6 +800,12 @@ body.sb-light .sbLockTxt{color:#4a4a58}
     thesunsbook.com
     =========================================================================== */
 
+/* Safety net: OB_T (the onboarding translator) is used by the reading builder
+   below but defined in block 5. Block 5 exports the real one over this stub;
+   until then — or if it ever fails — strings simply pass through untranslated
+   instead of killing renderReading with a ReferenceError. */
+if(typeof window.OB_T!=='function')window.OB_T=function(t){return t;};
+
 const SIGNS=[
   {name:'Aries',sym:'&#9800;&#xFE0E;',ruler:'Mars',element:'Fire',mod:'Cardinal',num:1},
   {name:'Taurus',sym:'&#9801;&#xFE0E;',ruler:'Venus',element:'Earth',mod:'Fixed',num:2},
@@ -10520,6 +10526,10 @@ function OB_T(t){
   return t;
 }
 function OB_MON(){ return (OB.p&&OB.p.lang==='ka')?OB_MONTHS_KA:OB_MONTHS; }
+/* The reading builder (block 1: SB_buildPages, the geocoder notice) also runs
+   its strings through OB_T — export it, or renderReading dies mid-build on a
+   ReferenceError and the page behind the 3D sky stays blank. */
+window.OB_T=OB_T;window.OB_MON=OB_MON;
 
 function OB_render(anim){
   if(!OB.open)return;
