@@ -247,11 +247,12 @@ body.sb-light .sbRestored button{color:#8a6f26;border-color:#a8935f}
 .sbGateNote{font-size:11px;color:var(--gold-dim);font-style:italic;margin-top:16px;line-height:1.6}
 body.sb-light .sbGateWin{background:linear-gradient(180deg,rgba(255,252,244,.99),rgba(248,244,232,.99))}
 #sbCorner{position:fixed;top:10px;left:10px;z-index:60;display:flex;gap:8px;align-items:center}
-/* The 3D sky mounts at z-index 9999, which buried the corner buttons — the
-   mute in particular, which is exactly the one you want while the sky hums.
-   Lift the whole corner above it and let the buttons keep their own hits. */
-body.sb3d-open #sbCorner{z-index:10100}
-body.sb3d-open #sbCorner button{pointer-events:auto}
+/* The 3D sky mounts at z-index 9999 and carries its OWN controls (mute, exit,
+   walkthrough — see #sb3dBar / #sb3dMute). The main-page corner bar (language,
+   settings, terms, account) has no business floating over the sky: it used to
+   be lifted above the overlay, which is why it bled into the 3D view and
+   covered everything. Hide it entirely while the sky is open. */
+body.sb3d-open #sbCorner{display:none!important}
 #sbCorner button{background:rgba(10,10,22,.72);border:1px solid var(--gold-dim);color:var(--gold);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.12em;padding:6px 14px;cursor:pointer;border-radius:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:all .25s}
 #sbCorner button:hover{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.3)}
 #sbMuteBtn{padding:5px 10px;font-size:14px;line-height:1.15}
@@ -5816,6 +5817,37 @@ function SB_dockSVGs(){
     +'<circle class="sbTw2" cx="60" cy="16" r="2.2" fill="#ffe9b0"/></svg>';
   return{reports:reports,charts:charts,sky:sky,when:when,book:book};
 }
+/* The "The Sun's Book" icon opens the web reader — the same reading view that
+   typing /read used to be the only way to reach. If a chart has already been
+   cast, its reading DOM is already built (renderReading ran at cast time), so
+   we just bring the reading view forward and jump to the main page. If the
+   reading was never built for this session but a chart still lives in
+   SB3D_STATE (e.g. after a reload), we rebuild it from that saved state, the
+   same way SB_recalc does. With no chart at all there is nothing to read yet,
+   so we fall back to the old Book page. */
+function SB_openReader(){
+  var out=document.getElementById('reading');
+  var built=out&&out.querySelector('.sbPage');
+  if(!built){
+    var st=window.SB3D_STATE;
+    if(st&&st.chart&&st.birth&&typeof renderReading==='function'){
+      var b=st.birth;
+      try{renderReading(b.name||'The Seeker',b.date,b.time,b.place,st.chart,'');}catch(e){}
+      out=document.getElementById('reading');
+      built=out&&out.querySelector('.sbPage');
+    }
+  }
+  if(built){
+    if(out)out.style.display='block';
+    try{document.body.classList.remove('sb-cast');document.body.classList.add('sb-read');}catch(e){}
+    if(typeof SB_nav==='function')SB_nav('pgMain');
+    try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){}
+    return;
+  }
+  /* no chart yet — keep the old placeholder behaviour */
+  if(typeof SB_nav==='function')SB_nav('pgBook');
+}
+window.SB_openReader=SB_openReader;
 function SB_buildDock(){
   if(document.getElementById('sbDock'))return;
   var sv=SB_dockSVGs();
@@ -5835,7 +5867,7 @@ function SB_buildDock(){
     var _w=document.getElementById('sbDkWhen');if(_w)_w.style.display='none';
     var _rb=document.getElementById('sbPaneRBot');if(_rb)_rb.style.display='none';
   }
-  document.getElementById('sbDkBook').onclick=function(){SB_nav('pgBook');};
+  document.getElementById('sbDkBook').onclick=function(){SB_openReader();};
 }
 
 /* ---------- page assembly (called at the end of renderReading) ---------- */
@@ -7220,6 +7252,9 @@ function SB3D_v3(o){return new THREE.Vector3(o.x,o.y,o.z);}
 function SB3D_ease(t){return t<0.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
 
 /* ---------- canvas texture helpers ---------- */
+/* GPU texture-size ceiling; set for real from the renderer once it exists.
+   2048 is the safe default (many phones report exactly this). */
+var SB3D_MAXTEX=2048;
 function SB3D_mkCanvas(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c;}
 function SB3D_glowTex(inner,outer){
   var c=SB3D_mkCanvas(128,128),g=c.getContext('2d');
@@ -7236,14 +7271,27 @@ function SB3D_sprite(tex,color,scale,opacity){
 }
 function SB3D_textTex(text,opts){
   opts=opts||{};
-  var fs=opts.fs||64,pad=20,font=(opts.weight||'')+' '+fs+'px '+(opts.font||"'Cinzel',serif");
-  var c=SB3D_mkCanvas(4,4),g=c.getContext('2d');g.font=font;
-  var w=Math.ceil(g.measureText(text).width)+pad*2,h=fs+pad*2;
-  c=SB3D_mkCanvas(w,h);g=c.getContext('2d');g.font=font;
+  var fs=opts.fs||64,pad=20;
+  text=(text===undefined||text===null)?'':String(text);
+  /* measure at the requested font size */
+  var mkfont=function(sz){return (opts.weight||'')+' '+sz+'px '+(opts.font||"'Cinzel',serif");};
+  var mc=SB3D_mkCanvas(4,4),mg=mc.getContext('2d');mg.font=mkfont(fs);
+  var w=Math.ceil(mg.measureText(text).width)+pad*2,h=fs+pad*2;
+  if(w<1)w=1;if(h<1)h=1;
+  var aspect=w/h; /* preserve on-screen proportions no matter how we rasterize */
+  /* If either dimension exceeds the GPU texture ceiling, THREE fails the
+     upload and the surface renders as a solid white square. Scale the whole
+     thing down to fit — the sprite/plane scale still uses __aspect, so the
+     label looks identical on screen, just rasterized at a safe resolution. */
+  var lim=SB3D_MAXTEX||2048,mx=Math.max(w,h);
+  if(mx>lim){var k=lim/mx;fs=Math.max(8,Math.floor(fs*k));pad=Math.max(2,Math.floor(pad*k));
+    w=Math.max(1,Math.round(w*k));h=Math.max(1,Math.round(h*k));}
+  var font=mkfont(fs);
+  var c=SB3D_mkCanvas(w,h),g=c.getContext('2d');g.font=font;
   g.textAlign='center';g.textBaseline='middle';
-  if(opts.stroke){g.strokeStyle=opts.stroke;g.lineWidth=6;g.strokeText(text,w/2,h/2);}
+  if(opts.stroke){g.strokeStyle=opts.stroke;g.lineWidth=Math.max(1,6*(fs/(opts.fs||64)));g.strokeText(text,w/2,h/2);}
   g.fillStyle=opts.color||'#c9a84c';g.fillText(text,w/2,h/2);
-  var t=new THREE.CanvasTexture(c);t.__aspect=w/h;return t;
+  var t=new THREE.CanvasTexture(c);t.__aspect=aspect;return t;
 }
 function SB3D_label(text,opts,scale,opacity){
   var t=SB3D_textTex(text,opts);
@@ -7922,7 +7970,7 @@ function SB3D_buildEarth(sunIsUp,ovDig,ascDir){
     /* the mountain skyline: three overlapping ranges receding into haze,
        sharp ridged peaks, sunlit and shadowed flanks, gradient snow caps,
        all seamless around the full horizon */
-    var MW=2048,MH=256,mc=SB3D_mkCanvas(MW,MH),mg=mc.getContext('2d');
+    var MW=Math.min(2048,SB3D_MAXTEX||2048),MH=256,mc=SB3D_mkCanvas(MW,MH),mg=mc.getContext('2d');
     mg.clearRect(0,0,MW,MH);
     function ridgeAt(u,seed,amp){ /* ridged multifractal, period-2pi seamless */
       var h=0;
@@ -8902,6 +8950,12 @@ function SB3D_open(divV){
     renderer=new THREE.WebGLRenderer({antialias:true});
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));
     renderer.setSize(window.innerWidth,window.innerHeight);
+    /* record the real GPU texture ceiling. Labels are drawn to canvases sized
+       by their pixel dimensions; a long, large-font label (e.g. the 3x
+       "OVERALL CHART DIGNITY" panel) can exceed this limit on phones with a
+       2048 ceiling, and an over-limit texture uploads as a solid WHITE square.
+       SB3D_textTex clamps against this so that can't happen. */
+    try{var _gl=renderer.getContext();SB3D_MAXTEX=Math.min(_gl.getParameter(_gl.MAX_TEXTURE_SIZE)||2048,4096);}catch(_e){SB3D_MAXTEX=2048;}
   }catch(e){document.body.removeChild(ov);document.body.style.overflow='';
     alert('WebGL is not available on this device.');return;}
   ov.insertBefore(renderer.domElement,ov.firstChild);
