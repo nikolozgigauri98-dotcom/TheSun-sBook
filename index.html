@@ -5848,6 +5848,24 @@ function SB_openReader(){
   if(typeof SB_nav==='function')SB_nav('pgBook');
 }
 window.SB_openReader=SB_openReader;
+/* Navigate the browser to the Reader / Library page (thesunsbook.com/read).
+   Used by the "Sun's Book" button on BOTH the mobile dock and the desktop rail
+   so the icon opens the reader instead of the old "Coming Soon" placeholder. */
+function SB_goReader(){var u=(window.location&&window.location.origin?window.location.origin:'')+'/read';try{window.location.assign(u);}catch(e){window.location.href='/read';}}
+window.SB_goReader=SB_goReader;
+/* Reveal the reading container and show a given .sbPage. On mobile the nav pages
+   (Reports, When?, etc.) live inside #reading, which may be hidden if the user is
+   on the 3D sky or the cast screen; without revealing it first SB_nav() would just
+   flip an invisible page and leave the bare star-field showing. */
+function SB_dockShow(id){
+  try{if(window.SB3D_close)SB3D_close();}catch(e){}
+  try{if(typeof SB_closeDD==='function')SB_closeDD();}catch(e){}
+  try{window.SB_FORM_OPEN=false;var f=document.getElementById('formCard');if(f)f.style.display='none';}catch(e){}
+  var out=document.getElementById('reading');
+  if(out){out.style.display='';document.body.classList.remove('sb-cast');document.body.classList.add('sb-read');}
+  if(typeof SB_nav==='function')SB_nav(id);
+}
+window.SB_dockShow=SB_dockShow;
 function SB_buildDock(){
   if(document.getElementById('sbDock'))return;
   var sv=SB_dockSVGs();
@@ -5859,15 +5877,15 @@ function SB_buildDock(){
     +btn('sbDkWhen','When?',sv.when)
     +btn('sbDkBook',"The Sun's Book",sv.book);
   document.body.appendChild(d);
-  document.getElementById('sbDkRep').onclick=function(){SB_nav('pgReports');};
+  document.getElementById('sbDkRep').onclick=function(){SB_dockShow('pgReports');};
   document.getElementById('sbDkCharts').onclick=function(){SB_goHome();};
   document.getElementById('sbDk3D').onclick=function(){if(window.SB3D_open)SB3D_open();};
-  document.getElementById('sbDkWhen').onclick=function(){SB_nav('pgDasha');};
+  document.getElementById('sbDkWhen').onclick=function(){SB_dockShow('pgDasha');};
   if(window.SB_NOTIME){
     var _w=document.getElementById('sbDkWhen');if(_w)_w.style.display='none';
     var _rb=document.getElementById('sbPaneRBot');if(_rb)_rb.style.display='none';
   }
-  document.getElementById('sbDkBook').onclick=function(){SB_openReader();};
+  document.getElementById('sbDkBook').onclick=function(){SB_goReader();};
 }
 
 /* ---------- page assembly (called at the end of renderReading) ---------- */
@@ -6022,7 +6040,7 @@ function SB_buildDeskBar(){
   SB_$('sbDbCharts').onclick=function(){SB_goHome();};
   SB_$('sbDbSky').onclick=function(){if(window.SB3D_open)SB3D_open();};
   SB_$('sbDbWhen').onclick=function(){SB_deskToggleWhen();};
-  SB_$('sbDbBook').onclick=function(){SB_deskEnterFull('pgBook','sbDbBook');};
+  SB_$('sbDbBook').onclick=function(){SB_goReader();};
   SB_$('sbDbAv').onclick=function(){SB_openAvatars();};
   SB_$('sbDbAcct').onclick=function(){SB_openAccount();};
   SB_$('sbDbTerms').onclick=function(){SB_openTerms();};
