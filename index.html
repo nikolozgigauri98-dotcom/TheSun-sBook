@@ -396,7 +396,17 @@ body.sb-read #sbDock{display:flex}
 .sbAtma td{background:rgba(201,168,76,.09)}
 .sbPlHead{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:14px}
 .sbPlGlyph{font-size:54px;line-height:1;filter:drop-shadow(0 0 16px currentColor)}
-@media(max-width:640px){.sbDD{min-width:0;flex:1 1 30%}.sbDDBtn{font-size:10px;padding:10px 10px;letter-spacing:.06em}.sbDockBtn{width:64px}.sbDockBtn svg{width:38px;height:38px}.sbDockMain{width:86px}.sbDockMain svg{width:64px;height:64px;margin-top:-24px}.sbDockLbl{font-size:8px;letter-spacing:.08em}}
+@media(max-width:640px){.sbDD{min-width:0;flex:1 1 30%}.sbDDBtn{font-size:10px;padding:10px 10px;letter-spacing:.06em}#sbDock{justify-content:space-between;gap:2px;padding:8px 6px calc(9px + env(safe-area-inset-bottom))}
+.sbDockBtn{width:auto;flex:1 1 0;min-width:0;padding:2px 1px}
+.sbDockBtn svg{width:34px;height:34px}
+.sbDockMain{width:auto;flex:1 1 0}
+.sbDockMain svg{width:58px;height:58px;margin-top:-20px}
+.sbDockLbl{font-size:12px;letter-spacing:.02em;white-space:normal;line-height:1.05;text-align:center;max-width:72px;min-height:2.2em;display:flex;align-items:center;justify-content:center}
+.sbDockMain .sbDockLbl{font-size:13px;letter-spacing:.05em}
+#sbCorner{left:0;right:0;top:8px;gap:2px;padding:0 8px;justify-content:space-between;transition:transform .35s ease,opacity .35s ease}
+#sbCorner.sbCornerHide{transform:translateY(-160%);opacity:0;pointer-events:none}
+#sbCorner button{padding:5px 7px;font-size:11px;letter-spacing:.04em}
+#sbCorner button svg{width:19px;height:19px}}
 /* =================================================================
    DESKTOP LAYOUT (>=900px, read mode only) — left rail + split panes.
    Everything here is gated by body.sb-desk.sb-read so the mobile UI is
@@ -5949,10 +5959,26 @@ function SB_dockShow(id){
   try{if(typeof SB_closeDD==='function')SB_closeDD();}catch(e){}
   try{window.SB_FORM_OPEN=false;var f=document.getElementById('formCard');if(f)f.style.display='none';}catch(e){}
   var out=document.getElementById('reading');
-  if(out){out.style.display='';document.body.classList.remove('sb-cast');document.body.classList.add('sb-read');}
+  if(out){out.style.display='block';document.body.classList.remove('sb-cast');document.body.classList.add('sb-read');}
   if(typeof SB_nav==='function')SB_nav(id);
 }
 window.SB_dockShow=SB_dockShow;
+/* Mobile only: hide the top corner chrome (lang/avatars/sound/settings/account/
+   terms) while scrolling down, bring it back when scrolling up. */
+(function(){
+  var corner=null,lastY=0,ticking=false;
+  function upd(){
+    ticking=false;
+    corner=corner||document.getElementById('sbCorner');
+    if(!corner)return;
+    if(!window.matchMedia('(max-width:640px)').matches){corner.classList.remove('sbCornerHide');lastY=window.scrollY||0;return;}
+    var y=window.scrollY||document.documentElement.scrollTop||0;
+    if(y>lastY+6&&y>64)corner.classList.add('sbCornerHide');
+    else if(y<lastY-6)corner.classList.remove('sbCornerHide');
+    lastY=y;
+  }
+  window.addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(upd);}},{passive:true});
+})();
 function SB_buildDock(){
   if(document.getElementById('sbDock'))return;
   var sv=SB_dockSVGs();
@@ -5965,7 +5991,7 @@ function SB_buildDock(){
     +btn('sbDkBook',"The Sun's Book",sv.book);
   document.body.appendChild(d);
   document.getElementById('sbDkRep').onclick=function(){SB_dockShow('pgReports');};
-  document.getElementById('sbDkCharts').onclick=function(){SB_goHome();};
+  document.getElementById('sbDkCharts').onclick=function(){SB_dockShow('pgMain');try{if(window.switchV)switchV('transit',null);}catch(e){}};
   document.getElementById('sbDk3D').onclick=function(){if(window.SB3D_open)SB3D_open();};
   document.getElementById('sbDkWhen').onclick=function(){SB_dockShow('pgDasha');};
   if(window.SB_NOTIME){
