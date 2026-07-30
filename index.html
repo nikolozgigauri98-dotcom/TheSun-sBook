@@ -816,20 +816,38 @@ body.sb-light .sbLockTxt{color:#4a4a58}
   window.SB_bootDone=finish;
   function ready(){
     try{
+      /* onboarding is interactive (a card / dial the user must act on) */
       var card=document.getElementById('sbObCard');
       if(card&&card.offsetParent!==null)return true;
-      var rd=document.getElementById('reading');
-      if(rd&&rd.querySelector('.sbPage')&&(document.body.classList.contains('sb-read')||getComputedStyle(rd).display!=='none'))return true;
+      /* 3D sky is open */
       if(document.body.classList.contains('sb3d-open'))return true;
+      /* the chart reading is actually PAINTED: sb-read is set (which hides the
+         bare header/footer shell) AND a page is really on screen. offsetParent
+         is null while a page is display:none, so a half-built frame won't pass. */
+      if(document.body.classList.contains('sb-read')){
+        var rd=document.getElementById('reading');
+        if(rd){
+          var pg=rd.querySelector('.sbPage.sbOn')||rd.querySelector('.sbPage');
+          if(pg&&pg.offsetParent!==null)return true;
+        }
+      }
     }catch(e){}
     return false;
   }
   show();
   spin=setInterval(tick,40);
   swap=setInterval(advance,6500);
-  var t0=Date.now(),poll=setInterval(function(){
-    if(ready()||Date.now()-t0>14000){clearInterval(poll);finish();}
-  },160);
+  /* Debounced hide: the boot sequence flickers (blank -> chart -> blank -> chart)
+     before it settles. We only fade out once ready() has stayed true CONTINUOUSLY
+     for HOLD ms, so every one of those intermediate blank frames stays hidden
+     behind the loader. Any transient false reading resets the timer. A hard cap
+     guarantees the loader never sticks. */
+  var HOLD=750,CAP=18000,t0=Date.now(),stable=0;
+  var poll=setInterval(function(){
+    if(ready()){if(!stable)stable=Date.now();}
+    else{stable=0;}
+    if((stable&&Date.now()-stable>=HOLD)||Date.now()-t0>CAP){clearInterval(poll);finish();}
+  },120);
 })();
 </script>
 <div class="app">
