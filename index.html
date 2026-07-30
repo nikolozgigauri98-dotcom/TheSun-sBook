@@ -816,24 +816,32 @@ body.sb-light .sbLockTxt{color:#4a4a58}
     }
   }
   function advance(){idx++;show();}
-  function finish(){
-    if(done)return;done=true;
-    try{clearInterval(spin);clearInterval(swap);}catch(e){}
-    var o=document.getElementById('sbBootLoad');if(!o)return;
-    o.classList.add('sbHide');
-    setTimeout(function(){if(o&&o.parentNode)o.parentNode.removeChild(o);},900);
+  var cover=document.getElementById('sbBootLoad');
+  function reveal(){if(cover&&!cover.classList.contains('sbHide'))cover.classList.add('sbHide');}
+  function recover(){
+    /* snap back to fully opaque with NO fade-in, so a blank frame is never seen */
+    if(cover&&cover.classList.contains('sbHide')){
+      cover.style.transition='none';
+      cover.classList.remove('sbHide');
+      void cover.offsetWidth; /* commit opacity:1 instantly */
+      cover.style.transition='';
+    }
   }
-  window.SB_bootDone=finish;
+  function killCover(){
+    try{clearInterval(spin);clearInterval(swap);}catch(e){}
+    if(cover){cover.classList.add('sbHide');setTimeout(function(){if(cover&&cover.parentNode)cover.parentNode.removeChild(cover);},700);}
+  }
+  window.SB_bootDone=reveal;
   function ready(){
     try{
-      /* onboarding is interactive (a card / dial the user must act on) */
+      /* onboarding / cast cinematic overlay is up — an intentional screen */
+      var ob=document.getElementById('sbOb');
+      if(ob&&ob.offsetParent!==null)return true;
       var card=document.getElementById('sbObCard');
       if(card&&card.offsetParent!==null)return true;
       /* 3D sky is open */
       if(document.body.classList.contains('sb3d-open'))return true;
-      /* the chart reading is actually PAINTED: sb-read is set (which hides the
-         bare header/footer shell) AND a page is really on screen. offsetParent
-         is null while a page is display:none, so a half-built frame won't pass. */
+      /* the chart reading is actually PAINTED (sb-read hides the bare shell) */
       if(document.body.classList.contains('sb-read')){
         var rd=document.getElementById('reading');
         if(rd){
@@ -847,17 +855,28 @@ body.sb-light .sbLockTxt{color:#4a4a58}
   show();
   spin=setInterval(tick,40);
   swap=setInterval(advance,6500);
-  /* Debounced hide: the boot sequence flickers (blank -> chart -> blank -> chart)
-     before it settles. We only fade out once ready() has stayed true CONTINUOUSLY
-     for HOLD ms, so every one of those intermediate blank frames stays hidden
-     behind the loader. Any transient false reading resets the timer. A hard cap
-     guarantees the loader never sticks. */
-  var HOLD=750,CAP=18000,t0=Date.now(),stable=0;
-  var poll=setInterval(function(){
-    if(ready()){if(!stable)stable=Date.now();}
-    else{stable=0;}
-    if((stable&&Date.now()-stable>=HOLD)||Date.now()-t0>CAP){clearInterval(poll);finish();}
-  },120);
+  /* PERSISTENT SHIELD — the real fix. The cover stays in the DOM through the whole
+     boot. It turns transparent only after real content has been present CONTINUOUSLY
+     for REVEAL ms, and snaps back OPAQUE THE INSTANT a blank frame appears. On slow /
+     flaky connections the app cycles content<->blank several times (Firebase fires
+     auth more than once); every blank cycle stays hidden behind the cover, so the
+     half-built shell can never appear on screen. Once content holds for SETTLE ms
+     (fully booted) — or a hard CAP elapses — monitoring stops and the cover is
+     removed for good. */
+  var REVEAL=450,SETTLE=5000,CAP=25000,t0=Date.now(),okSince=0,raf=0;
+  function mon(){
+    var now=Date.now();
+    if(ready()){
+      if(!okSince)okSince=now;
+      if(now-okSince>=REVEAL)reveal();
+      if(now-okSince>=SETTLE||now-t0>CAP){killCover();return;}
+    }else{
+      okSince=0;recover();
+      if(now-t0>CAP){killCover();return;}
+    }
+    raf=requestAnimationFrame(mon);
+  }
+  raf=requestAnimationFrame(mon);
 })();
 </script>
 <div class="app">
@@ -8693,11 +8712,16 @@ function SB3D_injectStyles(){
   +'.sb3dRow{display:contents}' /* desktop: one flowing row, exactly as before */
   +'.sb3d-btn .bs{display:none}'
   +'@media(max-width:640px){'
-    +'.sb3d-bar{flex-direction:column;flex-wrap:nowrap;align-items:center;gap:5px;padding:7px 3px}'
-    +'.sb3dRow{display:flex;gap:3px;justify-content:center;flex-wrap:nowrap;pointer-events:none;max-width:100vw}'
-    /* .sb3d-bar .sb3d-btn outranks the base .sb3d-btn rule that follows later */
-    +'.sb3d-bar .sb3d-btn,#sb3dCineQuit{font-size:7px;letter-spacing:0.04em;padding:5px 5px;white-space:nowrap;flex:0 1 auto;min-width:0}'
+    +'.sb3d-bar{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:5px;padding:7px 4px}'
+    +'.sb3dRow{display:flex;gap:3px;justify-content:center;flex-wrap:nowrap;pointer-events:none;width:100%}'
+    /* buttons flex to fill each row, so the grid spans edge to edge with no side gaps */
+    +'.sb3dRow:not(.sb3dFoot) .sb3d-btn{flex:1 1 0}'
+    +'.sb3d-bar .sb3d-btn,#sb3dCineQuit{font-size:7px;letter-spacing:0.04em;padding:6px 3px;white-space:nowrap;min-width:0}'
     +'.sb3d-bar .sb3d-btn .bl{display:none}.sb3d-bar .sb3d-btn .bs{display:inline}'
+    /* footer row under the grid: sound pinned far left, exit far right */
+    +'.sb3dFoot{justify-content:space-between;margin-top:2px}'
+    +'.sb3dFoot .sb3d-btn{flex:0 0 auto;padding:6px 14px;font-size:8px}'
+    +'#sb3dMute{position:static;top:auto;right:auto;font-size:14px;padding:6px 12px}'
   +'}'
   +'#sb3dCineQuit{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:8;opacity:0.8}'
   +'.sb3d-btn{pointer-events:auto;background:rgba(8,8,16,0.6);border:1px solid var(--gold-dim,#7a6030);color:var(--gold,#c9a84c);font-family:Cinzel,serif;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:9px 14px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:all 0.25s}'
@@ -9062,6 +9086,8 @@ function SB3D_open(divV){
       +_bb('sb3dView','Overview','Overview')
       +_bb('sb3dCenter','Center','Center')
       +_bb('sb3dCine','Cinematic Mode','Cinematic')
+    +'</div>'
+    +'<div class="sb3dRow sb3dFoot" id="sb3dFoot">'
       +_bb('sb3dExit','Exit','Exit')
     +'</div></div>'
     +'<button class="sb3d-btn" id="sb3dCineQuit" style="display:none">Quit Cinematic Mode</button>'
@@ -9355,6 +9381,12 @@ function SB3D_musicArm(){
   ['pointerdown','touchend','click','keydown'].forEach(function(t){
     document.addEventListener(t,SB3D_musicTry,true);
   });
+  /* stop the music when the tab/browser is minimised or backgrounded, resume on return */
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){var a=SB3D_music;if(a&&a.pause&&!a.paused)a.pause();}
+    else if(SB3D_musicAllowed&&!SB3D_musicMutedPref())SB3D_musicTry();
+  });
+  window.addEventListener('pagehide',function(){var a=SB3D_music;if(a&&a.pause&&!a.paused)a.pause();});
 }
 function SB3D_musicSetMuted(m){
   try{localStorage.setItem('sb3d_music_muted',m?'1':'0');}catch(e){}
@@ -9376,7 +9408,8 @@ function SB3D_musicStart(){
       else if(a&&a.paused)SB3D_musicTry();
       else SB3D_musicSetMuted(true);
     };
-    ov.appendChild(b);
+    var _foot=document.getElementById('sb3dFoot');
+    if(_foot)_foot.insertBefore(b,_foot.firstChild);else ov.appendChild(b);
   }
   if(b)b.style.display='block';
   SB3D_musicAllowed=true;
