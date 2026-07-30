@@ -52,6 +52,11 @@ select option{background:var(--deep)}
 .btn-cast{width:100%;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;padding:16px;cursor:pointer;transition:all 0.3s;margin-top:8px}
 .btn-cast:hover{color:var(--gold-light);background:var(--glow)}
 #loading{display:none;text-align:center;padding:60px 20px}
+/* Full-screen boot loader: covers the app while auth resolves and the chart is
+   restored, so the half-built shell never flashes on refresh / first entry. */
+#sbBootLoad{position:fixed;inset:0;z-index:2000000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 42%,#13132c 0%,var(--void) 72%);opacity:1;transition:opacity 0.7s ease}
+#sbBootLoad.sbHide{opacity:0;pointer-events:none}
+#sbBootLoad .orbit-wrap{margin-top:6px}
 .wheel{width:64px;height:64px;border:1px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 2s linear infinite;margin:0 auto 10px;position:relative;z-index:3}
 @keyframes spin{to{transform:rotate(360deg)}}
 .orbit-wrap{position:relative;width:280px;height:280px;margin:0 auto}
@@ -763,6 +768,70 @@ body.sb-light .sbLockTxt{color:#4a4a58}
 </style>
 </head>
 <body class="sb-cast">
+<div id="sbBootLoad"><div class="wheel"></div><div class="orbit-wrap"><div class="orbit-center"><div class="loader-sym" id="loadSym">&#9737;</div><div class="loader-name" id="loadPlanet">The Sun</div></div><div class="orbit-ring" id="orbitRing"></div></div><p class="loading-text">Casting the celestial circle</p></div>
+<script>
+/* Boot loader — self-contained so it paints instantly, before the main app
+   script (with PLANET_KW) has even parsed. It hides itself once the real UI is
+   ready: either the onboarding card is up, or the chart reading / 3D sky is
+   visible. A hard cap guarantees it never gets stuck. */
+(function(){
+  var FB={
+    Sun:{sym:'\u2609',name:'The Sun',words:['Soul','Self','Authority','Confidence','Status','Leadership']},
+    Moon:{sym:'\u263D',name:'The Moon',words:['Mind','Mother','Comfort','Intuition','Memory','Emotion']},
+    Mars:{sym:'\u2642',name:'Mars',words:['Energy','Drive','Courage','Action','Passion','Will']},
+    Mercury:{sym:'\u263F',name:'Mercury',words:['Intellect','Speech','Wit','Analysis','Trade','Logic']},
+    Jupiter:{sym:'\u2643',name:'Jupiter',words:['Wisdom','Fortune','Growth','Faith','Teacher','Grace']},
+    Venus:{sym:'\u2640',name:'Venus',words:['Love','Beauty','Art','Harmony','Pleasure','Union']},
+    Saturn:{sym:'\u2644',name:'Saturn',words:['Discipline','Time','Karma','Structure','Endurance','Lesson']}
+  };
+  var FBO=['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn'];
+  var idx=0,ang=0,spin=null,swap=null,done=false;
+  function src(){return (window.PLANET_KW&&window.PLANET_ORDER)?{d:window.PLANET_KW,o:window.PLANET_ORDER}:{d:FB,o:FBO};}
+  function words(w){
+    var r=document.getElementById('orbitRing');if(!r)return;r.innerHTML='';
+    for(var i=0;i<w.length;i++){var e=document.createElement('div');e.className='orbit-word';e.textContent=w[i];e.setAttribute('data-angle',(360/w.length*i));r.appendChild(e);}
+  }
+  function show(){
+    var s=src(),pl=s.o[idx%s.o.length],data=s.d[pl];if(!data)return;
+    var sy=document.getElementById('loadSym'),nm=document.getElementById('loadPlanet');
+    if(sy)sy.textContent=data.sym;if(nm)nm.textContent=data.name;
+    words(data.words||[]);
+  }
+  function tick(){
+    var r=document.getElementById('orbitRing');if(!r)return;ang+=0.9;var w=r.children,R=120;
+    for(var i=0;i<w.length;i++){
+      var a=(parseFloat(w[i].getAttribute('data-angle'))+ang)*Math.PI/180,x=R*Math.cos(a),y=R*0.62*Math.sin(a);
+      w[i].style.transform='translate(calc(-50% + '+x.toFixed(1)+'px), calc(-50% + '+y.toFixed(1)+'px))';
+      w[i].style.opacity=(0.55+0.45*((y/(R*0.62)+1)/2)).toFixed(2);
+    }
+  }
+  function advance(){idx++;show();}
+  function finish(){
+    if(done)return;done=true;
+    try{clearInterval(spin);clearInterval(swap);}catch(e){}
+    var o=document.getElementById('sbBootLoad');if(!o)return;
+    o.classList.add('sbHide');
+    setTimeout(function(){if(o&&o.parentNode)o.parentNode.removeChild(o);},900);
+  }
+  window.SB_bootDone=finish;
+  function ready(){
+    try{
+      var card=document.getElementById('sbObCard');
+      if(card&&card.offsetParent!==null)return true;
+      var rd=document.getElementById('reading');
+      if(rd&&rd.querySelector('.sbPage')&&(document.body.classList.contains('sb-read')||getComputedStyle(rd).display!=='none'))return true;
+      if(document.body.classList.contains('sb3d-open'))return true;
+    }catch(e){}
+    return false;
+  }
+  show();
+  spin=setInterval(tick,40);
+  swap=setInterval(advance,6500);
+  var t0=Date.now(),poll=setInterval(function(){
+    if(ready()||Date.now()-t0>14000){clearInterval(poll);finish();}
+  },160);
+})();
+</script>
 <div class="app">
 <div id="sbCorner"><button id="langBtn" onclick="toggleLang()">ქართული</button><button id="sbAvCorner" onclick="SB_openAvatars()" title="Avatars" aria-label="Avatars"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="3"/><path d="M3 19c0-3 2.5-4.6 5.5-4.6S14 16 14 19"/><circle cx="17" cy="7" r="2.1"/><path d="M14.6 13.4c2.6-.6 4.9.9 4.9 3.4"/></svg></button><button id="sbMuteBtn" onclick="SB_toggleMute()" title="Sound" aria-label="Sound">🔊</button><button id="sbGearBtn" onclick="SB_openSettings()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/><circle cx="12" cy="12" r="7" stroke-dasharray="2.4 3.4"/></svg></button><button id="sbAcctCorner" onclick="SB_openAccount()" title="Account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.7 3.1-6.3 7-6.3s7 2.6 7 6.3"/></svg></button><button id="sbTermsBtn" onclick="SB_openTerms()">Terms</button></div>
 <div class="form-card" id="formCard" style="display:none">
