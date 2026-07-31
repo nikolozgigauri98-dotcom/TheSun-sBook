@@ -29,7 +29,7 @@
 <style>
 /*! The Sun's Book · © 2026 Nikoloz Gigauri · All rights reserved.
     Based on the book "The Sun's Book". thesunsbook.com */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Cormorant+Unicase:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Uncial+Antiqua&family=IM+Fell+English+SC&display=swap');
 :root{--void:#080810;--deep:#0d0d1a;--card:#111122;--border:#2a2a4a;--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#7a6030;--silver:#a0a8c0;--cream:#d8d0b8;--ruby:#8b2040;--glow:rgba(201,168,76,0.15)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--void);color:var(--cream);font-family:'EB Garamond',serif;min-height:100vh}
@@ -10559,7 +10559,7 @@ function OB_moonTo(f,instant){
 function OB_setProgress(v,instant){
   v=Math.max(0,Math.min(10,v));
   OB.progress=v;
-  var frac=v/10,inst=instant||OB_rm();try{SBScene_set(frac,inst);}catch(e){}
+  var frac=v/10,inst=instant||OB_rm();
   var SUN_TR='transform .4s cubic-bezier(.22,.61,.36,1)',ARC_TR='stroke-dashoffset .2s linear';
   var sun=document.getElementById('sbObSun'),arc=document.getElementById('sbObArcT');
   if(!sun||!arc)return;
@@ -10595,13 +10595,18 @@ function OB_calcProgress(){return OB.step<=1?0:Math.min(10,2*(OB.step-1)+OB_halv
 function OB_syncDial(instant){OB_setProgress(OB_calcProgress(),instant);}
 
 /* ---------------- validation ---------------- */
+function OB_daysInMonth(y,m){
+  if(m===2)return ((y%4===0&&y%100!==0)||y%400===0)?29:28;
+  return [31,28,31,30,31,30,31,31,30,31,30,31][m-1];
+}
 function OB_validDob(){
   var d=OB.p.dob;if(!d||!d.y||!d.m||!d.d)return false;
   var y=+d.y,m=+d.m,dd=+d.d,now=new Date();
-  if(y<1900||y>now.getFullYear()||m<1||m>12||dd<1)return false;
-  var dim=new Date(y,m,0).getDate();
-  if(dd>dim)return false;
-  var bt=new Date(y,m-1,dd);
+  /* No 1900 floor: historical births are valid input. Day counts are computed
+     directly (not via new Date(y,...)) because JS maps years 0-99 onto 1900-1999. */
+  if(y<1||y>now.getFullYear()||m<1||m>12||dd<1)return false;
+  if(dd>OB_daysInMonth(y,m))return false;
+  var bt=new Date(2000,m-1,dd);bt.setFullYear(y);
   return bt.getTime()<=now.getTime();
 }
 function OB_validTime(){
@@ -10639,8 +10644,32 @@ function SBScene_mount(parent){
      +'#sbOb #sbObDial{display:none!important}'
      +'#sbOb #sbObScroll{overflow:hidden}'
      +'#sbOb #sbObInner{display:block;padding:0;min-height:100%}'
-     +'#sbOb #sbObCard{position:absolute;left:50%;transform:translateX(-50%);top:37vh;height:46vh;width:min(92vw,460px);max-width:460px;margin:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden;z-index:4;background:rgba(9,9,20,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}'
-     +'#sbOb #sbObFit{width:100%}';
+     +'#sbObBrand{position:absolute;top:58px;left:12px;right:12px;text-align:center;z-index:6;pointer-events:none;'
+       +'font-family:"Uncial Antiqua","IM Fell English SC","Cormorant Unicase","Cinzel Decorative",serif;font-weight:400;line-height:1.08;'
+       +'font-size:clamp(32px,9vw,56px);letter-spacing:.06em;'
+       +'color:transparent;-webkit-text-stroke:1.7px rgba(0,0,0,.94);text-stroke:1.7px rgba(0,0,0,.94);'
+       +'transition:color 1s ease,text-shadow 1s ease}'
+     +'@media (min-width:641px){#sbObBrand{top:26px;font-size:clamp(46px,4.4vw,70px);-webkit-text-stroke-width:2.1px}}'
+     +'#sbOb #sbObCard{position:absolute;left:50%;transform:translateX(-50%);top:37vh;height:46vh;top:36dvh;height:48dvh;width:min(92vw,460px);max-width:460px;margin:0;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:4;background:rgba(9,9,20,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}'
+     /* Titles are gone from steps 2-5, so each card is tuned by hand to sit inside
+        the fixed box (tree line above, moon below) with no scaling tricks. */
+     +'#sbOb #sbObCard>*:first-child{margin-top:0!important}'
+     +'#sbOb #sbObCard .sbObLbl{margin:10px 0 4px!important}'
+     +'#sbOb #sbObCard .sbObIn{padding:7px 2px!important;font-size:16px!important}'
+     +'#sbOb #sbObCard .sbObSeg{gap:8px!important}'
+     +'#sbOb #sbObCard .sbObOpt{padding:8px 14px!important;min-height:38px!important}'
+     +'#sbOb #sbObCard .sbObBtn{margin-top:14px!important;padding:11px 16px!important}'
+     +'#sbOb #sbObCard .sbObChk{min-height:34px!important;margin-top:8px!important;font-size:13px!important}'
+     +'#sbOb #sbObCard .sbObCalm{display:none!important}'
+     +'#sbOb #sbObCard #sbObErr:empty{display:none!important;margin:0!important}'
+     /* step 1 — welcome: roomiest, keeps its big title */
+     +'#sbOb #sbObCard.sbStep1 .sbObSub{margin:0 0 14px!important;line-height:1.55!important}'
+     /* steps 3 and 5 carry the most controls — squeeze the rhythm a little further */
+     +'#sbOb #sbObCard.sbStep3 .sbObLbl,#sbOb #sbObCard.sbStep5 .sbObLbl{margin:7px 0 3px!important;font-size:9.5px!important}'
+     +'#sbOb #sbObCard.sbStep3 .sbObSeg,#sbOb #sbObCard.sbStep5 .sbObSeg{gap:6px!important}'
+     +'#sbOb #sbObCard.sbStep3 .sbObOpt,#sbOb #sbObCard.sbStep5 .sbObOpt{padding:7px 12px!important;min-height:34px!important;font-size:11px!important}'
+     +'#sbOb #sbObCard.sbStep3 .sbObBtn,#sbOb #sbObCard.sbStep5 .sbObBtn{margin-top:10px!important;padding:10px 14px!important}'
+     +'#sbOb #sbObCard.sbStep3 .sbObIn{font-size:15px!important;padding:6px 2px!important}';
     document.head.appendChild(st);
   }
   var NS='http://www.w3.org/2000/svg';
@@ -10676,6 +10705,13 @@ function SBScene_mount(parent){
     +'<g id="sbs_streakW"><path id="sbs_streakP" d="M -22 277 L 22 277 L 12 656 L -12 656 Z" fill="url(#sbs_streak)" opacity="0"/></g>'
     +'<g id="sbs_moon"><circle r="150" fill="url(#sbs_moonHalo)"/><circle r="58" fill="#0f1020"/><path id="sbs_moonLit" d="" fill="url(#sbs_moonG)"/><g id="sbs_craters" opacity="0.5"></g><circle r="58" fill="none" stroke="rgba(228,234,250,.35)" stroke-width="1"/></g>';
   parent.insertBefore(svg, parent.querySelector('#sbObBack'));
+  /* Wordmark in the wheel's own typeface: hollow (outline only) at night, then
+     filled with gold as the sun climbs — the sunrise "lights it up". */
+  if(!document.getElementById('sbObBrand')){
+    var bd=document.createElement('div');bd.id='sbObBrand';
+    bd.textContent="The Sun's Book";
+    parent.appendChild(bd);
+  }
 
   var HOR=273,R=58,MOON_CY=718,MAXW=3200,el;
   function mk(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
@@ -10718,10 +10754,11 @@ function SBScene_mount(parent){
     svg:svg,sun:sun,rays:gr,moon:moon,lit:document.getElementById('sbs_moonLit'),
     dawn:document.getElementById('sbs_dawnR'),wwarm:document.getElementById('sbs_waterW'),
     hGlow:document.getElementById('sbs_hGlow'),belt:gb,firRim:rim,
-    streak:document.getElementById('sbs_streakP')};
+    streak:document.getElementById('sbs_streakP'),
+    brand:document.getElementById('sbObBrand')};
   SBScene.lit.setAttribute('d',SBScene_moonPath(R,1));
   SBScene_layout();
-  SBScene_set(0,true);
+  try{SBScene_step(false);}catch(e){SBScene_set(0,true);}
   try{SBCard_init();}catch(e){}
 }
 function SBScene_layout(){
@@ -10760,34 +10797,25 @@ function SBScene_set(frac,instant){
   S.streak.style.opacity=(sunOp?warm*0.8:0).toFixed(3);
   S.firRim.style.opacity=(warm*0.8).toFixed(3);
   S.belt.style.opacity=(1-warm).toFixed(3);
+  var bd=S.brand||(S.brand=document.getElementById('sbObBrand'));
+  if(bd){
+    bd.style.color='rgba(232,201,122,'+warm.toFixed(3)+')';
+    bd.style.textShadow=warm>0.02?('0 0 '+(20*warm).toFixed(1)+'px rgba(232,201,122,'+(0.6*warm).toFixed(3)+')'):'none';
+  }
   if(instant){void S.sun.getBoundingClientRect();S.sun.style.transition=tr;S.rays.style.transition=tg;}
   SBScene_moon(mfrac,instant);
+}
+/* The sky advances one notch per CONTINUE press (i.e. per onboarding step),
+   not while the user types. OB.step runs 1..5, then OB_finish completes the arc. */
+function SBScene_step(anim){
+  if(!SBScene)return;
+  var st=1;try{st=Math.max(1,Math.min(5,OB.step||1));}catch(e){}
+  SBScene_set(st/6,!anim);
 }
 /* Keep the onboarding card locked between the tree line and the moon: the box is
    fixed (CSS), and the CONTENT scales down to fit whenever a step is taller. */
 var SBCard_busy=false,SBCard_mo=null;
-function SBCard_fit(){
-  var card=document.getElementById('sbObCard');if(!card)return;
-  var fit=document.getElementById('sbObFit');
-  if(!fit||fit.parentNode!==card){
-    SBCard_busy=true;
-    fit=document.createElement('div');fit.id='sbObFit';
-    var kids=[],i;for(i=0;i<card.childNodes.length;i++)kids.push(card.childNodes[i]);
-    for(i=0;i<kids.length;i++)fit.appendChild(kids[i]);
-    card.appendChild(fit);
-    SBCard_busy=false;
-  }
-  fit.style.transform='none';
-  requestAnimationFrame(function(){
-    var f=document.getElementById('sbObFit');if(!f||!f.parentNode)return;
-    var c=f.parentNode,cs=getComputedStyle(c);
-    var avail=c.clientHeight-parseFloat(cs.paddingTop||'0')-parseFloat(cs.paddingBottom||'0');
-    var natural=f.scrollHeight;
-    var scale=(natural>avail&&avail>0)?Math.max(0.45,avail/natural):1;
-    f.style.transformOrigin='center center';
-    f.style.transform=scale<1?'scale('+scale.toFixed(3)+')':'none';
-  });
-}
+function SBCard_fit(){/* sizing is now hand-tuned per step in CSS; no runtime scaling */}
 function SBCard_init(){
   var card=document.getElementById('sbObCard');if(!card||SBCard_mo)return;
   try{SBCard_mo=new MutationObserver(function(){if(SBCard_busy)return;SBCard_fit();});
@@ -10928,6 +10956,7 @@ function OB_MON(){ return (OB.p&&OB.p.lang==='ka')?OB_MONTHS_KA:OB_MONTHS; }
 window.OB_T=OB_T;window.OB_MON=OB_MON;
 
 function OB_render(anim){
+  try{SBScene_step(!!anim);}catch(e){}
   if(!OB.open)return;
   OB.started=true;
   document.getElementById('sbObDial').style.display='block';
@@ -10942,24 +10971,21 @@ function OB_render(anim){
       +'<button type="button" class="sbObBtn" id="sbObGo">'+OB_T('Let&#39;s see what the sky says about me')+'</button>'
       +'<button type="button" class="sbObLink" id="sbObLogin">'+OB_T('Log in')+'</button>';
   }else if(OB.step===2){
-    h+='<p class="sbObTtl">'+OB_T('Who the sky belongs to')+'</p>'
-      +'<label class="sbObLbl" for="sbObUser">'+OB_T('Username')+'</label>'
+    h+='<label class="sbObLbl" for="sbObUser">'+OB_T('Username')+'</label>'
       +'<input class="sbObIn" id="sbObUser" type="text" placeholder="'+OB_T('Type your username')+'" autocomplete="nickname" maxlength="40" value="'+String(p.username||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">'
       +'<span class="sbObLbl" id="sbObLLbl">'+OB_T('Interface language')+'</span>'
       +OB_seg('sbObLang',[{v:'en',t:'English'},{v:'ka',t:'&#4325;&#4304;&#4320;&#4311;&#4323;&#4314;&#4312;'}],p.lang||'en')
       +'<button type="button" class="sbObBtn" id="sbObNext" disabled>'+OB_T('Continue')+'</button>';
   }else if(OB.step===3){
-    h+='<p class="sbObTtl">'+OB_T('Gender &amp; the exact hour')+'</p>'
-      +'<span class="sbObLbl" id="sbObGLbl">'+OB_T('Gender')+'</span>'
+    h+='<span class="sbObLbl" id="sbObGLbl">'+OB_T('Gender')+'</span>'
       +OB_seg('sbObGender',[{v:'f',t:OB_T('Female')},{v:'m',t:OB_T('Male')},{v:'na',t:OB_T('Prefer not to say')}],p.gender)
       +'<label class="sbObLbl" for="sbObTime">'+OB_T('Exact birth time')+'</label>'
       +'<input class="sbObIn" id="sbObTime" type="time" step="60"'+(p.timeKnown?'':' disabled')+' value="'+(OB_validTime()?OB_timeStr():'')+'">'
       +'<label class="sbObChk" for="sbObNoTime"><input type="checkbox" id="sbObNoTime"'+(p.timeKnown?'':' checked')+'>&nbsp;'+OB_T('I don&#39;t know my birth time')+'</label>'
-      +'<p class="sbObCalm" id="sbObCalm"'+(p.timeKnown?'':' style="display:block"')+'>'+OB_T('Then I&#39;ll draw your solar chart &mdash; the Sun becomes your ascendant. You can add the time later for precise houses.')+'</p>'
+      +'<p class="sbObCalm" id="sbObCalm" hidden></p>'
       +'<button type="button" class="sbObBtn" id="sbObNext" disabled>'+OB_T('Continue')+'</button>';
   }else if(OB.step===4){
-    h+='<p class="sbObTtl">'+OB_T('Where, and when')+'</p>'
-      +'<label class="sbObLbl" for="sbObCity">'+OB_T('City of birth')+'</label>'
+    h+='<label class="sbObLbl" for="sbObCity">'+OB_T('City of birth')+'</label>'
       +'<div id="sbObGeoWrap">'
       +'<input class="sbObIn" id="sbObCity" type="text" placeholder="'+OB_T('Start typing your city')+'" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list" value="'+(p.city?String(p.city.name).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'):'')+'">'
       +'<div id="sbObGeoList" role="listbox"></div>'
@@ -10974,14 +11000,14 @@ function OB_render(anim){
       +'</div>'
       +'<button type="button" class="sbObBtn" id="sbObNext" disabled>'+OB_T('Continue')+'</button>';
   }else{
-    h+='<p class="sbObTtl">'+OB_T('Make the book yours')+'</p>'
-      +'<span class="sbObLbl">'+OB_T('Theme')+'</span>'
+    h+='<span class="sbObLbl">'+OB_T('Theme')+'</span>'
       +OB_seg('sbObTheme',[{v:'dark',t:OB_T('Dark')},{v:'light',t:OB_T('Light')}],p.theme||'dark')
       +'<span class="sbObLbl">'+OB_T('Font size')+'</span>'
       +OB_seg('sbObFont',[{v:'90',t:OB_T('Small')},{v:'100',t:OB_T('Normal')},{v:'115',t:OB_T('Large')},{v:'130',t:OB_T('Largest')}],String(p.font||100))
       +'<button type="button" class="sbObBtn" id="sbObNext">'+OB_T('Enter your sky')+'</button>';
   }
   h+='<p id="sbObErr" role="alert"></p>';
+  card.className='sbStep'+OB.step;
   card.innerHTML=h;
   OB_wire();
   OB_syncDial(!anim);
@@ -11085,19 +11111,37 @@ function OB_geoWire(){
     tId=setTimeout(function(){
       var my=++OB.seq;
       var loc=(typeof SB_localGeo==='function')?SB_localGeo(q):[];
-      if(loc.length)render(loc);
+      /* The built-in table is a last resort only. It used to render instantly and
+         get replaced ~1s later by the live results, so a fast tap could lock in a
+         coarse built-in coordinate. Now it appears only when the network is
+         actually unavailable (offline, request failed, or timed out). */
+      function fallback(msg){
+        if(my!==OB.seq)return;
+        if(loc.length)render(loc);
+        else render(null,msg);
+      }
+      if(navigator&&navigator.onLine===false){
+        fallback(OB_T('No connection - showing built-in cities only.'));return;
+      }
+      render(null,OB_T('Searching&hellip;'));
+      var done=false;
+      var killer=setTimeout(function(){
+        if(done)return;done=true;
+        fallback('Live search is unreachable right now - a built-in city such as Tbilisi, London or New York still works.');
+      },7000);
       var url='https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=6&language=en&format=json';
       (window.fetch?fetch(url):Promise.reject(new Error('no fetch')))
         .then(function(r){return r.json();})
         .then(function(j){
+          if(done)return;done=true;clearTimeout(killer);
           if(my!==OB.seq)return;
           var res=(j&&j.results)||[];
           if(res.length)render(res);
-          else if(!loc.length)render(null,OB_T('No city found by that name - check the spelling.'));
+          else render(null,OB_T('No city found by that name - check the spelling.'));
         })
         .catch(function(){
-          if(my!==OB.seq)return;
-          if(!loc.length)render(null,'Live search is unreachable right now - a built-in city such as Tbilisi, London or New York still works.');
+          if(done)return;done=true;clearTimeout(killer);
+          fallback('Live search is unreachable right now - a built-in city such as Tbilisi, London or New York still works.');
         });
     },280);
   });
@@ -11196,6 +11240,7 @@ function OB_finish(){
   cancelAnimationFrame(OB.twinkleRaf);
   var p=OB.p;
   OB_setProgress(10,false);                       /* sun to the zenith */
+  try{SBScene_set(1,false);}catch(e){}
   OB_applySettings();                             /* write -> persist -> apply */
   var castOK=OB_castCurrent()||OB_cast();
   if(!castOK){
