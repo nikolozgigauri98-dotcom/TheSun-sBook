@@ -8706,7 +8706,7 @@ function SB3D_injectStyles(){
   +'#sb3dWt{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);width:min(430px,88vw);background:rgba(13,13,26,0.80);border:1px solid rgba(201,168,76,0.55);border-radius:14px;padding:16px 18px 14px;z-index:8;display:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;pointer-events:auto}'
   +'#sb3dWtTtl{font-family:Cinzel,serif;letter-spacing:0.22em;color:#e8c97a;font-size:12px;margin-bottom:8px;text-transform:uppercase}'
   +'#sb3dWtTxt{color:#d8d0b8;font-size:13.5px;line-height:1.75;margin-bottom:12px}'
-  +'#sb3dWt{max-height:66vh;overflow-y:auto;-webkit-overflow-scrolling:touch}'
+  +'#sb3dWt{max-height:72vh;overflow:visible}'
   +'#sb3dWtProg{font-family:Cinzel,serif;letter-spacing:.18em;text-transform:uppercase;font-size:9px;color:#8d8298;margin-bottom:6px;display:none}'
   +'#sb3dWtTxt p{margin:0 0 8px}#sb3dWtTxt p:last-child{margin-bottom:0}'
   +'#sb3dWtTxt b{color:#e8c97a;font-weight:600}'
@@ -8724,15 +8724,18 @@ function SB3D_injectStyles(){
   +'#sb3dWtMore{display:none;background:none;border:none;color:#c9a84c;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:4px 0;margin-bottom:8px}'
   +'#sb3dWtP2{display:none;text-align:left;border-top:1px solid rgba(201,168,76,.25);padding-top:10px;margin-bottom:12px;color:#c3bbab;font-size:12.5px;line-height:1.7}'
   +'#sb3dWtP2 p{margin:0 0 8px}'
-  +'@media(min-width:641px){#sb3dWtSkip{top:104px;right:12px}#sb3dMute{top:104px;right:96px}}'
-  +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:24px;transform:none;width:min(390px,34vw);max-height:58vh;text-align:left;background:rgba(13,13,26,0.62)}}'
+  +'#sb3dWtFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}'
+  +'#sb3dWtFoot #sb3dWtBtn{margin:0;flex:0 0 auto}'
+  +'#sb3dWtMore{flex:1 1 auto;text-align:left;margin:0}'
+  +'#sb3dWtP2{max-height:34vh;overflow-y:auto;-webkit-overflow-scrolling:touch}'
+  +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:24px;transform:none;width:min(390px,34vw);max-height:68vh;text-align:left;background:rgba(13,13,26,0.62)}}'
   +'@media(min-width:641px){#sb3dWtTxt{color:#efe9db;font-size:14px}#sb3dWtTxt b{color:#f4dda0}'+'.wtRead{color:#e4dcc8}.wtInner,.wtFlag{color:#d6cec0}.wtSoft,.wtEmpty{color:#b8b0c2}'+'.wtSign{color:#e4dcc8}#sb3dWtP2{color:#ddd5c6}}'
   +'#sb3dWtPoint{position:fixed;z-index:12;transform:translate(-50%,-100%);text-align:center;pointer-events:none;display:none}'
   +'.wtPtArrow{display:block;color:#e8c97a;font-size:22px;line-height:1;text-shadow:0 0 12px rgba(232,201,122,.9);animation:wtPtBob 1s ease-in-out infinite}'
   +'.wtPtLbl{display:block;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:9px;color:#e8c97a;margin-top:2px;text-shadow:0 1px 6px rgba(0,0,0,.9)}'
   +'@keyframes wtPtBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}'
-  +'#sb3dWtSkip{position:absolute;top:12px;right:64px;z-index:8;display:none;pointer-events:auto}'
-  +'#sb3dMute{position:absolute;top:12px;right:12px;z-index:9;display:none;pointer-events:auto;font-size:15px;padding:6px 10px;line-height:1}'
+  +'#sb3dWtSkip{position:absolute;top:112px;right:12px;z-index:10;display:none;pointer-events:auto}'
+  +'#sb3dMute{position:absolute;top:112px;right:104px;z-index:10;display:none;pointer-events:auto;font-size:15px;padding:6px 10px;line-height:1}'
   +'.sb3d-bar{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;z-index:5;pointer-events:none}'
   +'.sb3dRow{display:contents}' /* desktop: one flowing row, exactly as before */
   +'.sb3d-btn .bs{display:none}'
@@ -8747,6 +8750,7 @@ function SB3D_injectStyles(){
     +'.sb3dFoot{justify-content:space-between;margin-top:2px}'
     +'.sb3dFoot .sb3d-btn{flex:0 0 auto;padding:6px 14px;font-size:8px}'
     +'#sb3dMute{position:static;top:auto;right:auto;font-size:14px;padding:6px 12px}'
+    +'#sb3dWtSkip{top:auto;bottom:calc(96px + env(safe-area-inset-bottom));right:8px}'
   +'}'
   +'#sb3dCineQuit{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:8;opacity:0.8}'
   +'.sb3d-btn{pointer-events:auto;background:rgba(8,8,16,0.6);border:1px solid var(--gold-dim,#7a6030);color:var(--gold,#c9a84c);font-family:Cinzel,serif;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:9px 14px;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:all 0.25s}'
@@ -9395,6 +9399,7 @@ function SB3D_musicTry(){
   if(!SB3D_musicAllowed)return;
   var a=SB3D_musicEl();
   if(!a||SB3D_musicMutedPref())return;
+  a.volume=0.275; /* re-assert: an element built before this level shipped keeps the old one */
   if(a.paused&&a.play){var pr=a.play();if(pr&&pr.catch)pr.catch(function(){});}
 }
 /* capture-phase listeners on DOCUMENT: no stopPropagation downstream (the
@@ -9433,8 +9438,10 @@ function SB3D_musicStart(){
       else if(a&&a.paused)SB3D_musicTry();
       else SB3D_musicSetMuted(true);
     };
-    var _foot=document.getElementById('sb3dFoot');
-    if(_foot)_foot.insertBefore(b,_foot.firstChild);else ov.appendChild(b);
+    var _foot=document.getElementById('sb3dFoot'),_wide=true;
+    try{_wide=window.matchMedia('(min-width:641px)').matches;}catch(e){}
+    if(_foot&&!_wide)_foot.insertBefore(b,_foot.firstChild);
+    else ov.appendChild(b); /* on the overlay it survives the walkthrough */
   }
   if(b)b.style.display='block';
   SB3D_musicAllowed=true;
@@ -9740,8 +9747,9 @@ function SB3D_wtUI(){
   if(!card){
     card=document.createElement('div');card.id='sb3dWt';
     card.innerHTML='<div id="sb3dWtProg"></div><div id="sb3dWtTtl"></div><div id="sb3dWtTxt"></div>'
-      +'<button id="sb3dWtMore">Tell me more \u25BE</button><div id="sb3dWtP2"></div>'
-      +'<button class="sb3d-btn" id="sb3dWtBtn">Next \u25B8</button>';
+      +'<div id="sb3dWtP2"></div>'
+      +'<div id="sb3dWtFoot"><button id="sb3dWtMore">Tell me more \u25BE</button>'
+      +'<button class="sb3d-btn" id="sb3dWtBtn">Next \u25B8</button></div>';
     ov.appendChild(card);
     var sk=document.createElement('button');sk.id='sb3dWtSkip';sk.className='sb3d-btn';sk.textContent='Skip \u2715';
     ov.appendChild(sk);
