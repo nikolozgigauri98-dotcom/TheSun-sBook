@@ -8724,6 +8724,12 @@ function SB3D_injectStyles(){
   +'#sb3dWtMore{display:none;background:none;border:none;color:#c9a84c;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:4px 0;margin-bottom:8px}'
   +'#sb3dWtP2{display:none;text-align:left;border-top:1px solid rgba(201,168,76,.25);padding-top:10px;margin-bottom:12px;color:#c3bbab;font-size:12.5px;line-height:1.7}'
   +'#sb3dWtP2 p{margin:0 0 8px}'
+  +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:24px;transform:none;width:min(390px,34vw);max-height:58vh;text-align:left;background:rgba(13,13,26,0.62)}}'
+  +'@media(min-width:641px){#sb3dWtTxt{color:#efe9db;font-size:14px}#sb3dWtTxt b{color:#f4dda0}'+'.wtRead{color:#e4dcc8}.wtInner,.wtFlag{color:#d6cec0}.wtSoft,.wtEmpty{color:#b8b0c2}'+'.wtSign{color:#e4dcc8}#sb3dWtP2{color:#ddd5c6}}'
+  +'#sb3dWtPoint{position:fixed;z-index:12;transform:translate(-50%,-100%);text-align:center;pointer-events:none;display:none}'
+  +'.wtPtArrow{display:block;color:#e8c97a;font-size:22px;line-height:1;text-shadow:0 0 12px rgba(232,201,122,.9);animation:wtPtBob 1s ease-in-out infinite}'
+  +'.wtPtLbl{display:block;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:9px;color:#e8c97a;margin-top:2px;text-shadow:0 1px 6px rgba(0,0,0,.9)}'
+  +'@keyframes wtPtBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}'
   +'#sb3dWtSkip{position:absolute;top:12px;right:64px;z-index:8;display:none;pointer-events:auto}'
   +'#sb3dMute{position:absolute;top:12px;right:12px;z-index:9;display:none;pointer-events:auto;font-size:15px;padding:6px 10px;line-height:1}'
   +'.sb3d-bar{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;z-index:5;pointer-events:none}'
@@ -9609,13 +9615,16 @@ function SB3D_wtBuildSteps(){
     var isNodeAxis=(ax===nodeAxis);
     var copy=SB3D_AXIS_COPY[ax.a+'-'+ax.b]||['','',''];
     /* side A */
-    steps.push({pov:'house'+ax.a,ttl:ax.key,prog:(ai+1)+' of '+total,
+    /* Every house is seen from the meadow at the centre of the sphere, head
+       turned toward it - standing inside the chart is the whole point. A
+       'house<N>' fly-out lands you on the rim and it reads flat again. */
+    steps.push({look:ax.a,center:true,ttl:ax.key,prog:(ai+1)+' of '+total,
       html:houseBlock(ax,ax.a,0,true)});
     (planetsIn[ax.a]||[]).forEach(function(pl,pi){
       steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
       firstPlanetDone=true;
       if(!upachayaDone&&{3:1,6:1,10:1,11:1}[bodies[pl].house]&&{Mars:1,Saturn:1}[pl]){
-        steps.push({ttl:'The houses you climb',html:
+        steps.push({center:true,ttl:'The houses you climb',html:
           '<p>Here\u2019s something most people get wrong.</p>'
          +'<p>Mars, Saturn and Rahu \u2014 the \u201Cdifficult\u201D ones \u2014 are at their best in the houses of effort: the <b>Third, Sixth, Tenth and Eleventh</b>.</p>'
          +'<p>Those are the houses you climb. Difficulty is exactly what you want there.</p>'});
@@ -9623,14 +9632,14 @@ function SB3D_wtBuildSteps(){
       }
     });
     /* side B */
-    steps.push({look:ax.b,ttl:ax.key,prog:(ai+1)+' of '+total,
+    steps.push({look:ax.b,center:true,ttl:ax.key,prog:(ai+1)+' of '+total,
       html:houseBlock(ax,ax.b,1,false)+'<p class="wtAnt">'+copy[2]+'</p>'});
     (planetsIn[ax.b]||[]).forEach(function(pl,pi){
       steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
       firstPlanetDone=true;
     });
     /* the frame beat, once, after both kendra axes */
-    if(ai===1)steps.push({ttl:'The frame',html:
+    if(ai===1)steps.push({center:true,ttl:'The frame',html:
       '<p>Two axes. Four points.</p>'
      +'<p><b>You and everyone else. What\u2019s hidden and what\u2019s shown.</b></p>'
      +'<p>These four are the load-bearing walls of your chart. Everything else lives inside them.</p>'});
@@ -9640,7 +9649,7 @@ function SB3D_wtBuildSteps(){
   if(nodeAxis===null&&bodies.Rahu)steps.push(SB3D_wtNodeStep(s,false));
   steps.push(SB3D_wtLeanStep(s));
   steps.push(SB3D_wtWheelStep(s));
-  steps.push({final:true,ttl:'Dashas',html:
+  steps.push({final:true,showBar:true,ttl:'Dashas',html:
     '<p>One more thing.</p>'
    +'<p>See the <b>Dashas</b> button? Press it.</p>'
    +'<p>The wheel starts turning \u2014 the chapters of your life laid out in time, and every line of sight between your planets.</p>'
@@ -9657,7 +9666,7 @@ function SB3D_wtNodeStep(s,onKendra){
   if(onKendra)html+='<p class="wtFlag">And yours falls on an axis you\u2019ve already stood on \u2014 the strongest angle in your chart.</p>';
   var p2='';
   try{var sg=SB_signGet('Rahu',SB3D_wtSign(r.signIdx));if(sg&&sg.axis)p2='<p>'+sg.axis+'</p>';}catch(e){}
-  return{pov:'Ketu',ttl:'Rahu \u00B7 Ketu',html:html,html2:p2};
+  return{lookBody:'Ketu',center:true,ttl:'Rahu \u00B7 Ketu',html:html,html2:p2};
 }
 var SB3D_LEAN={Pleasure:[3,7,11],Resources:[2,6,10],Meaning:[1,5,9],Freedom:[4,8,12]};
 function SB3D_wtLeanStep(s){
@@ -9670,7 +9679,7 @@ function SB3D_wtLeanStep(s){
   var last=(tied>1)
     ?'Yours sits evenly across them \u2014 no single pull. That is its own kind of chart.'
     :'Yours leans toward <b>'+best+'</b> \u2014 '+cnt[best]+' of your seven planets sit there.';
-  return{ttl:'Your lean',html:
+  return{center:true,ttl:'Your lean',html:
     '<p>Your twelve houses fall into four groups:</p>'
    +'<p><b>Pleasure \u00B7 Resources \u00B7 Meaning \u00B7 Freedom</b></p>'
    +'<p class="wtAnt">'+last+'</p>'};
@@ -9745,7 +9754,7 @@ function SB3D_wtUI(){
 }
 function SB3D_wtStart(auto){
   var s=SB3D.state;if(!s||s.divMode||!s.main)return;
-  s.wtOn=true;s.wtAuto=!!auto;s.wtIdx=-1;
+  s.wtOn=true;s.wtAuto=!!auto;s.wtIdx=-1;s.wtAtCenter=false;
   /* a clean sky: every toggle dark, the dasha dial away, cinematic on */
   s.aspOn=false;s.balaOn=false;s.vargaOn=false;s.outersOn=false;s.transitsOn=false;
   if(s.dashaOn)SB3D_dashaToggle();
@@ -9765,18 +9774,33 @@ function SB3D_wtNext(){
   if(st&&st.final){SB3D_wtEnd(true);return;} /* Continue pressed on the last card */
   s.wtIdx++;st=s.wtSteps[s.wtIdx];
   if(!st){SB3D_wtEnd(true);return;}
-  if(st.pov){
-    SB3D_setPOV(st.pov);
+  if(st.center){
+    /* stay standing on the meadow at the centre and turn the head; the
+       camera only re-seats if we drifted off the meadow on a previous step */
+    if(s.wtAtCenter!==true){SB3D_setPOV('centerLow');s.wtAtCenter=true;}
+    var dir=null;
+    if(st.lookBody&&s.data.bodies[st.lookBody])dir=SB3D_v3(s.data.bodies[st.lookBody].vec);
+    else if(st.look){s.data.cusps.forEach(function(c){if(c.house===st.look)dir=SB3D_v3(c.midVec);});}
+    if(dir)SB3D_wtLookAt(dir,1400);
+    if(typeof SB3D_hideInfoPanel==='function')SB3D_hideInfoPanel();
+  }else if(st.pov){
+    SB3D_setPOV(st.pov);s.wtAtCenter=false;
     if(typeof SB3D_hideInfoPanel==='function')SB3D_hideInfoPanel(); /* cinematic: nothing else on screen */
   }else if(st.look){
     var cu=null;s.data.cusps.forEach(function(c){if(c.house===st.look)cu=c;});
     if(cu)SB3D_wtLookAt(SB3D_v3(cu.midVec));
   }else if(st.overview){
     s.vargaOn=true;s.outersOn=true; /* he sees the amsha rings, the dignity scores and the outers */
-    SB3D_setPOV('overview');
+    SB3D_setPOV('overview');s.wtAtCenter=false;
     if(s.syncToggles)s.syncToggles();
     document.getElementById('sb3dBar').style.display='none'; /* still cinematic */
   }
+  /* the closing card teaches a real button, so the bar has to be on screen */
+  if(st.showBar){
+    var bar=document.getElementById('sb3dBar');if(bar)bar.style.display='flex';
+    if(s.syncToggles)s.syncToggles();
+    SB3D_wtPoint('sb3dDasha');
+  }else SB3D_wtPoint(null);
   var tt=document.getElementById('sb3dWtTtl');if(tt)tt.textContent=st.ttl||'';
   var pg=document.getElementById('sb3dWtProg');
   if(pg){if(st.prog){pg.textContent='Axis '+st.prog;pg.style.display='block';}else pg.style.display='none';}
@@ -9791,9 +9815,34 @@ function SB3D_wtNext(){
   }
   var nb=document.getElementById('sb3dWtBtn');if(nb)nb.innerHTML=(st.final?'Continue':'Next')+' \u25B8';
 }
+/* A bouncing arrow parked on a real toolbar button, the way a game teaches
+   its own interface. Passing null takes it away. */
+function SB3D_wtPoint(btnId){
+  var ar=document.getElementById('sb3dWtPoint');
+  if(!btnId){if(ar)ar.style.display='none';return;}
+  var btn=document.getElementById(btnId);if(!btn)return;
+  if(!ar){
+    ar=document.createElement('div');ar.id='sb3dWtPoint';
+    ar.innerHTML='<span class="wtPtArrow">\u25BC</span><span class="wtPtLbl">Click here</span>';
+    (document.getElementById('sb3dOverlay')||document.body).appendChild(ar);
+  }
+  ar.style.display='block';
+  var place=function(){
+    var b=document.getElementById(btnId);if(!b||ar.style.display==='none')return;
+    var r=b.getBoundingClientRect();
+    if(!r.width&&!r.height)return;
+    ar.style.left=(r.left+r.width/2)+'px';
+    ar.style.top=(r.top-8)+'px';
+  };
+  place();setTimeout(place,60);setTimeout(place,320);
+  if(ar._ro)window.removeEventListener('resize',ar._ro);
+  ar._ro=place;window.addEventListener('resize',place);
+  btn.addEventListener('click',function(){SB3D_wtPoint(null);},{once:true});
+}
 function SB3D_wtEnd(toMainPage){
   var s=SB3D.state;if(!s)return;
-  s.wtOn=false;
+  s.wtOn=false;s.wtAtCenter=false;
+  if(typeof SB3D_wtPoint==='function')SB3D_wtPoint(null);
   var card=document.getElementById('sb3dWt');if(card)card.style.display='none';
   var sk=document.getElementById('sb3dWtSkip');if(sk)sk.style.display='none';
   if(toMainPage){SB3D_close();return;} /* the closing card lands on the main page UI */
