@@ -8724,6 +8724,7 @@ function SB3D_injectStyles(){
   +'#sb3dWtMore{display:none;background:none;border:none;color:#c9a84c;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:4px 0;margin-bottom:8px}'
   +'#sb3dWtP2{display:none;text-align:left;border-top:1px solid rgba(201,168,76,.25);padding-top:10px;margin-bottom:12px;color:#c3bbab;font-size:12.5px;line-height:1.7}'
   +'#sb3dWtP2 p{margin:0 0 8px}'
+  +'@media(min-width:641px){#sb3dWtSkip{top:104px;right:12px}#sb3dMute{top:104px;right:96px}}'
   +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:24px;transform:none;width:min(390px,34vw);max-height:58vh;text-align:left;background:rgba(13,13,26,0.62)}}'
   +'@media(min-width:641px){#sb3dWtTxt{color:#efe9db;font-size:14px}#sb3dWtTxt b{color:#f4dda0}'+'.wtRead{color:#e4dcc8}.wtInner,.wtFlag{color:#d6cec0}.wtSoft,.wtEmpty{color:#b8b0c2}'+'.wtSign{color:#e4dcc8}#sb3dWtP2{color:#ddd5c6}}'
   +'#sb3dWtPoint{position:fixed;z-index:12;transform:translate(-50%,-100%);text-align:center;pointer-events:none;display:none}'
@@ -9357,7 +9358,7 @@ function SB3D_musicEl(){
        playsinline for iOS, Blob URL for the big payload, data URI only if
        the Blob path ever errors */
     var a=document.createElement('audio');
-    a.loop=true;a.volume=0.55;a.preload='auto';
+    a.loop=true;a.volume=0.275;a.preload='auto';
     if(a.setAttribute){a.setAttribute('playsinline','');a.setAttribute('webkit-playsinline','');}
     var url;
     try{
@@ -9454,7 +9455,7 @@ function SB3D_musicStop(){
    ========================================================================== */
 var SB3D_AXES=[
   {a:1,b:7,  key:'Rising \u2194 Setting'},
-  {a:4,b:10, key:'Private \u2194 Achievement'},
+  {a:4,b:10, key:'Private \u2194 Visible'},
   {a:2,b:8,  key:'Resources \u2194 Other\u2019s resources'},
   {a:3,b:9,  key:'Thoughts \u2194 Beliefs'},
   {a:5,b:11, key:'Creative \u2194 Collective'},
@@ -9466,7 +9467,7 @@ var SB3D_AXIS_COPY={
          'Rising, and setting. This sign is always the exact mirror of your rising sign.'],
   '4-10':['Look down, past your feet. The Fourth \u2014 home, mother, roots, the part of you nobody sees.',
           'Now look straight up. The Fourth is what nobody sees. The Tenth is what <b>everybody</b> sees \u2014 work, reputation, what you\u2019re known for.',
-          'Private, and achievement. Same axis, other end.'],
+          'Private, and visible. Same axis, other end.'],
   '2-8':['The Second is what you gather and keep \u2014 money, voice, food, what\u2019s yours.',
          'Opposite it, the Eighth is what you <b>don\u2019t</b> hold alone: shared money, inheritance, the things that change you whether you agreed or not.',
          'What\u2019s yours, and what isn\u2019t.'],
@@ -9581,6 +9582,12 @@ function SB3D_wtPlanetStep(s,pl,firstPlanet,extraLead){
   try{var sg=SB_signGet(pl,sign);if(sg&&sg.body)p2+='<p class="wtEdgeH">'+pl+' in '+sign+'</p><p>'+sg.body+'</p>';}catch(e){}
   return{pov:pl,ttl:pl,html:p1,html2:p2};
 }
+var SB3D_HOUSE_POV={2:1,3:1,4:1,5:1,6:1};
+function SB3D_wtHouseStep(ax,h,copyIdx,prog,html){
+  var st={ttl:ax.key,prog:prog,html:html};
+  if(SB3D_HOUSE_POV[h]){st.pov='house'+h;}else{st.look=h;st.center=true;}
+  return st;
+}
 function SB3D_wtBuildSteps(){
   var s=SB3D.state,chart=s.chart,fn=chart.funcNature||{};
   var steps=[],bodies=s.data.bodies;
@@ -9614,12 +9621,14 @@ function SB3D_wtBuildSteps(){
   ordered.forEach(function(ax,ai){
     var isNodeAxis=(ax===nodeAxis);
     var copy=SB3D_AXIS_COPY[ax.a+'-'+ax.b]||['','',''];
+    /* the nodes frame the axis they sit on, so they open it */
+    if(isNodeAxis)steps.push(SB3D_wtNodeStep(s,nodeIsKendra));
     /* side A */
-    /* Every house is seen from the meadow at the centre of the sphere, head
-       turned toward it - standing inside the chart is the whole point. A
-       'house<N>' fly-out lands you on the rim and it reads flat again. */
-    steps.push({look:ax.a,center:true,ttl:ax.key,prog:(ai+1)+' of '+total,
-      html:houseBlock(ax,ax.a,0,true)});
+    /* Houses 2-6 sit low against the ground plane: seen from the meadow they
+       are just green field, so we fly down into them. The rest (1, 7-12) read
+       properly from the centre with the head turned, which keeps the sense of
+       standing inside the sphere. */
+    steps.push(SB3D_wtHouseStep(ax,ax.a,0,(ai+1)+' of '+total,houseBlock(ax,ax.a,0,true)));
     (planetsIn[ax.a]||[]).forEach(function(pl,pi){
       steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
       firstPlanetDone=true;
@@ -9632,8 +9641,8 @@ function SB3D_wtBuildSteps(){
       }
     });
     /* side B */
-    steps.push({look:ax.b,center:true,ttl:ax.key,prog:(ai+1)+' of '+total,
-      html:houseBlock(ax,ax.b,1,false)+'<p class="wtAnt">'+copy[2]+'</p>'});
+    steps.push(SB3D_wtHouseStep(ax,ax.b,1,(ai+1)+' of '+total,
+      houseBlock(ax,ax.b,1,false)+'<p class="wtAnt">'+copy[2]+'</p>'));
     (planetsIn[ax.b]||[]).forEach(function(pl,pi){
       steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
       firstPlanetDone=true;
@@ -9643,8 +9652,6 @@ function SB3D_wtBuildSteps(){
       '<p>Two axes. Four points.</p>'
      +'<p><b>You and everyone else. What\u2019s hidden and what\u2019s shown.</b></p>'
      +'<p>These four are the load-bearing walls of your chart. Everything else lives inside them.</p>'});
-    /* the nodes, on their own axis */
-    if(isNodeAxis||(nodeIsKendra&&ax===nodeAxis))steps.push(SB3D_wtNodeStep(s,nodeIsKendra));
   });
   if(nodeAxis===null&&bodies.Rahu)steps.push(SB3D_wtNodeStep(s,false));
   steps.push(SB3D_wtLeanStep(s));
