@@ -8706,6 +8706,24 @@ function SB3D_injectStyles(){
   +'#sb3dWt{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);width:min(430px,88vw);background:rgba(13,13,26,0.80);border:1px solid rgba(201,168,76,0.55);border-radius:14px;padding:16px 18px 14px;z-index:8;display:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;pointer-events:auto}'
   +'#sb3dWtTtl{font-family:Cinzel,serif;letter-spacing:0.22em;color:#e8c97a;font-size:12px;margin-bottom:8px;text-transform:uppercase}'
   +'#sb3dWtTxt{color:#d8d0b8;font-size:13.5px;line-height:1.75;margin-bottom:12px}'
+  +'#sb3dWt{max-height:66vh;overflow-y:auto;-webkit-overflow-scrolling:touch}'
+  +'#sb3dWtProg{font-family:Cinzel,serif;letter-spacing:.18em;text-transform:uppercase;font-size:9px;color:#8d8298;margin-bottom:6px;display:none}'
+  +'#sb3dWtTxt p{margin:0 0 8px}#sb3dWtTxt p:last-child{margin-bottom:0}'
+  +'#sb3dWtTxt b{color:#e8c97a;font-weight:600}'
+  +'.wtTone{font-family:Cinzel,serif;letter-spacing:.06em;font-size:12.5px;text-transform:uppercase}'
+  +'.wtTone.tone-1{color:#7fc98a}.wtTone.tone-2{color:#e0a34e}.wtTone.tone-3{color:#d4707a}'
+  +'.wtLead{font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;color:#9b90a8}'
+  +'.wtRead{font-style:italic;color:#cfc7b0}'
+  +'.wtInner,.wtFlag{font-size:12.5px;color:#bdb4a4}'
+  +'.wtSoft,.wtEmpty{font-size:12.5px;color:#9b93a6;font-style:italic}'
+  +'.wtSign{color:#cfc7b0}'
+  +'.wtAnt{font-family:Cinzel,serif;letter-spacing:.08em;color:#e8c97a;font-size:12.5px}'
+  +'.wtMotto{font-style:italic;color:#d8d0b8;line-height:1.6}'
+  +'.wtMottoBig{font-family:Cinzel,serif;font-style:normal;letter-spacing:.06em;color:#e8c97a;font-size:13px;line-height:1.7}'
+  +'.wtEdgeH{font-family:Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;font-size:9.5px;color:#8d8298;margin-top:12px}'
+  +'#sb3dWtMore{display:none;background:none;border:none;color:#c9a84c;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:4px 0;margin-bottom:8px}'
+  +'#sb3dWtP2{display:none;text-align:left;border-top:1px solid rgba(201,168,76,.25);padding-top:10px;margin-bottom:12px;color:#c3bbab;font-size:12.5px;line-height:1.7}'
+  +'#sb3dWtP2 p{margin:0 0 8px}'
   +'#sb3dWtSkip{position:absolute;top:12px;right:64px;z-index:8;display:none;pointer-events:auto}'
   +'#sb3dMute{position:absolute;top:12px;right:12px;z-index:9;display:none;pointer-events:auto;font-size:15px;padding:6px 10px;line-height:1}'
   +'.sb3d-bar{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;z-index:5;pointer-events:none}'
@@ -9423,46 +9441,263 @@ function SB3D_musicStop(){
   if(typeof SB_muteIcon==='function')SB_muteIcon();
 }
 
+/* ============================================================================
+   WALKTHROUGH — CARD DECK v1
+   Six axes (antonym pairs), planets as sub-POVs inside the house they occupy,
+   every astrological word taken from SB_TEXTS / SB_toneTitle. Nothing invented.
+   ========================================================================== */
+var SB3D_AXES=[
+  {a:1,b:7,  key:'Rising \u2194 Setting'},
+  {a:4,b:10, key:'Private \u2194 Achievement'},
+  {a:2,b:8,  key:'Resources \u2194 Other\u2019s resources'},
+  {a:3,b:9,  key:'Thoughts \u2194 Beliefs'},
+  {a:5,b:11, key:'Creative \u2194 Collective'},
+  {a:6,b:12, key:'Routine \u2194 Freedom'}
+];
+var SB3D_AXIS_COPY={
+  '1-7':['You\u2019re standing in your First House. This is you \u2014 the ground everything else is arranged around.',
+         'Now turn around. A full 180 degrees. If the First is <b>you</b>, the Seventh is <b>everyone else</b> \u2014 partners, close friends, anyone who meets you face to face.',
+         'Rising, and setting. This sign is always the exact mirror of your rising sign.'],
+  '4-10':['Look down, past your feet. The Fourth \u2014 home, mother, roots, the part of you nobody sees.',
+          'Now look straight up. The Fourth is what nobody sees. The Tenth is what <b>everybody</b> sees \u2014 work, reputation, what you\u2019re known for.',
+          'Private, and achievement. Same axis, other end.'],
+  '2-8':['The Second is what you gather and keep \u2014 money, voice, food, what\u2019s yours.',
+         'Opposite it, the Eighth is what you <b>don\u2019t</b> hold alone: shared money, inheritance, the things that change you whether you agreed or not.',
+         'What\u2019s yours, and what isn\u2019t.'],
+  '3-9':['The Third is thoughts, hands, courage, competition \u2014 everything you work out for yourself, up close.',
+         'Opposite, the Ninth is what reaches you from further away: teachers, long journeys, the things you were raised to hold true.',
+         'What you figure out, and what you\u2019re given.'],
+  '5-11':['The Fifth is what comes out of you alone \u2014 creation, children, romance, the spark nobody taught you.',
+          'Opposite, the Eleventh is what comes back from everyone else \u2014 friends, networks, gains.',
+          'What you make, and what returns.'],
+  '6-12':['The Sixth is the daily grind \u2014 work, discipline, the things you push through.',
+          'Opposite, the Twelfth is where all of it dissolves \u2014 sleep, retreat, release. The old books call it <i>moksha</i>: freedom.',
+          'Effort, and the end of effort.']
+};
+/* natural significator per house, as the book sets them out */
+var SB3D_HOUSE_KARAKA={1:['Sun'],2:['Jupiter'],3:['Mars'],4:['Moon'],5:['Jupiter'],
+  6:['Mars','Saturn'],7:['Venus'],8:['Saturn'],9:['Jupiter'],10:['Mercury'],11:['Jupiter'],12:['Saturn']};
+function SB3D_wtSign(idx){var s=(typeof SIGNS!=='undefined')&&SIGNS[idx];return s?s.name:'';}
+function SB3D_wtOrd(h){return(typeof SB_ORD_TXT!=='undefined'&&SB_ORD_TXT[h])?SB_ORD_TXT[h]:('House '+h);}
+/* house -> sign name, from the whole-sign cusp table */
+function SB3D_wtHouseSign(s,h){
+  var out='';(s.data.cusps||[]).forEach(function(c){
+    if(c.house===h&&c.signIdx!==undefined)out=SB3D_wtSign(c.signIdx);});
+  if(!out){var b=null;for(var k in s.data.bodies){if(s.data.bodies[k].house===h){b=s.data.bodies[k];break;}}
+    if(b)out=SB3D_wtSign(b.signIdx);}
+  return out;
+}
+/* the book's own reading, trimmed to its first three fragments (option B) */
+function SB3D_wtFrag(txt,n){
+  if(!txt)return'';
+  var parts=String(txt).split(/;|\u00B7/).map(function(x){return x.trim();}).filter(Boolean);
+  return parts.slice(0,n||3).join(' \u00B7 ');
+}
+function SB3D_wtHouseRead(pl,h){
+  try{var e=SB_txtGet('planetsInHouses',pl,h);return e?(e.pos||''):'';}catch(err){return'';}
+}
+/* one line per flag, only when true */
+function SB3D_wtFlags(s,pl){
+  var b=s.data.bodies[pl],chart=s.chart,out=[],fn=(chart.funcNature||{})[pl];
+  var HARSH={Mars:1,Saturn:1,Rahu:1,Ketu:1};
+  if(fn>=3){
+    out.push('This one rules your rising sign. Nothing else in the chart outranks it.');
+    if(HARSH[pl])out.push('Normally one of the harsh ones. But it rules <b>you</b> \u2014 and that cancels the harshness completely.');
+  }
+  if(b.nearCusp)out.push('Your rising degree makes that same degree of every sign the live wire of your chart. This planet sits right on it \u2014 it doesn\u2019t know how to be quiet.');
+  var kar=SB3D_HOUSE_KARAKA[b.house]||[];
+  if(kar.indexOf(pl)>=0)out.push('The natural significator of this house is '+pl+' \u2014 and it is actually standing in it. The signal doubles.');
+  if(b.retro)out.push('From Earth it looks like it\u2019s moving backwards. Not a mistake \u2014 this part of you works inward first, then outward.');
+  try{var cb=SB_pevCombust(chart,pl);if(cb&&cb.pct>0)out.push('It stood too close to the Sun to be seen. It works quietly, behind the scenes.');}catch(e){}
+  (s.data.wars||[]).forEach(function(w){
+    if(w&&(w.front===pl||w.back===pl))
+      out.push('Two planets inside one degree \u2014 a rare standoff. Only one wins the sky. Yours: <b>'+w.front+'</b> over '+w.back+'.');
+  });
+  if(pl==='Moon'&&b.nakshatra)out.push('The Moon was passing through <b>'+b.nakshatra+'</b>, one of 27 lunar mansions. This is the most personal point in the whole chart.');
+  /* said once per tour, not on every planet - it is an observation, not a refrain */
+  if(b.alt!==undefined&&!s.wtHorizonSaid){s.wtHorizonSaid=true;
+    out.push(b.alt>0
+      ?'This part of your sky is in full daylight. Planets here can\u2019t hide.'
+      :'This house sits below your horizon. Planets here work out of sight.');}
+  return out;
+}
+/* the inner sign line (navamsha) */
+function SB3D_wtInner(s,pl,first){
+  var b=s.data.bodies[pl];
+  if(b.navamshaSignIdx===undefined||b.navamshaSignIdx===null)return'';
+  var out=SB3D_wtSign(b.signIdx),inn=SB3D_wtSign(b.navamshaSignIdx);
+  if(!out||!inn)return'';
+  var lead=first?'Look closely: there\u2019s a <b>second sign</b> drawn on the planet. That\u2019s the sign behind the sign \u2014 how it behaves when nobody\u2019s watching.<br>':'';
+  if(out===inn)return lead+'<b>Same sign inside and out.</b> Rare \u2014 this one doesn\u2019t change when nobody\u2019s watching.';
+  return lead+'<b>'+out+' outside, '+inn+' inside.</b>';
+}
+/* dignity, in plain words */
+var SB3D_DIG_LINE=[
+  [90,'This is the best seat {P} can get. It\u2019s completely itself here.'],
+  [75,'{P} is at home in this sign. No strain.'],
+  [60,'A friendly seat. It gets help.'],
+  [45,'Neither helped nor blocked \u2014 it\u2019s on its own.'],
+  [25,'An awkward seat. It has to push harder than it should.'],
+  [0 ,'The hardest seat for {P}. People with this usually get quietly very good at it \u2014 the slow way.']
+];
+function SB3D_wtDig(pl,b){
+  var pts=null;
+  try{pts=(b.digInfo&&b.digInfo.points!==undefined)?b.digInfo.points:(typeof b.dignity==='number'?b.dignity:null);}catch(e){}
+  if(pts===null)return'';
+  for(var i=0;i<SB3D_DIG_LINE.length;i++)
+    if(pts>=SB3D_DIG_LINE[i][0])return SB3D_DIG_LINE[i][1].replace('{P}',pl);
+  return'';
+}
+/* a planet sub-POV card */
+function SB3D_wtPlanetStep(s,pl,firstPlanet,extraLead){
+  var b=s.data.bodies[pl];
+  var sign=SB3D_wtSign(b.signIdx),ord=SB3D_wtOrd(b.house);
+  var tone={cls:'',text:pl+' in the '+ord+' House'};
+  try{tone=SB_toneTitle(pl,b.house);}catch(e){}
+  var p1='<p class="wtLead">'+(extraLead||'You\u2019re not alone in this house.')+'</p>'
+        +'<p><b>'+pl+'</b> is in your <b>'+ord+' House</b>, in <b>'+sign+'</b>.</p>'
+        +'<p class="wtTone '+(tone.cls||'')+'">'+tone.text+'.</p>';
+  var read=SB3D_wtFrag(SB3D_wtHouseRead(pl,b.house),3);
+  if(read)p1+='<p class="wtRead">'+read+'</p>';
+  if(tone.cls==='tone-3')p1+='<p class="wtSoft">That\u2019s not a verdict on you \u2014 it\u2019s where this planet has to work hardest.</p>';
+  var inner=SB3D_wtInner(s,pl,firstPlanet);
+  if(inner)p1+='<p class="wtInner">'+inner+'</p>';
+  var flags=SB3D_wtFlags(s,pl);
+  if(flags.length)p1+='<p class="wtFlag">'+flags[0]+'</p>';
+  /* ---- page 2 ---- */
+  var full=SB3D_wtHouseRead(pl,b.house),neg='';
+  try{var e2=SB_txtGet('planetsInHouses',pl,b.house);neg=e2?(e2.neg||''):'';}catch(err){}
+  var p2='';
+  if(full)p2+='<p>'+full+'</p>';
+  if(neg)p2+='<p class="wtEdgeH">The other edge</p><p class="wtSoft">Every placement has a second edge. This is what this one asks you to watch.</p><p>'+neg+'</p>';
+  var dg=SB3D_wtDig(pl,b);if(dg)p2+='<p class="wtEdgeH">Dignity</p><p>'+dg+'</p>';
+  if(flags.length>1)p2+='<p class="wtEdgeH">Also true</p><p>'+flags.slice(1).join('<br>')+'</p>';
+  try{var sg=SB_signGet(pl,sign);if(sg&&sg.body)p2+='<p class="wtEdgeH">'+pl+' in '+sign+'</p><p>'+sg.body+'</p>';}catch(e){}
+  return{pov:pl,ttl:pl,html:p1,html2:p2};
+}
 function SB3D_wtBuildSteps(){
   var s=SB3D.state,chart=s.chart,fn=chart.funcNature||{};
-  /* planets burning at a cusp (within 4 deg of the ascendant degree) carry
-     the fire ring - the tour points it out */
-  function fireNote(pl){
-    var b=s.data.bodies[pl];
-    return(b&&b.nearCusp)?' This planet has a fiery glow around it, which means it will have a prominent influence in your life.':'';
-  }
-  var steps=[];
-  steps.push({pov:'centerLow',ttl:'First House',
-    txt:'This is your First House - the ground you stand on. Your whole sky is arranged around this point.'});
-  steps.push({look:10,ttl:'Tenth House',
-    txt:'Look up. This is your Tenth House - career, status, the highest visible point of your sky.'});
-  steps.push({look:7,ttl:'Seventh House',
-    txt:'And across the sky - your Seventh House: partnership, the other side of you.'});
-  steps.push({pov:'house4',ttl:'Fourth House',
-    txt:'This is your Fourth House - home, roots, your inner foundation.'});
-  var ruler=null;for(var p in fn)if(fn[p]>=3)ruler=p;
-  if(ruler&&s.main.povs[ruler])steps.push({pov:ruler,ttl:ruler+' \u00B7 Ascendant Ruler',
-    txt:'This is your Ascendant ruler - the most important planet in your chart.'+fireNote(ruler)});
-  var CATS=[
-    [function(v){return v===2;},'Strong Benefic','This is one of your strong benefic planets in this chart.'],
-    [function(v){return v===1;},'Mild Benefic',"This planet's intentions are mostly beneficial for this chart."],
-    [function(v){return v===0;},'Neutral','Dignity and aspects decide whether this planet acts good or demanding for this chart.'],
-    [function(v){return v===-1;},'Mild Demanding','This planet is mildly demanding in this chart.'],
-    [function(v){return v<=-2;},'Demanding','This planet demands a lot in this chart.']];
+  var steps=[],bodies=s.data.bodies;
+  s.wtHorizonSaid=false;
   var ORDER=['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn'];
-  CATS.forEach(function(cat){
-    ORDER.forEach(function(pl){
-      if(fn[pl]===undefined||fn[pl]>=3||!s.main.povs[pl])return;
-      if(cat[0](fn[pl]))steps.push({pov:pl,ttl:pl+' \u00B7 '+cat[1],txt:cat[2]+fireNote(pl)});
+  var planetsIn={},firstPlanetDone=false,upachayaDone=false;
+  ORDER.forEach(function(pl){var b=bodies[pl];if(!b)return;
+    (planetsIn[b.house]=planetsIn[b.house]||[]).push(pl);});
+  /* which axis carries the nodes */
+  var nodeH=(bodies.Rahu?bodies.Rahu.house:null),nodeAxis=null;
+  SB3D_AXES.forEach(function(ax){if(nodeH===ax.a||nodeH===ax.b)nodeAxis=ax;});
+  /* order: the two kendra axes, then the node axis, then the rest */
+  var kendra=SB3D_AXES.slice(0,2),rest=SB3D_AXES.slice(2),ordered=[];
+  kendra.forEach(function(ax){ordered.push(ax);});
+  var nodeIsKendra=(nodeAxis&&(nodeAxis.a===1||nodeAxis.a===4));
+  if(nodeAxis&&!nodeIsKendra)ordered.push(nodeAxis);
+  rest.forEach(function(ax){if(ax!==nodeAxis)ordered.push(ax);});
+  var total=ordered.length;
+  function houseBlock(ax,h,copyIdx,isFirstSide){
+    var sign=SB3D_wtHouseSign(s,h),copy=SB3D_AXIS_COPY[ax.a+'-'+ax.b]||['','',''];
+    var html='<p>'+copy[copyIdx]+'</p>';
+    if(sign)html+='<p class="wtSign">Yours is <b>'+sign+'</b>.</p>';
+    if(!(planetsIn[h]&&planetsIn[h].length)){
+      var lord=(typeof SIGNS!=='undefined'&&sign)?(function(){for(var i=0;i<SIGNS.length;i++)if(SIGNS[i].name===sign)return SIGNS[i].ruler;return null;})():null;
+      var lh=(lord&&bodies[lord])?bodies[lord].house:null;
+      html+='<p class="wtEmpty">No planet stands here \u2014 and that\u2019s normal. Seven planets, twelve houses.</p>';
+      if(lord&&lh)html+='<p class="wtEmpty">It\u2019s run by <b>'+lord+'</b>, which is standing in your <b>'+SB3D_wtOrd(lh)+' House</b>.</p>';
+    }
+    return html;
+  }
+  ordered.forEach(function(ax,ai){
+    var isNodeAxis=(ax===nodeAxis);
+    var copy=SB3D_AXIS_COPY[ax.a+'-'+ax.b]||['','',''];
+    /* side A */
+    steps.push({pov:'house'+ax.a,ttl:ax.key,prog:(ai+1)+' of '+total,
+      html:houseBlock(ax,ax.a,0,true)});
+    (planetsIn[ax.a]||[]).forEach(function(pl,pi){
+      steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
+      firstPlanetDone=true;
+      if(!upachayaDone&&{3:1,6:1,10:1,11:1}[bodies[pl].house]&&{Mars:1,Saturn:1}[pl]){
+        steps.push({ttl:'The houses you climb',html:
+          '<p>Here\u2019s something most people get wrong.</p>'
+         +'<p>Mars, Saturn and Rahu \u2014 the \u201Cdifficult\u201D ones \u2014 are at their best in the houses of effort: the <b>Third, Sixth, Tenth and Eleventh</b>.</p>'
+         +'<p>Those are the houses you climb. Difficulty is exactly what you want there.</p>'});
+        upachayaDone=true;
+      }
     });
+    /* side B */
+    steps.push({look:ax.b,ttl:ax.key,prog:(ai+1)+' of '+total,
+      html:houseBlock(ax,ax.b,1,false)+'<p class="wtAnt">'+copy[2]+'</p>'});
+    (planetsIn[ax.b]||[]).forEach(function(pl,pi){
+      steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
+      firstPlanetDone=true;
+    });
+    /* the frame beat, once, after both kendra axes */
+    if(ai===1)steps.push({ttl:'The frame',html:
+      '<p>Two axes. Four points.</p>'
+     +'<p><b>You and everyone else. What\u2019s hidden and what\u2019s shown.</b></p>'
+     +'<p>These four are the load-bearing walls of your chart. Everything else lives inside them.</p>'});
+    /* the nodes, on their own axis */
+    if(isNodeAxis||(nodeIsKendra&&ax===nodeAxis))steps.push(SB3D_wtNodeStep(s,nodeIsKendra));
   });
-  steps.push({pov:'center',ttl:'Your Chart',txt:'Welcome to your chart.'});
-  steps.push({overview:true,ttl:'The Full Wheel',
-    txt:'The amsha layers, every dignity score, and the outer planets - your whole sky at once.'});
-  steps.push({final:true,ttl:'Keep Exploring',
-    txt:'Want to explore divisional worlds, aspects, Shadbala and dasha timings? Press Continue.'});
+  if(nodeAxis===null&&bodies.Rahu)steps.push(SB3D_wtNodeStep(s,false));
+  steps.push(SB3D_wtLeanStep(s));
+  steps.push(SB3D_wtWheelStep(s));
+  steps.push({final:true,ttl:'Dashas',html:
+    '<p>One more thing.</p>'
+   +'<p>See the <b>Dashas</b> button? Press it.</p>'
+   +'<p>The wheel starts turning \u2014 the chapters of your life laid out in time, and every line of sight between your planets.</p>'
+   +'<p class="wtAnt">That\u2019s where your chart stops being a picture and starts being a clock.</p>'});
   return steps;
 }
+function SB3D_wtNodeStep(s,onKendra){
+  var b=s.data.bodies,r=b.Rahu,k=b.Ketu;
+  var html='<p class="wtLead">This line matters more than the rest.</p>'
+    +'<p>Rahu and Ketu aren\u2019t planets. They\u2019re the two points where the Moon\u2019s path crosses the Sun\u2019s \u2014 and they always sit exactly opposite.</p>';
+  if(k)html+='<p><b>Ketu</b>, in your <b>'+SB3D_wtOrd(k.house)+'</b>, is what you already know. It comes so easily you stopped noticing it.</p>';
+  if(r)html+='<p><b>Rahu</b>, in your <b>'+SB3D_wtOrd(r.house)+'</b>, is what you\u2019re hungry for and haven\u2019t reached. It never quite feels like enough.</p>';
+  html+='<p class="wtAnt">Your whole life leans along this line \u2014 away from what\u2019s easy, toward what isn\u2019t.</p>';
+  if(onKendra)html+='<p class="wtFlag">And yours falls on an axis you\u2019ve already stood on \u2014 the strongest angle in your chart.</p>';
+  var p2='';
+  try{var sg=SB_signGet('Rahu',SB3D_wtSign(r.signIdx));if(sg&&sg.axis)p2='<p>'+sg.axis+'</p>';}catch(e){}
+  return{pov:'Ketu',ttl:'Rahu \u00B7 Ketu',html:html,html2:p2};
+}
+var SB3D_LEAN={Pleasure:[3,7,11],Resources:[2,6,10],Meaning:[1,5,9],Freedom:[4,8,12]};
+function SB3D_wtLeanStep(s){
+  var b=s.data.bodies,cnt={},best=null,n=0;
+  for(var g in SB3D_LEAN){cnt[g]=0;
+    ['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn'].forEach(function(pl){
+      if(b[pl]&&SB3D_LEAN[g].indexOf(b[pl].house)>=0){cnt[g]++;n++;}});
+    if(best===null||cnt[g]>cnt[best])best=g;}
+  var tied=0;for(var g2 in cnt)if(cnt[g2]===cnt[best])tied++;
+  var last=(tied>1)
+    ?'Yours sits evenly across them \u2014 no single pull. That is its own kind of chart.'
+    :'Yours leans toward <b>'+best+'</b> \u2014 '+cnt[best]+' of your seven planets sit there.';
+  return{ttl:'Your lean',html:
+    '<p>Your twelve houses fall into four groups:</p>'
+   +'<p><b>Pleasure \u00B7 Resources \u00B7 Meaning \u00B7 Freedom</b></p>'
+   +'<p class="wtAnt">'+last+'</p>'};
+}
+function SB3D_wtWheelStep(s){
+  var b=s.data.bodies,chart=s.chart,fn=chart.funcNature||{};
+  var ORDER=['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn'];
+  var loud=null,asks=null,ak=null;
+  ORDER.forEach(function(pl){
+    if(!b[pl])return;
+    if(b[pl].shadbala!==null&&(loud===null||b[pl].shadbala>b[loud].shadbala))loud=pl;
+    if(fn[pl]!==undefined&&fn[pl]<3&&(asks===null||fn[pl]<fn[asks]))asks=pl;});
+  try{var ck=chart.charaKarakas||{};for(var p in ck)if(ck[p]==='AK'||ck[p]==='Atmakaraka')ak=p;}catch(e){}
+  var line='';
+  if(loud)line+='<b>'+loud+'</b> is your loudest voice. ';
+  if(asks)line+='<b>'+asks+'</b> asks the most of you. ';
+  if(ak)line+='<b>'+ak+'</b> carries what you\u2019re here to work out.';
+  return{overview:true,ttl:'The full wheel',html:
+    '<p>Everything at once \u2014 every layer, every score, every planet.</p>'
+   +(line?'<p>'+line+'</p>':'')
+   +'<p class="wtMotto">Now you\u2019ve seen the script from above.<br>'
+   +'And every bit of it can be rewritten \u2014 that part was never the sky\u2019s.</p>'
+   +'<p class="wtMotto wtMottoBig">The planets are the hands of the clock.<br>'
+   +'They show the time; they don\u2019t make it.<br>'
+   +'The making is in your hands.</p>'};
+}
+
 /* smooth head-turn to a world direction while standing still (centerLow).
    Waits out any flight still in the air (fast Next presses), then solves
    yaw/pitch against the LIVE basis and eases there the short way around */
@@ -9488,12 +9723,21 @@ function SB3D_wtUI(){
   var card=document.getElementById('sb3dWt');
   if(!card){
     card=document.createElement('div');card.id='sb3dWt';
-    card.innerHTML='<div id="sb3dWtTtl"></div><div id="sb3dWtTxt"></div><button class="sb3d-btn" id="sb3dWtBtn">Next \u25B8</button>';
+    card.innerHTML='<div id="sb3dWtProg"></div><div id="sb3dWtTtl"></div><div id="sb3dWtTxt"></div>'
+      +'<button id="sb3dWtMore">Tell me more \u25BE</button><div id="sb3dWtP2"></div>'
+      +'<button class="sb3d-btn" id="sb3dWtBtn">Next \u25B8</button>';
     ov.appendChild(card);
     var sk=document.createElement('button');sk.id='sb3dWtSkip';sk.className='sb3d-btn';sk.textContent='Skip \u2715';
     ov.appendChild(sk);
     var nb=card.querySelector('#sb3dWtBtn');
     if(nb)nb.onclick=function(){SB3D_wtNext();};
+    var mb=card.querySelector('#sb3dWtMore');
+    if(mb)mb.onclick=function(){
+      var p2=document.getElementById('sb3dWtP2');if(!p2)return;
+      var open=(p2.style.display!=='none'&&p2.style.display!=='');
+      p2.style.display=open?'none':'block';
+      mb.textContent=open?'Tell me more \u25BE':'Less \u25B4';
+    };
     sk.onclick=function(){SB3D_wtSkip();};
   }
   card.style.display='block';
@@ -9533,8 +9777,18 @@ function SB3D_wtNext(){
     if(s.syncToggles)s.syncToggles();
     document.getElementById('sb3dBar').style.display='none'; /* still cinematic */
   }
-  var tt=document.getElementById('sb3dWtTtl');if(tt)tt.textContent=st.ttl;
-  var tx=document.getElementById('sb3dWtTxt');if(tx)tx.textContent=st.txt;
+  var tt=document.getElementById('sb3dWtTtl');if(tt)tt.textContent=st.ttl||'';
+  var pg=document.getElementById('sb3dWtProg');
+  if(pg){if(st.prog){pg.textContent='Axis '+st.prog;pg.style.display='block';}else pg.style.display='none';}
+  var tx=document.getElementById('sb3dWtTxt');
+  if(tx){if(st.html)tx.innerHTML=st.html;else tx.textContent=st.txt||'';}
+  /* page 2 lives behind "Tell me more" and only exists when the step has one */
+  var more=document.getElementById('sb3dWtMore'),p2=document.getElementById('sb3dWtP2');
+  if(p2){p2.innerHTML=st.html2||'';p2.style.display='none';}
+  if(more){
+    more.style.display=st.html2?'block':'none';
+    more.textContent='Tell me more \u25BE';
+  }
   var nb=document.getElementById('sb3dWtBtn');if(nb)nb.innerHTML=(st.final?'Continue':'Next')+' \u25B8';
 }
 function SB3D_wtEnd(toMainPage){
