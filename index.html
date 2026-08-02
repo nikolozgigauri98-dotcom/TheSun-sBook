@@ -8706,33 +8706,65 @@ function SB3D_injectStyles(){
   +'#sb3dWt{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);width:min(430px,88vw);background:rgba(13,13,26,0.80);border:1px solid rgba(201,168,76,0.55);border-radius:14px;padding:16px 18px 14px;z-index:8;display:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;pointer-events:auto}'
   +'#sb3dWtTtl{font-family:Cinzel,serif;letter-spacing:0.22em;color:#e8c97a;font-size:12px;margin-bottom:8px;text-transform:uppercase}'
   +'#sb3dWtTxt{color:#d8d0b8;font-size:13.5px;line-height:1.75;margin-bottom:12px}'
-  +'#sb3dWt{max-height:72vh;overflow:visible}'
+  +'#sb3dWt{max-height:72vh;overflow:hidden;display:flex;flex-direction:column}'
   +'#sb3dWtProg{font-family:Cinzel,serif;letter-spacing:.18em;text-transform:uppercase;font-size:9px;color:#8d8298;margin-bottom:6px;display:none}'
   +'#sb3dWtTxt p{margin:0 0 8px}#sb3dWtTxt p:last-child{margin-bottom:0}'
   +'#sb3dWtTxt b{color:#e8c97a;font-weight:600}'
   +'.wtTone{font-family:Cinzel,serif;letter-spacing:.06em;font-size:12.5px;text-transform:uppercase}'
   +'.wtTone.tone-1{color:#7fc98a}.wtTone.tone-2{color:#e0a34e}.wtTone.tone-3{color:#d4707a}'
   +'.wtLead{font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;color:#9b90a8}'
-  +'.wtRead{font-style:italic;color:#cfc7b0}'
+  +'.wtRead{color:#cfc7b0}'
   +'.wtInner,.wtFlag{font-size:12.5px;color:#bdb4a4}'
-  +'.wtSoft,.wtEmpty{font-size:12.5px;color:#9b93a6;font-style:italic}'
+  +'.wtSoft,.wtEmpty{font-size:12.5px;color:#9b93a6}'
   +'.wtSign{color:#cfc7b0}'
   +'.wtAnt{font-family:Cinzel,serif;letter-spacing:.08em;color:#e8c97a;font-size:12.5px}'
-  +'.wtMotto{font-style:italic;color:#d8d0b8;line-height:1.6}'
+  +'.wtMotto{color:#d8d0b8;line-height:1.6}'
   +'.wtMottoBig{font-family:Cinzel,serif;font-style:normal;letter-spacing:.06em;color:#e8c97a;font-size:13px;line-height:1.7}'
   +'.wtEdgeH{font-family:Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;font-size:9.5px;color:#8d8298;margin-top:12px}'
   +'#sb3dWtMore{display:none;background:none;border:none;color:#c9a84c;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:4px 0;margin-bottom:8px}'
   +'#sb3dWtP2{display:none;text-align:left;border-top:1px solid rgba(201,168,76,.25);padding-top:10px;margin-bottom:12px;color:#c3bbab;font-size:12.5px;line-height:1.7}'
   +'#sb3dWtP2 p{margin:0 0 8px}'
+  +'#sb3dWtFoot{flex:0 0 auto}'
+  +'#sb3dWtSkip2{flex:0 0 auto;background:none;border:none;color:#9b90a8;font-family:Cinzel,serif;letter-spacing:.12em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:4px 2px}'
+  +'#sb3dWtMore{flex:1 1 auto;text-align:center}'
+  +'#sb3dWtSkip{display:none!important}'
+  +'#sb3dWtTxt p{margin:0 0 3px}'
+  +'.wtMobOnly{display:none}'
+  +'#sb3dWt.wtLow{top:auto!important;bottom:16px!important;max-height:52vh!important}'
+  +'#sb3dWt.wtLow #sb3dWtFoot{justify-content:space-between}'
+  +'#sb3dWt.wtLow #sb3dWtFoot #sb3dWtBtn{margin:0;padding:10px 18px;font-size:11px}'
+  +'#sb3dWt.wtLow ~ #sb3dWtNav #sb3dWtBtn{display:none}'
+  +'@media(min-width:641px){#sb3dWt.wtLow{bottom:20px!important}}'
+  +'#sb3dWt{padding-top:10px}'
+  +'#sb3dWtProg{margin-top:0;margin-bottom:3px}'
+  +'#sb3dWtTtl{margin-bottom:5px}'
+  +'.wtRead,.wtSoft,.wtEmpty,.wtInner,.wtFlag,#sb3dWtP2{font-style:normal!important;font-family:"EB Garamond",Georgia,serif}'
+  +'.wtRead{font-size:13.5px;color:#e6dfcd}'
+  +'.wtSoft,.wtEmpty{font-size:12.5px;color:#a9a1b4}'
+  +'.wtInner{font-size:13px;color:#e4dcc8}'
+  +'.wtFlag{font-size:12.5px;color:#c8c0b2}'
+  +'#sb3dWtNav{position:absolute;left:0;right:0;bottom:0;z-index:11;display:none;align-items:center;justify-content:space-between;gap:12px;pointer-events:none;padding:0 16px calc(16px + env(safe-area-inset-bottom))}'
+  +'#sb3dWtNav>*{pointer-events:auto}'
+  +'#sb3dWtNav #sb3dWtBtn{margin:0;padding:12px 22px;font-size:12px;background:rgba(13,13,26,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}'
+  +'#sb3dWtNav #sb3dWtSkip2{background:none;border:none;color:#9b90a8;font-family:Cinzel,serif;letter-spacing:.12em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:10px 4px;text-shadow:0 1px 6px rgba(0,0,0,.9)}'
+  +'#sb3dWtFoot{justify-content:center}'
+  +'#sb3dWtFoot #sb3dWtMore{flex:0 0 auto;text-align:center}'
+  +'.wtTone{display:inline}'
+  +'.wtEdgeH{margin-top:7px}'
+  +'@media(max-width:640px){#sb3dWt{top:calc(12px + env(safe-area-inset-top));bottom:auto;max-height:44vh;width:94vw}'+'#sb3dWtTxt{font-size:13px;line-height:1.5}'+'.wtLead{display:none}'
+   +'#sb3dWtTxt .wtFlag{display:none}'
+   +'.wtMobOnly{display:block}'+'#sb3dWtFoot{gap:6px}}'
   +'#sb3dWtFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}'
   +'#sb3dWtFoot #sb3dWtBtn{margin:0;flex:0 0 auto}'
   +'#sb3dWtMore{flex:1 1 auto;text-align:left;margin:0}'
-  +'#sb3dWtP2{max-height:34vh;overflow-y:auto;-webkit-overflow-scrolling:touch}'
-  +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:24px;transform:none;width:min(390px,34vw);max-height:68vh;text-align:left;background:rgba(13,13,26,0.62)}}'
+  +'#sb3dWtTxt,#sb3dWtP2{overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}'
+  +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:86px;transform:none;width:min(390px,34vw);max-height:68vh;text-align:left;background:rgba(13,13,26,0.62)}}'
   +'@media(min-width:641px){#sb3dWtTxt{color:#efe9db;font-size:14px}#sb3dWtTxt b{color:#f4dda0}'+'.wtRead{color:#e4dcc8}.wtInner,.wtFlag{color:#d6cec0}.wtSoft,.wtEmpty{color:#b8b0c2}'+'.wtSign{color:#e4dcc8}#sb3dWtP2{color:#ddd5c6}}'
-  +'#sb3dWtPoint{position:fixed;z-index:12;transform:translate(-50%,-100%);text-align:center;pointer-events:none;display:none}'
+  +'#sb3dWtPoint{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%);pointer-events:none;z-index:12;line-height:1}'
+  +'.wtPtOn{box-shadow:0 0 0 1px rgba(232,201,122,.9),0 0 18px rgba(232,201,122,.55);animation:wtPtGlow 1.4s ease-in-out infinite}'
+  +'@keyframes wtPtGlow{0%,100%{box-shadow:0 0 0 1px rgba(232,201,122,.9),0 0 10px rgba(232,201,122,.4)}50%{box-shadow:0 0 0 1px rgba(232,201,122,1),0 0 24px rgba(232,201,122,.75)}}'
   +'.wtPtArrow{display:block;color:#e8c97a;font-size:22px;line-height:1;text-shadow:0 0 12px rgba(232,201,122,.9);animation:wtPtBob 1s ease-in-out infinite}'
-  +'.wtPtLbl{display:block;font-family:Cinzel,serif;letter-spacing:.14em;text-transform:uppercase;font-size:9px;color:#e8c97a;margin-top:2px;text-shadow:0 1px 6px rgba(0,0,0,.9)}'
+  
   +'@keyframes wtPtBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}'
   +'#sb3dWtSkip{position:absolute;top:112px;right:12px;z-index:10;display:none;pointer-events:auto}'
   +'#sb3dMute{position:absolute;top:112px;right:104px;z-index:10;display:none;pointer-events:auto;font-size:15px;padding:6px 10px;line-height:1}'
@@ -9569,8 +9601,8 @@ function SB3D_wtPlanetStep(s,pl,firstPlanet,extraLead){
   var tone={cls:'',text:pl+' in the '+ord+' House'};
   try{tone=SB_toneTitle(pl,b.house);}catch(e){}
   var p1='<p class="wtLead">'+(extraLead||'You\u2019re not alone in this house.')+'</p>'
-        +'<p><b>'+pl+'</b> is in your <b>'+ord+' House</b>, in <b>'+sign+'</b>.</p>'
-        +'<p class="wtTone '+(tone.cls||'')+'">'+tone.text+'.</p>';
+        +'<p><b>'+pl+'</b> is in your <b>'+ord+' House</b>, in <b>'+sign+'</b>. '
+        +'<span class="wtTone '+(tone.cls||'')+'">'+tone.text+'.</span></p>';
   var read=SB3D_wtFrag(SB3D_wtHouseRead(pl,b.house),3);
   if(read)p1+='<p class="wtRead">'+read+'</p>';
   if(tone.cls==='tone-3')p1+='<p class="wtSoft">That\u2019s not a verdict on you \u2014 it\u2019s where this planet has to work hardest.</p>';
@@ -9584,6 +9616,9 @@ function SB3D_wtPlanetStep(s,pl,firstPlanet,extraLead){
   var p2='';
   if(full)p2+='<p>'+full+'</p>';
   if(neg)p2+='<p class="wtEdgeH">The other edge</p><p class="wtSoft">Every placement has a second edge. This is what this one asks you to watch.</p><p>'+neg+'</p>';
+  var mob='';
+  if(flags.length)mob+='<p>'+flags[0]+'</p>';
+  if(mob)p2='<div class="wtMobOnly">'+mob+'</div>'+p2;
   var dg=SB3D_wtDig(pl,b);if(dg)p2+='<p class="wtEdgeH">Dignity</p><p>'+dg+'</p>';
   if(flags.length>1)p2+='<p class="wtEdgeH">Also true</p><p>'+flags.slice(1).join('<br>')+'</p>';
   try{var sg=SB_signGet(pl,sign);if(sg&&sg.body)p2+='<p class="wtEdgeH">'+pl+' in '+sign+'</p><p>'+sg.body+'</p>';}catch(e){}
@@ -9663,7 +9698,7 @@ function SB3D_wtBuildSteps(){
   if(nodeAxis===null&&bodies.Rahu)steps.push(SB3D_wtNodeStep(s,false));
   steps.push(SB3D_wtLeanStep(s));
   steps.push(SB3D_wtWheelStep(s));
-  steps.push({final:true,showBar:true,ttl:'Dashas',html:
+  steps.push({final:true,showBar:true,lowCard:true,overview:true,ttl:'Dashas',html:
     '<p>One more thing.</p>'
    +'<p>See the <b>Dashas</b> button? Press it.</p>'
    +'<p>The wheel starts turning \u2014 the chapters of your life laid out in time, and every line of sight between your planets.</p>'
@@ -9711,7 +9746,7 @@ function SB3D_wtWheelStep(s){
   if(loud)line+='<b>'+loud+'</b> is your loudest voice. ';
   if(asks)line+='<b>'+asks+'</b> asks the most of you. ';
   if(ak)line+='<b>'+ak+'</b> carries what you\u2019re here to work out.';
-  return{overview:true,ttl:'The full wheel',html:
+  return{overview:true,lowCard:true,ttl:'The full wheel',html:
     '<p>Everything at once \u2014 every layer, every score, every planet.</p>'
    +(line?'<p>'+line+'</p>':'')
    +'<p class="wtMotto">Now you\u2019ve seen the script from above.<br>'
@@ -9724,6 +9759,30 @@ function SB3D_wtWheelStep(s){
 /* smooth head-turn to a world direction while standing still (centerLow).
    Waits out any flight still in the air (fast Next presses), then solves
    yaw/pitch against the LIVE basis and eases there the short way around */
+/* On phones the walkthrough card sits at the top of the screen, so the thing
+   being described has to sit low. Aiming the camera up by 15% of the view
+   height pushes the subject down by the same amount. FOV is 72deg vertical. */
+function SB3D_wtFrame(){
+  var s=SB3D.state,off=SB3D_wtFrameOff();
+  if(!s||!off||!s.anims)return;
+  /* Snapping the pitch on a timer used to fire mid-flight, which threw the
+     camera off its arc and showed empty sky. Wait for the flight to land, then
+     ease into the offset like any other move. */
+  var t0=null,p0=0;
+  s.anims.push(function(now){
+    if(s.flying){t0=null;return true;}
+    if(!s.wtOn)return false;
+    if(t0===null){t0=now;p0=s.pitch;}
+    var k=Math.min(1,(now-t0)/450),e=SB3D_ease(k);
+    s.pitch=p0+(off-p0)*e;
+    SB3D_applyLook();
+    return k<1;
+  });
+}
+function SB3D_wtFrameOff(){
+  try{if(!window.matchMedia('(max-width:640px)').matches)return 0;}catch(e){return 0;}
+  return -(72*Math.PI/180)*0.15;
+}
 function SB3D_wtLookAt(dir,dur){
   var s=SB3D.state;if(!s)return;
   var d=dir.clone().normalize();dur=dur||1500;
@@ -9733,7 +9792,7 @@ function SB3D_wtLookAt(dir,dur){
     var b=s.basis;if(!b)return false;
     if(t0===null){t0=now;y0=s.yaw;p0=s.pitch;}
     var yaw=Math.atan2(d.dot(b.right),d.dot(b.fwd));
-    var pitch=-Math.asin(Math.max(-1,Math.min(1,d.dot(b.up))));
+    var pitch=-Math.asin(Math.max(-1,Math.min(1,d.dot(b.up))))+SB3D_wtFrameOff();
     var dy=yaw-y0;dy=Math.atan2(Math.sin(dy),Math.cos(dy)); /* shortest turn */
     var k=Math.min(1,(now-t0)/dur),e=SB3D_ease(k);
     s.yaw=y0+dy*e;s.pitch=p0+(pitch-p0)*e;
@@ -9748,12 +9807,19 @@ function SB3D_wtUI(){
     card=document.createElement('div');card.id='sb3dWt';
     card.innerHTML='<div id="sb3dWtProg"></div><div id="sb3dWtTtl"></div><div id="sb3dWtTxt"></div>'
       +'<div id="sb3dWtP2"></div>'
-      +'<div id="sb3dWtFoot"><button id="sb3dWtMore">Tell me more \u25BE</button>'
-      +'<button class="sb3d-btn" id="sb3dWtBtn">Next \u25B8</button></div>';
+      +'<div id="sb3dWtFoot"><button id="sb3dWtMore">Tell me more \u25BE</button></div>';
     ov.appendChild(card);
+    /* Navigation lives on the screen, pinned to the bottom edge, so it stays put
+       while the card above it changes size from step to step. */
+    var nav=document.createElement('div');nav.id='sb3dWtNav';
+    nav.innerHTML='<button id="sb3dWtSkip2">Skip \u2715</button>'
+      +'<button class="sb3d-btn" id="sb3dWtBtn">Next \u25B8</button>';
+    ov.appendChild(nav);
     var sk=document.createElement('button');sk.id='sb3dWtSkip';sk.className='sb3d-btn';sk.textContent='Skip \u2715';
     ov.appendChild(sk);
-    var nb=card.querySelector('#sb3dWtBtn');
+    var sk2=nav.querySelector('#sb3dWtSkip2');
+    if(sk2)sk2.onclick=function(){SB3D_wtSkip();};
+    var nb=nav.querySelector('#sb3dWtBtn');
     if(nb)nb.onclick=function(){SB3D_wtNext();};
     var mb=card.querySelector('#sb3dWtMore');
     if(mb)mb.onclick=function(){
@@ -9765,7 +9831,8 @@ function SB3D_wtUI(){
     sk.onclick=function(){SB3D_wtSkip();};
   }
   card.style.display='block';
-  var skb=document.getElementById('sb3dWtSkip');if(skb)skb.style.display='block';
+  var nvb=document.getElementById('sb3dWtNav');if(nvb)nvb.style.display='flex';
+  var skb=document.getElementById('sb3dWtSkip');if(skb)skb.style.display='none';
 }
 function SB3D_wtStart(auto){
   var s=SB3D.state;if(!s||s.divMode||!s.main)return;
@@ -9792,14 +9859,14 @@ function SB3D_wtNext(){
   if(st.center){
     /* stay standing on the meadow at the centre and turn the head; the
        camera only re-seats if we drifted off the meadow on a previous step */
-    if(s.wtAtCenter!==true){SB3D_setPOV('centerLow');s.wtAtCenter=true;}
+    if(s.wtAtCenter!==true){SB3D_setPOV('centerLow');s.wtAtCenter=true;SB3D_wtFrame();}
     var dir=null;
     if(st.lookBody&&s.data.bodies[st.lookBody])dir=SB3D_v3(s.data.bodies[st.lookBody].vec);
     else if(st.look){s.data.cusps.forEach(function(c){if(c.house===st.look)dir=SB3D_v3(c.midVec);});}
     if(dir)SB3D_wtLookAt(dir,1400);
     if(typeof SB3D_hideInfoPanel==='function')SB3D_hideInfoPanel();
   }else if(st.pov){
-    SB3D_setPOV(st.pov);s.wtAtCenter=false;
+    SB3D_setPOV(st.pov);s.wtAtCenter=false;SB3D_wtFrame();
     if(typeof SB3D_hideInfoPanel==='function')SB3D_hideInfoPanel(); /* cinematic: nothing else on screen */
   }else if(st.look){
     var cu=null;s.data.cusps.forEach(function(c){if(c.house===st.look)cu=c;});
@@ -9808,7 +9875,7 @@ function SB3D_wtNext(){
     s.vargaOn=true;s.outersOn=true; /* he sees the amsha rings, the dignity scores and the outers */
     SB3D_setPOV('overview');s.wtAtCenter=false;
     if(s.syncToggles)s.syncToggles();
-    document.getElementById('sb3dBar').style.display='none'; /* still cinematic */
+    var _b=document.getElementById('sb3dBar');if(_b&&!st.showBar)_b.style.display='none'; /* cinematic, unless this card teaches a button */
   }
   /* the closing card teaches a real button, so the bar has to be on screen */
   if(st.showBar){
@@ -9829,36 +9896,43 @@ function SB3D_wtNext(){
     more.textContent='Tell me more \u25BE';
   }
   var nb=document.getElementById('sb3dWtBtn');if(nb)nb.innerHTML=(st.final?'Continue':'Next')+' \u25B8';
+  /* The two closing cards sit low and carry Next inside them: the wheel behind
+     needs the upper screen, and the toolbar is visible on the final step. */
+  var cardEl=document.getElementById('sb3dWt'),navEl=document.getElementById('sb3dWtNav'),
+      footEl=document.getElementById('sb3dWtFoot');
+  if(cardEl)cardEl.classList.toggle('wtLow',!!st.lowCard);
+  if(nb&&footEl&&navEl){
+    if(st.lowCard){if(nb.parentNode!==footEl)footEl.appendChild(nb);}
+    else{if(nb.parentNode!==navEl)navEl.appendChild(nb);}
+  }
 }
 /* A bouncing arrow parked on a real toolbar button, the way a game teaches
    its own interface. Passing null takes it away. */
 function SB3D_wtPoint(btnId){
-  var ar=document.getElementById('sb3dWtPoint');
-  if(!btnId){if(ar)ar.style.display='none';return;}
+  /* Absolute positioning kept landing a row off, because the toolbar rewraps
+     after it is un-hidden. Parent the marker to the button itself instead - it
+     then cannot be anywhere but on that button, whatever the layout does. */
+  var prev=document.getElementById('sb3dWtPoint');
+  if(prev&&prev.parentNode)prev.parentNode.removeChild(prev);
+  if(!btnId)return;
   var btn=document.getElementById(btnId);if(!btn)return;
-  if(!ar){
-    ar=document.createElement('div');ar.id='sb3dWtPoint';
-    ar.innerHTML='<span class="wtPtArrow">\u25BC</span><span class="wtPtLbl">Click here</span>';
-    (document.getElementById('sb3dOverlay')||document.body).appendChild(ar);
-  }
-  ar.style.display='block';
-  var place=function(){
-    var b=document.getElementById(btnId);if(!b||ar.style.display==='none')return;
-    var r=b.getBoundingClientRect();
-    if(!r.width&&!r.height)return;
-    ar.style.left=(r.left+r.width/2)+'px';
-    ar.style.top=(r.top-8)+'px';
-  };
-  place();setTimeout(place,60);setTimeout(place,320);
-  if(ar._ro)window.removeEventListener('resize',ar._ro);
-  ar._ro=place;window.addEventListener('resize',place);
-  btn.addEventListener('click',function(){SB3D_wtPoint(null);},{once:true});
+  try{if(getComputedStyle(btn).position==='static')btn.style.position='relative';}catch(e){btn.style.position='relative';}
+  var ar=document.createElement('span');ar.id='sb3dWtPoint';
+  ar.innerHTML='<span class="wtPtArrow">\u25BC</span>';
+  btn.appendChild(ar);
+  btn.classList.add('wtPtOn');
+  btn.addEventListener('click',function(){
+    btn.classList.remove('wtPtOn');
+    SB3D_wtPoint(null);
+  },{once:true});
 }
+
 function SB3D_wtEnd(toMainPage){
   var s=SB3D.state;if(!s)return;
   s.wtOn=false;s.wtAtCenter=false;
   if(typeof SB3D_wtPoint==='function')SB3D_wtPoint(null);
   var card=document.getElementById('sb3dWt');if(card)card.style.display='none';
+  var nv=document.getElementById('sb3dWtNav');if(nv)nv.style.display='none';
   var sk=document.getElementById('sb3dWtSkip');if(sk)sk.style.display='none';
   if(toMainPage){SB3D_close();return;} /* the closing card lands on the main page UI */
   document.getElementById('sb3dBar').style.display='flex';
@@ -10345,7 +10419,7 @@ function SB3D_startMain(){
     s.camera.position.copy(p);
   }
   el.addEventListener('wheel',function(ev){
-    if(s.mode!=='main')return;ev.preventDefault();
+    if(s.mode!=='main'||s.wtOn)return;ev.preventDefault(); /* zoom is off during the tour */
     zoomBy(-ev.deltaY*0.06);
   },{passive:false});
   function pinchDist(){
@@ -10390,7 +10464,7 @@ function SB3D_startMain(){
     if(pDown){
       var dx=ev.clientX-pDown.x,dy=ev.clientY-pDown.y;
       moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));
-      if(moved>12&&!s.flying){
+      if(moved>12&&!s.flying&&!s.wtOn){
         s.yaw=pDown.yaw+dx*0.0038;
         s.pitch=Math.max(-1.53,Math.min(1.53,pDown.pitch+dy*0.0038));
         SB3D_applyLook();
@@ -10488,7 +10562,7 @@ function SB3D_startMain(){
         }
       });
     }
-    if((s.joyVec.x||s.joyVec.y)&&!s.flying&&s.basis){ /* joystick glide */
+    if((s.joyVec.x||s.joyVec.y)&&!s.flying&&!s.wtOn&&s.basis){ /* joystick glide - off during the walkthrough */
       var dtj=Math.min(50,now-last);
       var fwdJ=new THREE.Vector3(0,0,-1).applyQuaternion(s.camera.quaternion);
       var rightJ=new THREE.Vector3(1,0,0).applyQuaternion(s.camera.quaternion);
