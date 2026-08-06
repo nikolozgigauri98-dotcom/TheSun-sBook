@@ -26,6 +26,26 @@
 <meta name="copyright" content="&copy; 2026 Nikoloz Gigauri. All rights reserved.">
 <meta name="description" content="The Sun's Book. The living edition of the book by Nikoloz Gigauri. When algebra meets the planets.">
 <title>The Sun's Book</title>
+
+<!-- ---- identity: tab icon, installable app, iOS home screen ------------- -->
+<link rel="icon" href="/img/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/img/icon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/img/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#080810">
+<meta name="application-name" content="The Sun's Book">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sun's Book">
+<!-- link preview -->
+<meta property="og:title" content="The Sun's Book">
+<meta property="og:description" content="The living edition of the book by Nikoloz Gigauri. When algebra meets the planets.">
+<meta property="og:image" content="/img/icon-512.png">
+<meta property="og:url" content="https://thesunsbook.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 /*! The Sun's Book · © 2026 Nikoloz Gigauri · All rights reserved.
     Based on the book "The Sun's Book". thesunsbook.com */
@@ -7346,6 +7366,181 @@ function SB3D_buildData(chart,birth,divV){
    planetKeywords[planetName][signName][houseNumber] -> array of strings   */
 window.houseKeywords=window.houseKeywords||{};
 window.planetKeywords=window.planetKeywords||{};
+/* ---- house keyword content (144 cells x 10) --------------------------
+   houseKeywords[ascendantSignName][houseNumber] -> array of strings
+   Written from the book: Bhava chapter x Zodiac chapter x Ascendant chapter.
+   The sign sitting on the house colours that house’s own theme.        */
+window.houseKeywords={
+  Aries:{
+    1:["Pioneer’s body","Fearless appearance","Competitive self","Blunt character","Restless vitality","Martial health","Impatient identity","Bold projection","Independent status","Fiery temperament"],
+    2:["Collector’s resources","Sensual taste","Melodic tone","Luxurious food","Loyal family","Stubborn values","Wealthy foundation","Beautiful face","Patient savings","Grounded support"],
+    3:["Witty competition","Curious hands","Talkative siblings","Versatile hobbies","Restless thinking","Playful courage","Networked media","Quick learning","Dual effort","Youthful bravery"],
+    4:["Nurturing home","Maternal roots","Sentimental happiness","Protective mother","Intuitive emotions","Nostalgic homeland","Private shelter","Moody satisfaction","Caring instincts","Sheltered childhood"],
+    5:["Radiant creativity","Proud children","Royal romance","Dramatic expression","Generous entertainment","Confident intelligence","Theatrical arts","Golden recognition","Playful leadership","Warm speculation"],
+    6:["Analytical routine","Clinical healing","Precise service","Critical enemies","Methodical work","Detailed diet","Diagnostic medicine","Perfectionist discipline","Efficient labour","Hygienic habits"],
+    7:["Diplomatic spouse","Balanced partnership","Elegant business","Fair exchange","Charming negotiation","Harmonious desires","Aesthetic marketing","Indecisive goals","Refined others","Cooperative union"],
+    8:["Secretive depth","Magnetic charisma","Intense sexuality","Occult intuition","Ruthless transformation","Concealed resources","Fearless crisis","Buried secrets","Passionate longevity","Silent power"],
+    9:["Wandering teacher","Philosophical faith","Expansive learning","Optimistic morality","Adventurous pilgrimage","Generous mentor","Free doctrine","Lucky journeys","Truthful ethics","Restless wisdom"],
+    10:["Disciplined career","Structural authority","Patient ambition","Serious status","Earned fame","Executive dominance","Long climb","Stern father","Institutional power","Enduring karma"],
+    11:["Technological income","Eccentric friendships","Humanitarian network","Visionary community","Progressive gains","Detached society","Unorthodox opportunities","Collective salary","Rebellious circles","Innovative renown"],
+    12:["Dissolving boundaries","Mystic isolation","Dreaming subconscious","Compassionate liberation","Oceanic solitude","Imaginative escape","Sacred retreat","Formless surrender","Foreign shores","Nightly visions"]
+  },
+  Taurus:{
+    1:["Sensual body","Immovable self","Graceful appearance","Steady vitality","Comfortable character","Attractive presence","Patient temperament","Grounded health","Well-fed constitution","Stubborn dignity"],
+    2:["Talkative resources","Literate foundation","Witty tone","Varied diet","Sibling wealth","Bookish childhood","Traded values","Curious appetite","Flexible savings","Networked family"],
+    3:["Emotional competition","Moody courage","Protective siblings","Intuitive learning","Nurturing hands","Sentimental hobbies","Tidal effort","Defensive bravery","Feeling thought","Homebound skills"],
+    4:["Regal home","Dominant mother","Proud roots","Theatrical emotions","Luminous happiness","Commanding household","Golden property","Generous shelter","Ruling instincts","Radiant childhood"],
+    5:["Calculated risk","Analytical creativity","Precise romance","Studious children","Critical expression","Methodical play","Editing intelligence","Measured speculation","Craftsman’s art","Detailed memory"],
+    6:["Diplomatic enemies","Balanced routine","Aesthetic healing","Negotiated conflict","Graceful service","Fair employment","Harmonious appetite","Reluctant fighting","Refined discipline","Partnered work"],
+    7:["Mysterious spouse","Intense partnership","Hidden business","Magnetic others","Possessive union","Transformative desires","Secretive exchange","Passionate goals","Fated encounters","Unbreakable bond"],
+    8:["Esoteric research","Philosophical depth","Adventurous crisis","Expansive intuition","Foreign inheritance","Optimistic longevity","Truth-seeking occult","Wandering mystery","Doctrinal secrets","Fearless enquiry"],
+    9:["Strict mentor","Structured doctrine","Earned wisdom","Ambitious study","Conservative faith","Hierarchical teaching","Patient scholarship","Sober morality","Long apprenticeship","Institutional law"],
+    10:["Innovative career","Unconventional status","Technological authority","Humanitarian fame","Reforming leadership","Detached power","Networked reputation","Visionary profession","Eccentric director","Collective influence"],
+    11:["Imaginative income","Illusory friendships","Spiritual community","Artistic gains","Charitable network","Dreamlike opportunities","Compassionate society","Fluid earnings","Mystical circles","Boundless benefit"],
+    12:["Independent isolation","Bold retreat","Foreign ventures","Impulsive expense","Solitary combat","Restless liberation","Hidden aggression","Pioneering exile","Private battle","Burning surrender"]
+  },
+  Gemini:{
+    1:["Youthful body","Restless self","Talkative appearance","Dual character","Nervous vitality","Curious identity","Adaptable health","Playful temperament","Quicksilver presence","Boyish projection"],
+    2:["Emotional resources","Nurturing wealth","Tender tone","Comfort food","Maternal family","Sentimental values","Protected savings","Homely foundation","Intuitive taste","Hoarded security"],
+    3:["Proud competition","Dominant siblings","Heroic courage","Royal effort","Theatrical communication","Egoic rivalry","Radiant skill","Commanding hands","Golden ambition","Bright thinking"],
+    4:["Orderly home","Critical mother","Analytical emotions","Immaculate roots","Anxious happiness","Practical shelter","Serviceable property","Restless homeland","Measured instincts","Tidy childhood"],
+    5:["Aesthetic creativity","Fair romance","Elegant children","Diplomatic expression","Fashionable art","Balanced play","Charming intelligence","Partnered speculation","Graceful recognition","Harmonious pleasure"],
+    6:["Hidden enemies","Mysterious illness","Intense discipline","Secret service","Ruthless routine","Buried conflict","Regenerative healing","Silent battle","Obsessive work","Poisonous rivalry"],
+    7:["Philosophical spouse","Foreign partnership","Teaching others","Expansive business","Adventurous union","Doctrinal desires","Restless goals","Nomadic marriage","Moral exchange","Wandering encounters"],
+    8:["Disciplined secrets","Structured mystery","Earned inheritance","Sober depth","Enduring longevity","Contractual wealth","Cold intuition","Slow transformation","Austere occult","Fated obligation"],
+    9:["Experimental learning","Unorthodox faith","Rebellious morality","Scientific doctrine","Distant mentor","Progressive ethics","Humanitarian pilgrimage","Free thought","Reformed tradition","Electric wisdom"],
+    10:["Intangible career","Artistic status","Elusive fame","Compassionate authority","Blurred profession","Spiritual leadership","Imaginative work","Absent father","Dissolving power","Sacrificial karma"],
+    11:["Aggressive income","Competitive friendships","Bold gains","Pioneering network","Fast money","Combative circles","Independent society","Impulsive luxury","Athletic community","Conquered opportunities"],
+    12:["Costly comfort","Luxurious expense","Sensual retreat","Slow loss","Hoarded solitude","Fragrant seclusion","Indulgent escape","Material surrender","Quiet garden","Sleeping abundance"]
+  },
+  Cancer:{
+    1:["Soft body","Shy self","Changing appearance","Tender character","Fluctuating vitality","Guarded identity","Moonlit presence","Sensitive temperament","Homebound projection","Motherly bearing"],
+    2:["Commanding tone","Proud family","Royal resources","Golden values","Generous table","Dominant upbringing","Radiant speech","Noble foundation","Luxurious appetite","Solar wealth"],
+    3:["Skilful hands","Analytical courage","Studious siblings","Precise communication","Technical hobbies","Methodical effort","Critical rivalry","Editorial thinking","Practical apprenticeship","Sharp learning"],
+    4:["Harmonious home","Graceful mother","Balanced emotions","Beautiful property","Aesthetic roots","Diplomatic household","Refined happiness","Decorated shelter","Partnered instincts","Pleasant childhood"],
+    5:["Mystical creativity","Intense romance","Secret children","Passionate expression","Obsessive art","Dangerous speculation","Magnetic intelligence","Hidden talent","Transformative play","Fated love"],
+    6:["Philosophical enemies","Optimistic healing","Expansive routine","Foreign service","Ethical dispute","Restless discipline","Doctrinal rivalry","Wandering employment","Generous work","Overreaching appetite"],
+    7:["Disciplined spouse","Contractual partnership","Serious business","Enduring union","Older partner","Formal exchange","Ambitious others","Structured desires","Slow marriage","Dutiful bond"],
+    8:["Experimental depth","Unorthodox secrets","Electric transformation","Detached intimacy","Shared fortunes","Sudden incidents","Scientific occult","Rebellious mystery","Collective inheritance","Futuristic intuition"],
+    9:["Illusory mentor","Mystical faith","Compassionate morality","Oceanic pilgrimage","Dreaming doctrine","Devotional learning","Blurred ethics","Sacred wandering","Intuitive wisdom","Dissolving tradition"],
+    10:["Pioneering career","Impulsive status","Combative authority","Fast fame","Fearless leadership","Martial profession","Competitive power","Warrior father","Bold reputation","Firstborn ambition"],
+    11:["Stable income","Loyal friendships","Culinary gains","Beautiful network","Luxurious circles","Held community","Sensual opportunities","Accumulated benefit","Enduring society","Fragrant reputation"],
+    12:["Scattered expense","Foreign study","Whispered gossip","Restless solitude","Dual isolation","Written subconscious","Curious escape","Distant siblings","Wandering loss","Nightly thoughts"]
+  },
+  Leo:{
+    1:["Radiant body","Regal self","Commanding appearance","Proud character","Solar vitality","Charismatic identity","Dramatic temperament","Generous bearing","Sovereign presence","Warm projection"],
+    2:["Meticulous diet","Precise speech","Organised family","Studious childhood","Measured resources","Clean taste","Frugal values","Analytical tone","Practical foundation","Disciplined appetite"],
+    3:["Elegant competition","Harmonious communication","Diplomatic courage","Graceful rivalry","Artistic hands","Fair siblings","Refined effort","Balanced thinking","Charming persuasion","Cooperative skill"],
+    4:["Volcanic emotions","Secretive home","Repressed feeling","Mysterious mother","Hidden roots","Guarded happiness","Buried instincts","Intense shelter","Shadowed childhood","Undertow satisfaction"],
+    5:["Philosophical romance","Travelling love","Teaching creativity","Expansive expression","Adventurous children","Optimistic play","Doctrinal art","Growing intelligence","Generous recognition","Wandering pleasure"],
+    6:["Relentless routine","Ambitious discipline","Cold enemies","Structured labour","Alpha endurance","Iron regimen","Calculated conflict","Merciless service","Enduring illness","Ruthless work"],
+    7:["Unconventional spouse","Progressive partnership","Detached union","Socially-aware others","Free marriage","Experimental business","Networked exchange","Egalitarian desires","Rebellious encounters","Cool intimacy"],
+    8:["Sensing deception","Intuitive depth","Dreaming mystery","Boundless occult","Absorbed secrets","Oceanic transformation","Compassionate crisis","Dissolving obstacles","Psychic longevity","Received legacy"],
+    9:["Pioneering ideology","Bold travels","Warrior mentor","Proactive learning","Fiery doctrine","Fearless morality","First teaching","Impatient faith","Combative ethics","Blazing pilgrimage"],
+    10:["Artist’s career","Stubborn status","Slow triumph","Steady climb","Beautiful reputation","Culinary profession","Luxurious authority","Patient fame","Inevitable success","Wealthy standing"],
+    11:["Talkative friendships","Easy network","Joyful circles","Curious community","Traded income","Youthful society","Playful gains","Many acquaintances","Witty renown","Scattered opportunities"],
+    12:["Comforting isolation","Distant mother","Foreign happiness","Sheltered solitude","Tearful loss","Nostalgic subconscious","Hidden tenderness","Withdrawn emotions","Nocturnal retreat","Maternal absence"]
+  },
+  Virgo:{
+    1:["Observant body","Meticulous self","Analytical appearance","Critical character","Nervous vitality","Precise identity","Modest bearing","Diagnostic temperament","Serviceable presence","Restless intelligence"],
+    2:["Refined speech","Harmonious diet","Balanced family","Aesthetic values","Pleasant tone","Fair resources","Elegant taste","Diplomatic childhood","Beautiful foundation","Shared wealth"],
+    3:["Volatile competition","Painful conflict","Intense thought","Secretive siblings","Vengeful rivalry","Piercing communication","Obsessive hobbies","Silent courage","Cutting effort","Buried resentment"],
+    4:["Philosophical mother","Expansive home","Nomadic roots","Optimistic emotions","Teaching household","Foreign homeland","Generous shelter","Restless happiness","Open instincts","Travelling childhood"],
+    5:["Sceptical romance","Disciplined creativity","Ambitious art","Serious children","Guarded expression","Structured play","Late love","Measured speculation","Enduring talent","Formal recognition"],
+    6:["Technological routine","Humanitarian service","Innovative healing","Networked enemies","Progressive discipline","Experimental medicine","Collective labour","Detached conflict","Scheduled reform","Electric habits"],
+    7:["Dreamy spouse","Elusive partnership","Empathetic others","Blurred business","Intuitive union","Formless desires","Compassionate exchange","Undefined goals","Mystical encounters","Sacrificial bond"],
+    8:["Fearless mystery","Direct occult","Sudden incidents","Pioneering research","Combative secrets","Sharp intuition","Technical initiation","Bold transformation","Martial depth","Impulsive crisis"],
+    9:["Stable scholarship","Grounded mentor","Financial doctrine","Patient learning","Secure academia","Culinary tradition","Immovable faith","Sensual morality","Wealthy teaching","Rooted ethics"],
+    10:["Written career","Communicative status","Versatile profession","Spoken authority","Dual reputation","Publishing fame","Restless ambition","Networked influence","Youthful leadership","Many careers"],
+    11:["Comforting friendships","Family-like circles","Nurturing community","Protected income","Sentimental network","Loyal society","Emotional gains","Sheltering organisation","Tidal opportunities","Motherly support"],
+    12:["Distant father","Clairvoyant dreams","Proud loss","Hidden radiance","Costly ego","Solitary majesty","Luminous subconscious","Withdrawn authority","Sacrificed recognition","Nocturnal vision"]
+  },
+  Libra:{
+    1:["Refined body","Diplomatic self","Beautiful appearance","Balanced character","Charming presence","Indecisive identity","Graceful bearing","Sociable temperament","Elegant projection","Mirrored self"],
+    2:["Secretive family","Hidden resources","Guarded speech","Mysterious childhood","Buried values","Intense taste","Silent wealth","Withheld tone","Shadowed foundation","Concealed savings"],
+    3:["Philosophical thinking","Moral conflict","Nurtured siblings","Expansive communication","Righteous competition","Wandering curiosity","Optimistic effort","Doctrinal debate","Travelling hands","High-minded rivalry"],
+    4:["Detached emotions","Disciplined mother","Career happiness","Cold household","Guarded roots","Structured shelter","Private space","Serious homeland","Earned property","Formal childhood"],
+    5:["Innovative creativity","Progressive romance","Free parenting","Experimental art","Socially-conscious love","Unorthodox children","Electric expression","Collective play","Reforming talent","Detached pleasure"],
+    6:["Intuitive enemies","Lenient conflict","Empathetic healing","Dissolved rivalry","Compassionate service","Unseen illness","Merciful discipline","Blurred routine","Absorbed pain","Forgiving battle"],
+    7:["Headstrong spouse","Independent partner","Combative union","Bold business","Pioneering marketing","Impatient desires","Competitive marriage","Sharp encounters","Individualistic others","Balancing act"],
+    8:["Stable mystery","Inherited wealth","Sensual depth","Secret fortune","Foreign cuisine","Grounded transformation","Managed resources","Slow rebirth","Fixed intuition","Held secrets"],
+    9:["Playful learning","Flexible morality","Joyful study","Curious faith","Talkative mentor","Adaptable ethics","Competitive scholarship","Youthful doctrine","Restless pilgrimage","Dual principles"],
+    10:["Graceful image","Nurturing status","Feminine authority","Caring reputation","Beloved fame","Protective leadership","Emotional career","Public tenderness","Homely profession","Tidal recognition"],
+    11:["Aristocratic friendships","Leadership income","Loyal circles","Royal network","Entertaining gains","Proud community","Golden opportunities","Commanding society","Radiant renown","Contested leadership"],
+    12:["Analytical subconscious","Miscalculated loss","Planned exile","Insightful solitude","Detailed expense","Meticulous retreat","Critical isolation","Corrected mistakes","Silent service","Foreign study"]
+  },
+  Scorpio:{
+    1:["Enigmatic body","Secretive self","Magnetic appearance","Piercing character","Regenerating vitality","Veiled identity","Intense temperament","Unreadable bearing","Dangerous presence","Hidden depth"],
+    2:["Philosophical family","Learned resources","Expansive taste","Generous table","Doctrinal values","Travelled childhood","Optimistic tone","Foreign wealth","Bookish foundation","Wandering appetite"],
+    3:["Ambitious competition","Cold gestures","Authoritative siblings","Disciplined effort","Calculated courage","Hierarchical rivalry","Enduring practice","Stern communication","Structured skill","Patient conquest"],
+    4:["Cooled emotions","Detached home","Futuristic space","Universal roots","Distant mother","Technological shelter","Unconventional happiness","Electric instincts","Borderless homeland","Experimental childhood"],
+    5:["Illusory romance","Imaginative creativity","Empathetic children","Dreaming expression","Gambling losses","Boundless art","Compassionate play","Elusive love","Oceanic intelligence","Dissolving speculation"],
+    6:["Aggressive enemies","Spontaneous routine","Bold conflict","Martial healing","Dynamic labour","Frontal battle","Impulsive discipline","Athletic muscles","Fast recovery","Fearless service"],
+    7:["Resourceful spouse","Stable partnership","Refined others","Wealthy union","Loyal marriage","Beautiful partner","Enduring business","Grounded exchange","Sensual desires","Immovable bond"],
+    8:["Playful mystery","Investigative journalism","Traded secrets","Curious occult","Whispered depth","Witty transformation","Shared gossip","Restless intuition","Double life","Documented crisis"],
+    9:["Emotional doctrine","Nurturing mentor","Homeward pilgrimage","Intuitive morality","Motherly teaching","Sentimental faith","Tidal fortune","Protective ethics","Ancestral tradition","Felt wisdom"],
+    10:["Commanding career","Radiant status","Recognised leadership","Royal authority","Theatrical fame","Dominant profession","Golden reputation","Sovereign influence","Proud ambition","Centre stage"],
+    11:["Managerial income","Sharp friendships","Organisational gains","Analytical circles","Systematic network","Intellectual society","Earned salary","Efficient opportunities","Exacting standing","Working community"],
+    12:["Costly beauty","Diplomatic loss","Refined expense","Aesthetic solitude","Balanced retreat","Peaceful surrender","Indulgent self-care","Graceful isolation","Harmonious dreams","Pleasant debts"]
+  },
+  Sagittarius:{
+    1:["Wandering body","Philosophical self","Open appearance","Optimistic character","Restless vitality","Teaching identity","Generous bearing","Expansive presence","Blunt temperament","Nurturing wisdom"],
+    2:["Disciplined family","Ambitious resources","Frugal childhood","Structured values","Earned wealth","Sober tone","Conservative taste","Slow savings","Demanding upbringing","Measured appetite"],
+    3:["Innovative thinking","Unique gestures","Reforming competition","Ideological fight","Progressive siblings","Electric curiosity","Networked communication","Experimental hands","Collective courage","Sharpened intellect"],
+    4:["Dreamy home","Idealistic emotions","Chaotic household","Solitary happiness","Mystical mother","Blurred roots","Oceanic instincts","Formless shelter","Imaginative childhood","Retreating comfort"],
+    5:["Impulsive creativity","Bold romance","Playful children","Reckless speculation","Fiery expression","Constant celebration","Competitive art","Instant pleasure","Fearless risk","Young leadership"],
+    6:["Softened conflict","Financial disputes","Immovable stance","Slow routine","Comfortable regimen","Reluctant fighting","Grounded healing","Sensual appetite","Patient labour","Well-fed discipline"],
+    7:["Student spouse","Shifting roles","Talkative partnership","Dual marriage","Curious others","Traded exchange","Youthful union","Restless desires","Debating business","Two encounters"],
+    8:["Comfortable mystery","Homely occult","Emotional depth","Nurtured secrets","Intuitive research","Sheltered intimacy","Ancestral inheritance","Felt transformation","Tidal longevity","Familiar shadows"],
+    9:["Sovereign teaching","Radiant doctrine","Commanding morality","Golden fortune","Royal mentor","Proud pilgrimage","Dominant wisdom","Theatrical faith","Generous ethics","Luminous travel"],
+    10:["Meticulous career","Intelligent status","Analytical authority","Serviceable profession","Precise reputation","Technical leadership","Editorial fame","Efficient ambition","Detailed influence","Working father"],
+    11:["Elegant income","Fashionable network","Diplomatic gains","Beautiful circles","Refined society","Artistic opportunities","Partnered earnings","Charming renown","Balanced community","Aesthetic salary"],
+    12:["Foreign depths","Hidden truths","Costly secrets","Mystical exile","Silent loss","Buried expense","Occult solitude","Explored underworld","Concealed enemies","Transforming surrender"]
+  },
+  Capricorn:{
+    1:["Enduring body","Ambitious self","Austere appearance","Direct character","Slow vitality","Resilient identity","Cold temperament","Serious bearing","Ageing presence","Material projection"],
+    2:["Innovative resources","Society as family","Free values","Intelligent childhood","Networked wealth","Unusual taste","Distinctive tone","Collective support","Progressive education","Borrowed abundance"],
+    3:["Chaotic siblings","Illusory competition","Mystical hobbies","Imaginative thinking","Blurred rivalry","Dreaming hands","Formless effort","Intuitive communication","Elusive courage","Poetic skill"],
+    4:["Adrenaline home","Competitive happiness","Fiery mother","Thirsting roots","Restless emotions","Conservative combat","Pioneering household","Sharp instincts","First place","Burning childhood"],
+    5:["Deeply romantic","Delayed children","Stabilised creativity","Gifted offspring","Slow expression","Reluctant risk","Wealthy pleasure","Sensual art","Enduring talent","Comfortable play"],
+    6:["Elastic challenges","Dual enemies","Shifting routine","Adaptable service","Nervous illness","Restless work","Unpredictable rivalry","Talkative employees","Varied appetite","Quick recovery"],
+    7:["Homely business","Shy spouse","Caring others","Private partnership","Diplomatic happiness","Variable union","Protective marriage","Emotional exchange","Nurturing goals","Familiar encounters"],
+    8:["Illuminated mystery","Foreseen accidents","Dominated wealth","Proud intimacy","Deciphered secrets","Radiant depth","Commanding occult","Egoic transformation","Bright intuition","Ruling shadows"],
+    9:["Structured study","Mercantile teaching","Detailed doctrine","Managed travel","Demanding mentor","Efficient scholarship","Practical morality","Analytical faith","Planned pilgrimage","Critical ethics"],
+    10:["Diplomatic status","Refined image","Public mediator","Balanced career","Harmonious authority","Elegant reputation","Bounded influence","Partnered profession","Graceful leadership","Fair ambition"],
+    11:["Social engineering","Powerful circles","Secretive earnings","Mysterious network","Hidden benefit","Strategic community","Buried income","Influential shadows","Studied society","Silent alliance"],
+    12:["Foreign cultures","Philosophical exile","Isolated study","Distant lands","Wandering solitude","Expansive retreat","Sacred journey","Generous expense","Untethered freedom","Pilgrim’s loss"]
+  },
+  Aquarius:{
+    1:["Nonconforming body","Public self","Unusual appearance","Cold character","Detached vitality","Heroic identity","Inventive temperament","Contrary bearing","Collective presence","Norm-breaking projection"],
+    2:["Imaginative resources","Chaotic family","Fantasised wealth","Unpredictable childhood","Fluid values","Poetic tone","Dreamt abundance","Enigmatic taste","Uncertain foundation","Inventive supply"],
+    3:["Combative siblings","Immense strength","Physical confrontation","Energetic competition","Sharp courage","Fighting hands","Impatient thinking","Restless rivalry","Direct communication","Won contests"],
+    4:["Stable mother","Art-filled space","Emotional resilience","Financial shelter","Grounded roots","Secure home","Sensual comfort","Immovable happiness","Beautiful property","Provided childhood"],
+    5:["Written creativity","Lively children","Journalistic expression","Difficult decisions","Intellectual romance","Playful teaching","Versatile art","Hesitant speculation","Curious pleasure","Communicative talent"],
+    6:["Mothered enemies","Emotional routine","Nurturing service","Comfortable problem-solving","Protective employees","Tidal illness","Over-caring habit","Familiar work","Sensitive digestion","Sheltered discipline"],
+    7:["Dominant spouse","Radiant others","Commanding partnership","Charismatic partner","Initiating business","Proud union","Royal negotiation","Theatrical marriage","Leading exchange","Contested authority"],
+    8:["Detective mind","Overlooked details","Crisis management","Calculated depth","Subdued intimacy","Forensic secrets","Invented method","Analytical occult","Precise transformation","Diagnosed danger"],
+    9:["Balanced learning","Harmonious mentor","Teaching aesthetics","Business travel","Diplomatic doctrine","Fair ethics","Elegant scholarship","Partnered faith","Cultured pilgrimage","Refined morality"],
+    10:["Secretive career","Confidential work","Constant transformation","Unspoken profession","Hidden authority","Undisclosed status","Shifting reputation","Quiet command","Classified influence","Buried ambition"],
+    11:["Philosophical income","Travelling luxury","Teaching earnings","Doctrinal organisation","Publicly-known ideas","Expansive network","Generous circles","Foreign gains","Believing community","Broadcast renown"],
+    12:["Chosen isolation","Evaporated emotion","Unfeared loss","Structured solitude","Silent expense","Disciplined retreat","Cold liberation","Endured exile","Sober withdrawal","Contained grief"]
+  },
+  Pisces:{
+    1:["Fluid body","Enigmatic self","Soft appearance","Empathetic character","Absorbing vitality","Dreaming identity","Boundless temperament","Elusive bearing","Deep presence","Imaginative projection"],
+    2:["Competitive family","Reactive speech","Firm tone","Contested resources","Fighting values","Restless appetite","Fast childhood","Bold foundation","Sharp taste","Earned support"],
+    3:["Softened assertiveness","Strong siblings","Artistic competition","Culinary rivalry","Slow courage","Steady hands","Patient effort","Grounded thinking","Wealth contest","Quiet endurance"],
+    4:["Childlike emotions","Interactive mother","Ever-changing happiness","Talkative home","Restless roots","Playful shelter","Curious instincts","Shifting comfort","Bright childhood","Two homes"],
+    5:["Emotional creativity","Beloved children","Intuitive expression","Tender romance","Nurtured talent","Sentimental art","Motherly play","Felt intelligence","Protective love","Deep memory"],
+    6:["Proud enemies","Commanding routine","Egoic conflict","Radiant discipline","Dominant service","Theatrical rivalry","Ruling employees","Solar endurance","Demanding regimen","Willed recovery"],
+    7:["Educated spouse","Detailed partnership","Analytical partner","Solved puzzle","Structured union","Critical others","Logical exchange","Corrected illusions","Precise business","Intelligent marriage"],
+    8:["Balanced mystery","Elegant intimacy","Diplomatic crisis","Harmonious depth","Refined transformation","Graceful secrets","Shared inheritance","Beautiful occult","Composed emergency","Fair reckoning"],
+    9:["Esoteric doctorate","Remote pilgrimage","Mystical study","Deep mentor","Occult morality","Hidden teaching","Intense faith","Buried tradition","Transformative learning","Secret wisdom"],
+    10:["Philosophical career","Travelling profession","Merged status","Teaching authority","Expansive reputation","Moral leadership","Foreign work","Believing influence","Wandering ambition","Public doctrine"],
+    11:["Influential circles","Society climbed","Structured network","Powerful friendships","Institutional income","Ranked community","Earned benefit","Corporate gains","Serious allies","Slow renown"],
+    12:["Spiritual innovation","Liberating invention","Foreign earnings","Detached solitude","Untethered study","Electric dreams","Collective subconscious","Free surrender","Distant retreat","Reformed isolation"]
+  }
+};
+
 function SB3D_getHouseKeywords(ascSignName,houseNum){
   var a=window.houseKeywords[ascSignName];
   var arr=a?a[houseNum]:null;
@@ -9241,7 +9436,7 @@ function SB3D_syncLayers(){
   var tb=document.getElementById('sb3dTransits');
   if(tb)tb.style.display=(ov&&!dv)?'':'none';
   /* the floating keyword cards read mirrored from behind: gone in object POVs */
-  if(m.gKeywords)m.gKeywords.visible=!(s.aspOn||s.balaOn||s.vargaOn)&&!s.objPov;
+  if(m.gKeywords)m.gKeywords.visible=!(s.aspOn||s.balaOn||s.vargaOn)&&!s.objPov&&!s.wtOn;
   if(m.gVargaDeco)m.gVargaDeco.visible=dv?ov:(s.vargaOn||ov);
   if(m.gOvRings)m.gOvRings.visible=!dv&&ov&&s.vargaOn;
   /* Overview and divisional worlds: planets wear their own symbol;
@@ -9846,6 +10041,7 @@ function SB3D_wtStart(auto){
   var hint=document.getElementById('sb3dHint');if(hint)hint.style.display='none';
   if(typeof SB3D_hideInfoPanel==='function')SB3D_hideInfoPanel();
   if(typeof SB3D_hidePPanel==='function')SB3D_hidePPanel();
+  if(typeof SB3D_syncLayers==='function')SB3D_syncLayers(); /* keyword cards off for the tour */
   s.wtSteps=SB3D_wtBuildSteps();
   SB3D_wtUI();
   SB3D_wtNext();
@@ -9937,6 +10133,7 @@ function SB3D_wtEnd(toMainPage){
   if(toMainPage){SB3D_close();return;} /* the closing card lands on the main page UI */
   document.getElementById('sb3dBar').style.display='flex';
   if(s.syncToggles)s.syncToggles();
+  if(typeof SB3D_syncLayers==='function')SB3D_syncLayers(); /* cards return after the tour */
 }
 function SB3D_wtSkip(){
   var s=SB3D.state;if(!s)return;
@@ -11919,5 +12116,29 @@ catch(e){
 })();
 </script>
 
+<script>
+/*! The Sun's Book · service worker registration
+    Registers /sw.js so Chrome, Edge and Android offer "Install".
+    Safari already offered Add to Home Screen; this does not disturb it.
+    The worker is network-first for pages, so a fresh deploy is never
+    hidden behind a stale cache. */
+(function(){
+  if(!('serviceWorker' in navigator))return;
+  if(location.protocol!=='https:'&&location.hostname!=='localhost')return;
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('/sw.js',{scope:'/'})
+      .then(function(reg){
+        /* pick up a new build as soon as one is deployed */
+        if(reg.update)setInterval(function(){try{reg.update();}catch(e){}},60*60*1000);
+      })
+      .catch(function(){/* never let this break the app */});
+  });
+  /* keep the browser's own install offer, and remember it so an in-app
+     button can trigger it later if you ever want one */
+  window.addEventListener('beforeinstallprompt',function(e){
+    window.SB_installPrompt=e;
+  });
+})();
+</script>
 </body>
 </html>
