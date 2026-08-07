@@ -32,6 +32,8 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/img/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/icon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/img/icon-180.png">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#080810">
 <meta name="application-name" content="The Sun's Book">
@@ -6316,6 +6318,10 @@ var SB_FB_CFG={
 var SB_FB_VER=['12.15.0','11.10.0','10.14.1'];
 var SB_FB_MARK='sb_signed_in';
 var SB_fbReady=null,SB_user=null;
+/* True once the Firebase SDK is actually in memory. The Google popup may
+   only be opened while the browser still recognises the user's click, so
+   we must never start a download and open the window afterwards. */
+var SB_fbLoaded=false;
 
 function SB_fbScript(src){
   return new Promise(function(res,rej){
@@ -6342,6 +6348,7 @@ function SB_fbInit(){
   SB_fbReady=attempt().then(function(){
     if(!window.firebase||!window.firebase.auth)throw new Error('sdk-unavailable');
     if(!window.firebase.apps.length)window.firebase.initializeApp(SB_FB_CFG);
+    SB_fbLoaded=true;
     var auth=window.firebase.auth();
     auth.onAuthStateChanged(function(u){
       var was=SB_user;
@@ -6454,19 +6461,58 @@ function SB_openAccount(){
   el.classList.add('sbOn');
   if(!SB_user&&location.protocol!=='file:')SB_fbInit().catch(function(){});
 }
+/* Fetch the SDK quietly soon after the page settles, so that by the time
+   anyone reaches the sign-in button it is already in memory and the popup
+   opens on the very first tap. Costs nothing if they never sign in. */
+function SB_fbWarm(){
+  if(SB_fbLoaded||SB_fbReady)return;
+  if(location.protocol==='file:')return;
+  try{SB_fbInit().catch(function(){});}catch(e){}
+}
+(function(){
+  if(typeof window==='undefined')return;
+  var go=function(){
+    if('requestIdleCallback' in window)requestIdleCallback(SB_fbWarm,{timeout:4000});
+    else setTimeout(SB_fbWarm,2500);
+  };
+  if(document.readyState==='complete')go();
+  else window.addEventListener('load',go);
+})();
+
 function SB_closeAccount(){var el=SB_$('sbAccount');if(el)el.classList.remove('sbOn');}
 function SB_authNote(msg,kind){var m=SB_$('sbAuthMsg');if(!m)return;m.textContent=msg;m.className=kind||'info';}
 
 /* ---------- the two ways in ---------- */
 function SB_authGoogle(){
+  /* A popup window is only allowed to open while the browser still counts
+     this as the user's own click. Downloading the SDK first eats that
+     permission, so on a cold cache the window was blocked and Firebase
+     reported it as auth/internal-error. If the SDK is not in memory yet we
+     fetch it now and ask for one more tap, which then opens instantly. */
+  if(!SB_fbLoaded){
+    SB_authNote('Preparing sign-in, one moment...','info');
+    SB_fbInit().then(function(){
+      SB_authNote('Ready \u2014 tap "Continue with Google" again.','ok');
+    }).catch(function(err){
+      SB_authNote(SB_authErr(err),'warn');
+    });
+    return;
+  }
   SB_authNote('Opening Google sign-in...','info');
-  SB_fbInit().then(function(auth){
-    var p=new window.firebase.auth.GoogleAuthProvider();
-    p.setCustomParameters({prompt:'select_account'});
-    return auth.signInWithPopup(p);
-  }).then(function(){
+  var auth=window.firebase.auth();
+  var p=new window.firebase.auth.GoogleAuthProvider();
+  p.setCustomParameters({prompt:'select_account'});
+  auth.signInWithPopup(p).then(function(){
     SB_authNote('Signed in.','ok');
   }).catch(function(err){
+    var c=(err&&err.code)||'';
+    /* some browsers refuse popups outright, or block the third-party
+       storage the popup needs; a full-page redirect still works there */
+    if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'||
+       c==='auth/web-storage-unsupported'){
+      SB_authNote('Redirecting to Google...','info');
+      try{auth.signInWithRedirect(p);return;}catch(e){}
+    }
     SB_authNote(SB_authErr(err),'warn');
   });
 }
