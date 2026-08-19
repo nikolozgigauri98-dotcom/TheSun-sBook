@@ -143,9 +143,17 @@ select option{background:var(--deep)}
 .ytag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;border:1px solid currentColor}
 .ydesc{padding:10px 16px;font-size:12.5px;line-height:1.7;color:var(--silver)}
 .ylist-empty{font-size:12px;color:var(--gold-dim);font-style:italic;padding:10px 4px}
-.adsub.open{max-height:500px}
-.adrow{display:flex;justify-content:space-between;padding:6px 16px;font-size:12px;color:var(--silver);border-bottom:1px solid rgba(42,42,74,0.3)}
+.adsub.open{max-height:2600px}
+.adrow{display:flex;justify-content:space-between;padding:6px 16px;font-size:12px;color:var(--silver);border-bottom:1px solid rgba(42,42,74,0.3);cursor:pointer;user-select:none}
+.adrow:hover{background:rgba(255,255,255,0.03)}
 .adrow .adpn{color:var(--gold-dim);font-weight:600}
+/* Pratyantar dasha - the third Vimshottari level, reading view only.
+   Same proportional split as Antardasha, one step deeper. */
+.pdsub{max-height:0;overflow:hidden;transition:max-height 0.35s ease;background:rgba(255,255,255,0.03);border-left:2px solid rgba(198,166,100,0.35)}
+.pdsub.open{max-height:420px}
+.pdrow{display:flex;justify-content:space-between;padding:4px 16px 4px 30px;font-size:11px;color:var(--silver);opacity:0.85;border-bottom:1px solid rgba(42,42,74,0.22)}
+.pdrow .pdpn{color:var(--gold-dim);font-weight:600;letter-spacing:0.03em}
+.pdrow:last-child{border-bottom:none}
 .dr:last-child{border-bottom:none}
 .dpn{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);width:75px;flex-shrink:0;letter-spacing:0.05em}
 .dbw{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
@@ -1642,7 +1650,7 @@ function allAsps(planets,ascIdx){
   }
   return{recv:recv,houses:houses};
 }
-const VINFO={'D-1':{name:'Natal Chart',topic:'Personality and life overview'},'D-2':{name:'Hora',topic:'Wealth and resources'},'D-3':{name:'Drekkana',topic:'Strength and siblings'},'D-9':{name:'Navamsa',topic:'Dharma, soul purpose, marriage'},'D-10':{name:'Dashamsa',topic:'Career and public status'},'D-12':{name:'Dwadasamsa',topic:'Ancestry and karmic inheritance'},'D-7':{name:'Saptamsha',topic:'Creativity, fertility & progeny'},'D-16':{name:'Shodashamsha',topic:'Vehicles, comforts & happiness'},'D-30':{name:'Trimsamsa',topic:'Limitations and karmic boundaries'}};
+const VINFO={'D-1':{name:'Natal Chart',topic:'Personality and life overview'},'D-2':{name:'Hora',topic:'Wealth and resources'},'D-3':{name:'Drekkana',topic:'Strength and siblings'},'D-9':{name:'Navamsa',topic:'Dharma, soul purpose, marriage'},'D-10':{name:'Dashamsa',topic:'Career and public status'},'D-12':{name:'Dwadasamsa',topic:'Ancestry and karmic inheritance'},'D-7':{name:'Saptamsha',topic:'Creativity, fertility & progeny'},'D-16':{name:'Shodashamsha',topic:'Vehicles, comforts & happiness'},'D-30':{name:'Trimsamsa',topic:'Limitations and karmic boundaries'},'D-60':{name:'Shashtiamsha',topic:'Past-life karma, the finest division'}};
 function hx6(c){return(c&&c.length===4)?'#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3]:c;}
 function baladiAvastha(si,deg){var masc=(si%2===0);var idx=masc?Math.floor(deg/6)+1:5-Math.floor(deg/6);if(idx<1)idx=1;if(idx>5)idx=5;var N=['','Balya','Kumara','Yuva','Vriddha','Mrita'],E=['','Infant','Youth','Prime','Old','Dead'];return{index:idx,name:N[idx],eng:E[idx]};}
 /* ===== Georgian localisation (toggle). Planet names stay Latin everywhere. =====
@@ -1751,7 +1759,7 @@ function restorePage(){
 function setLang(l){LANG=l;var b=document.getElementById('langBtn');if(b)b.textContent=(l==='ka'?'English':'ქართული');if(l==='ka')translatePage();else restorePage();}
 function toggleLang(){setLang(LANG==='en'?'ka':'en');}
 
-function vSign(si,deg,v){if(v===1)return si;if(v===2)return si%2===0?(deg<15?4:3):(deg<15?3:4);if(v===3)return deg<10?si:deg<20?(si+4)%12:(si+8)%12;if(v===9){var s=[0,9,6,3,0,9,6,3,0,9,6,3];return(s[si]+Math.floor(deg/(30/9)))%12;}if(v===10){var s2=si%2===0?si:(si+8)%12;return(s2+Math.floor(deg/3))%12;}if(v===12)return(si+Math.floor(deg/2.5))%12;if(v===7){var s7=si%2===0?si:(si+6)%12;return(s7+Math.floor(deg/(30/7)))%12;}if(v===16){return((si%3)*4+Math.floor(deg/(30/16)))%12;}if(v===30){if(si%2===0){if(deg<5)return 0;if(deg<10)return 10;if(deg<18)return 8;if(deg<25)return 2;return 6;}else{if(deg<5)return 1;if(deg<12)return 5;if(deg<20)return 11;if(deg<25)return 9;return 7;}}return si;}
+function vSign(si,deg,v){if(v===1)return si;if(v===60){var s60=Math.floor(deg*2)+1;if(s60<1)s60=1;if(s60>60)s60=60;return(si+s60-1)%12;}if(v===2)return si%2===0?(deg<15?4:3):(deg<15?3:4);if(v===3)return deg<10?si:deg<20?(si+4)%12:(si+8)%12;if(v===9){var s=[0,9,6,3,0,9,6,3,0,9,6,3];return(s[si]+Math.floor(deg/(30/9)))%12;}if(v===10){var s2=si%2===0?si:(si+8)%12;return(s2+Math.floor(deg/3))%12;}if(v===12)return(si+Math.floor(deg/2.5))%12;if(v===7){var s7=si%2===0?si:(si+6)%12;return(s7+Math.floor(deg/(30/7)))%12;}if(v===16){return((si%3)*4+Math.floor(deg/(30/16)))%12;}if(v===30){if(si%2===0){if(deg<5)return 0;if(deg<10)return 10;if(deg<18)return 8;if(deg<25)return 2;return 6;}else{if(deg<5)return 1;if(deg<12)return 5;if(deg<20)return 11;if(deg<25)return 9;return 7;}}return si;}
 function buildVarga(planets,ascTotal,v){var asi=Math.floor(ascTotal/30)%12,adegF=amFloor(ascTotal%30),vai=vSign(asi,adegF,v),vaDeg=vDivDeg(asi,adegF,v),vp={};for(var n in planets){var p=planets[n],pL=p.degree+p.minutes/60,vs=vSign(p.index,pL,v);vp[n]={signIdx:vs,sign:SIGNS[vs],house:((vs-vai+12)%12)+1,divDeg:vDivDeg(p.index,pL,v)};}return{ascIdx:vai,ascSign:SIGNS[vai],planets:vp,ascDeg:vaDeg,raw:planets};}
 const SCOL={Aries:'#9e2a1a',Leo:'#9e2a1a',Sagittarius:'#9e2a1a',Taurus:'#1a6830',Virgo:'#1a6830',Capricorn:'#1a6830',Gemini:'#174f8a',Libra:'#174f8a',Aquarius:'#174f8a',Cancer:'#5a1f7a',Scorpio:'#5a1f7a',Pisces:'#5a1f7a'};
 const SSYM={Aries:'&#9800;&#xFE0E;',Taurus:'&#9801;&#xFE0E;',Gemini:'&#9802;&#xFE0E;',Cancer:'&#9803;&#xFE0E;',Leo:'&#9804;&#xFE0E;',Virgo:'&#9805;&#xFE0E;',Libra:'&#9806;&#xFE0E;',Scorpio:'&#9807;&#xFE0E;',Sagittarius:'&#9808;&#xFE0E;',Capricorn:'&#9809;&#xFE0E;',Aquarius:'&#9810;&#xFE0E;',Pisces:'&#9811;&#xFE0E;'};
@@ -2359,12 +2367,96 @@ function vDivDeg(si,L,v){
   if(v===1)return L;
   if(v===2)return (L%15)*2;
   if(v===3){w=10;}else if(v===7){w=30/7;}else if(v===9){w=30/9;}
-  else if(v===10){w=3;}else if(v===12){w=2.5;}else if(v===16){w=30/16;}
+  else if(v===10){w=3;}else if(v===12){w=2.5;}else if(v===16){w=30/16;}else if(v===60){w=0.5;}
   else if(v===30){var b=(si%2===0)?[0,5,10,18,25,30]:[0,5,12,20,25,30];for(var i=0;i<5;i++){if(L<b[i+1])return (L-b[i])/(b[i+1]-b[i])*30;}return 30;}
   else return L;
   return (L-Math.floor(L/w)*w)*(30/w);
 }
 function amFloor(d){var f=Math.floor(d);return f+Math.floor((d-f)*60)/60;} // floor to arcminute
+
+/* ============================================================
+   SHASHTIAMSHA  D-60  (grep: D60, SB_D60)
+   ------------------------------------------------------------
+   The sixtieth division: each sign cut into 60 parts of 0d30
+   each - the finest chart in the classical set, and the one
+   that reads the karmic residue a life is born carrying.
+
+   THE SEGMENT.  S = floor(deg x 2) + 1, capped at 60. Floor and
+   not ceiling: segment 29 is the half-degree [14.00, 14.50), so
+   14.25 falls in 29 and 14.50 opens 30. Ceiling would push every
+   exact boundary one segment early, and it would disagree with
+   vSign, which floors everywhere else in this engine.
+
+   THE SIGN.  Counted cyclically from the planet's own D-1 sign,
+   the same way for odd and even signs:
+       d60SignIdx = (si + S - 1) mod 12          (si 0-based)
+   Worked: the Sun in Gemini, S=6, gives Scorpio - which is the
+   answer the classical texts print for that example.
+
+   THE DEITY.  Sixty presiding devatas, in the Brihat Parashara
+   Hora Shastra order, read forward from an ODD sign and backward
+   from an EVEN one:
+       odd  (si even, 0-based):  id = S
+       even (si odd,  0-based):  id = 61 - S
+   Half are Krura and half Shubha - thirty each, which is the
+   check that the list is whole.
+
+   Numbers 5, 6 and 60 are disputed. Phaladeepika reads Yaksha,
+   Kinnara and Chandrarekha as benefic; later commentators call
+   all three malefic, on the grounds that Yakshas are dangerous
+   in the epics, Kinnaras are not a compliment, and Indurekha is
+   the thin waning crescent rather than the full Moon. The strict
+   reading is used below, which is what makes the split exactly
+   30/30. To take Phaladeepika's side instead, flip the nature of
+   ids 5, 6 and 60 to 'S' - nothing else depends on it.
+
+   D-60 IS A READING LAYER ONLY. It is deliberately absent from
+   SHODASA_KEYS (the dignity canon) and from SB_HEVA_V (the two
+   Complete Evaluations). It changes no score anywhere.
+   ============================================================ */
+var SB_D60_DEITY=[null,
+ ['Ghora','K'],['Rakshasa','K'],['Deva','S'],['Kubera','S'],['Yaksha','K'],
+ ['Kinnara','K'],['Bhrashta','K'],['Kulaghna','K'],['Garala','K'],['Vahni','K'],
+ ['Maya','K'],['Purishaka','K'],['Apampathi','S'],['Marutwan','S'],['Kaala','K'],
+ ['Sarpa','K'],['Amrita','S'],['Indu','S'],['Mridu','S'],['Komala','S'],
+ ['Heramba','S'],['Brahma','S'],['Vishnu','S'],['Maheshwara','S'],['Deva','S'],
+ ['Ardra','S'],['Kalinasa','S'],['Kshiteesa','S'],['Kamalakara','S'],['Gulika','K'],
+ ['Mrityu','K'],['Kaala','K'],['Davagni','K'],['Ghora','K'],['Yama','K'],
+ ['Kantaka','K'],['Suddha','S'],['Amrita','S'],['Purnachandra','S'],['Vishadagdha','K'],
+ ['Kulanasa','K'],['Vamshakshaya','K'],['Utpata','K'],['Kaala','K'],['Saumya','S'],
+ ['Komala','S'],['Sheetala','S'],['Karaladamshtra','K'],['Chandramukhi','S'],['Praveena','S'],
+ ['Kaalagni','K'],['Dandayudha','K'],['Nirmala','S'],['Saumya','S'],['Kroora','K'],
+ ['Atisheetala','S'],['Amrita','S'],['Payodhi','S'],['Bhramana','K'],['Chandrarekha','K']];
+
+/* Meaning of each name, so the panel can say what it is rather than
+   only what it is called. Repeated names share one gloss. */
+var SB_D60_MEAN={'Ghora':'terrible, fierce','Rakshasa':'demon, the unrighteous path',
+ 'Deva':'the shining one, righteousness','Kubera':'lord of wealth','Yaksha':'a guardian spirit, dangerous when crossed',
+ 'Kinnara':'half-human celestial musician','Bhrashta':'the fallen, the corrupt','Kulaghna':'destroyer of the family line',
+ 'Garala':'poison, venom','Vahni':'fire, the sacrificial flame','Maya':'illusion, deceit','Purishaka':'impurity, the realm of the dead',
+ 'Apampathi':'Varuna, lord of the waters','Marutwan':'Indra, companion of the winds','Kaala':'time, which consumes',
+ 'Sarpa':'the serpent','Amrita':'the nectar of immortality','Indu':'the Moon','Mridu':'the gentle, the soft',
+ 'Komala':'the tender','Heramba':'Ganesha, remover of obstacles','Brahma':'the creator','Vishnu':'the preserver',
+ 'Maheshwara':'Shiva, the transformer','Ardra':'the moist, the fresh','Kalinasa':'destroyer of strife',
+ 'Kshiteesa':'lord of the earth','Kamalakara':'the lotus pond','Gulika':'the shadow son of Saturn',
+ 'Mrityu':'death','Davagni':'the forest fire','Yama':'lord of the dead','Kantaka':'the thorn',
+ 'Suddha':'the pure','Purnachandra':'the full Moon','Vishadagdha':'burnt by poison','Kulanasa':'ruin of the lineage',
+ 'Vamshakshaya':'decay of the dynasty','Utpata':'calamity, the evil omen','Saumya':'the benign',
+ 'Sheetala':'the cooling','Karaladamshtra':'the terrible fang','Chandramukhi':'moon-faced',
+ 'Praveena':'the skilled, the expert','Kaalagni':'the fire at the end of time','Dandayudha':'armed with the rod',
+ 'Nirmala':'the spotless','Kroora':'the cruel','Atisheetala':'exceedingly cool','Payodhi':'the ocean',
+ 'Bhramana':'the wanderer, the deluded','Chandrarekha':'the thin crescent, a blemish on the Moon'};
+
+/* which half-degree of the sign a longitude falls in, 1 to 60 */
+function SB_d60Seg(L){var s=Math.floor(L*2)+1;return s<1?1:(s>60?60:s);}
+/* the whole reading for one point: segment, sign and presiding deity */
+function SB_d60(si,L){
+  var S=SB_d60Seg(L),id=(si%2===0)?S:(61-S),row=SB_D60_DEITY[id]||['?','K'];
+  return{seg:S,deityId:id,name:row[0],nature:row[1],
+         benefic:row[1]==='S',mean:SB_D60_MEAN[row[0]]||'',
+         signIdx:(si+S-1)%12,divDeg:vDivDeg(si,L,60),
+         from:(si%2===0)?'odd sign - counted forward':'even sign - counted backward'};
+}
 function vargaDignityFor(point,planets,v){
   var p=planets[point];if(!p)return null;
   var si=p.index,L=p.degree+(p.minutes||0)/60,ds=vSign(si,L,v);
@@ -2492,6 +2584,63 @@ function buildVargaPanel(planets,asc,v,showInterp){
   }h+="</div>";return h;
 }
 
+/* ============================================================
+   SHASHTIAMSHA PANEL  (grep: buildShashtiamshaPanel)
+   The presiding deity of every point, which is the whole reason
+   the D-60 is drawn. Nothing here feeds a score - see the note
+   on SB_D60_DEITY.
+   ============================================================ */
+function buildShashtiamshaPanel(planets,asc){
+  var GOLD="var(--gold)",SIL="var(--silver)",DIM="var(--gold-dim)";
+  var ORD=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
+  var GOOD="#7fd99a",BAD="#e08a8a";
+  var h="<div class='d60-analysis' style=\"text-align:left;margin-top:22px;border-top:1px solid rgba(212,175,90,0.25);padding-top:18px\">";
+  h+="<p style='font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:"+DIM+";margin:0 0 4px'>Shashtiamsha \u00b7 D-60</p>";
+  h+="<p style='font-size:18px;color:"+GOLD+";margin:0 0 6px;font-family:\"Cinzel\",serif'>The Presiding Deities</p>";
+  h+="<p style='font-size:13px;line-height:1.6;color:"+SIL+";margin:0 0 6px'>Each sign is cut into sixty parts of <b>30 arc-minutes</b> \u2014 the finest division in the classical set, and the one that reads what a life is born already carrying. Every part has a presiding <b>devata</b>, thirty of them <b>Shubha</b> (benign) and thirty <b>Krura</b> (harsh), read forward from an odd sign and backward from an even one. Because half a degree of the zodiac is about two minutes of birth time, this chart is only as trustworthy as the birth record behind it.</p>";
+
+  /* the Ascendant first - it sets the tone of the whole reading */
+  var aL=asc.degree+(asc.minutes||0)/60, aD=SB_d60(asc.index,aL);
+  h+="<div style='background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,90,0.2);border-radius:12px;padding:14px 16px;margin:14px 0 16px'>";
+  h+="<div style='display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap'>";
+  h+="<span style='font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:"+DIM+"'>Ascendant</span>";
+  h+="<span style='font-size:20px;font-weight:bold;color:"+(aD.benefic?GOOD:BAD)+"'>"+aD.name+"</span></div>";
+  h+="<p style='font-size:12.5px;color:"+SIL+";margin:6px 0 0;line-height:1.6'>"+asc.sign.name+" "+vgDegMin(aL)+
+     " falls in segment <b>"+aD.seg+"</b> of 60, which places the rising point in <b>"+SIGNS[aD.signIdx].name+
+     "</b> of the D-60 and hands it to <b>"+aD.name+"</b> \u2014 "+aD.mean+". Devata "+aD.deityId+", "+
+     (aD.benefic?"Shubha":"Krura")+"; "+aD.from+".</p></div>";
+
+  /* one row per point */
+  var nB=0,nK=0;
+  h+="<div style='display:flex;flex-direction:column;gap:0'>";
+  for(var i=0;i<ORD.length;i++){
+    var pl=ORD[i],p=planets[pl];if(!p)continue;
+    var L=p.degree+(p.minutes||0)/60, D=SB_d60(p.index,L);
+    if(D.benefic)nB++;else nK++;
+    var col=PCOL[pl]||'#aaa';
+    h+="<div style='display:flex;align-items:flex-start;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(42,42,74,0.4)'>";
+    h+="<span style='color:"+col+";font-weight:600;min-width:74px;font-size:13px'>"+pl+"</span>";
+    h+="<span style='flex:1;min-width:0'>";
+    h+="<span style='color:"+(D.benefic?GOOD:BAD)+";font-weight:600;font-size:13.5px'>"+D.name+"</span>";
+    h+="<span style='color:"+DIM+";font-size:11px;margin-left:8px'>#"+D.deityId+" \u00b7 "+(D.benefic?"Shubha":"Krura")+"</span>";
+    h+="<div style='color:"+SIL+";font-size:11.5px;line-height:1.55;margin-top:2px'>"+D.mean+
+       " \u00b7 segment "+D.seg+"/60 \u00b7 "+SIGNS[D.signIdx].name+" "+vgDegMin(D.divDeg)+"</div>";
+    h+="</span></div>";
+  }
+  h+="</div>";
+
+  var tot=nB+nK, pct=tot?Math.round(nB/tot*100):0;
+  h+="<div style='margin:16px 0 0'>";
+  h+="<div style='display:flex;align-items:baseline;justify-content:space-between;gap:10px'><span style='font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:"+DIM+"'>Benign Devatas</span><span style='font-size:22px;font-weight:bold;color:"+(pct>=50?GOOD:BAD)+"'>"+nB+" of "+tot+"</span></div>";
+  h+="<div style='height:8px;border-radius:4px;background:rgba(255,255,255,0.08);margin:10px 0 8px;overflow:hidden'><div style='height:100%;width:"+pct+"%;background:linear-gradient(90deg,#e08a8a,#e8c65a,#7fd99a)'></div></div>";
+  h+="<p style='font-size:12.5px;line-height:1.6;color:"+SIL+";margin:0'>A point under a Krura devata is not a verdict on the planet \u2014 it says the ground it stands on was hard-won, and that whatever the rest of the chart promises there arrives with a debt attached. Read it beside the planet's dignity, never instead of it.</p>";
+  h+="</div>";
+
+  h+="<p style='font-size:11.5px;line-height:1.6;color:"+DIM+";margin:14px 0 0;font-style:italic'>Segment = floor(degree \u00d7 2) + 1. Sign counted cyclically from the natal sign; deity read forward from an odd sign, backward from an even one. The D-60 carries no weight in Shodasa Varga or in either Complete Evaluation \u2014 it is read, not scored.</p>";
+  h+="</div>";
+  return h;
+}
+
 function buildTrimshaPanel(planets,asc){
   var a=SB3D_trimshaAnalysis(planets,asc);
   var GOLD="var(--gold)",SIL="var(--silver)",DIM="var(--gold-dim)";
@@ -2593,21 +2742,26 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
   var moonPhase=norm(moonLon-sunLon);
   var waxing=moonPhase<180;
   function d180(a,b){var d=Math.abs(norm(a)-norm(b));return d>180?360-d:d;}
+  /* hours between two clock times, the short way round the dial (0-12) */
+  function hDist(h,peak){var d=Math.abs(h-peak);return d>12?24-d:d;}
   function uPts(pLon,ex){var fa=norm(ex+180),de=d180(pLon,ex),df=d180(pLon,fa);return de<=df?Math.round(Math.max(0,100-de/1.8)):Math.round(Math.min(100,df/1.8));}
   for(var pi=0;pi<pls.length;pi++){
     var pl=pls[pi],pdata=planets[pl];
     if(!pdata){result[pl]={final:0,components:{}};continue;}
     var pLon=pdata.deg,pHouse=((pdata.index-ascIdx+12)%12)+1;
+    /* Day/night peak, the book's anchors: the Sun, Jupiter and Saturn gather
+       at 15:00, the Moon, Mars and Venus at 03:00 - twelve hours apart, so the
+       pair always sums to 40. Mercury peaks twice, at sunrise and sunset, which
+       the book fixes at 09:00 and 21:00 (its own worked example gives Mercury
+       40 there while every other planet gets 20). */
     var dayNight=0;
     if(pl==='Mercury'){
-      var dsr=Math.min(Math.abs(birthHour-6),Math.abs(birthHour-18));
+      var dsr=Math.min(hDist(birthHour,9),hDist(birthHour,21));
       dayNight=Math.round(Math.max(0,40-dsr*(40/6)));
     } else if(pl==='Sun'||pl==='Jupiter'||pl==='Saturn'){
-      var dfn=Math.min(Math.abs(birthHour-12),24-Math.abs(birthHour-12));
-      dayNight=Math.round(Math.max(0,40-dfn*(40/12)));
+      dayNight=Math.round(Math.max(0,40-hDist(birthHour,15)*(40/12)));
     } else {
-      var dmn=Math.min(birthHour,24-birthHour);
-      dayNight=Math.round(Math.max(0,40-dmn*(40/12)));
+      dayNight=Math.round(Math.max(0,40-hDist(birthHour,3)*(40/12)));
     }
     var waxPl=['Moon','Venus','Jupiter','Mercury'];
     var moonPhaseScore=0;
@@ -2620,6 +2774,10 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
     if(pl==='Moon'){cheshtaBala=Math.round((moonPhase/180)*100);}
     else if(pl==='Sun'){cheshtaBala=Math.round(d180(pLon,270)/1.8);}
     else{var dop=d180(pLon,norm(sunLon+180));cheshtaBala=Math.round(Math.max(0,100-dop/1.8));}
+    /* The book's rule, plainly: a retrograde planet is physically nearest the
+       Earth, so it takes the full 100 of Cheshta bala outright. Only the five
+       can retrograde - the Sun and Moon never do. */
+    if(pdata.retro&&pl!=='Sun'&&pl!=='Moon')cheshtaBala=100;
     var uchhaBala=EXALT[pl]!==undefined?uPts(pLon,EXALT[pl]):50;
     var digBest=1;
     if(pl==='Jupiter'||pl==='Mercury')digBest=1;
@@ -2645,7 +2803,11 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
     else if(degInSign>=20&&['Moon','Venus'].indexOf(pl)>-1)genderScore=20;
     var sthanaBala=divScore+houseScore+genderScore;
     var total=kalaBala+(cheshtaBala*2)+uchhaBala+(digBala*2)+ayanBala+sthanaBala;
-    result[pl]={final:Math.round(total/7),components:{'Kala':kalaBala,'Cheshta x2':cheshtaBala*2,'Uchcha':uchhaBala,'Dig x2':digBala*2,'Ayan':ayanBala,'Sthana':sthanaBala}};
+    /* Six ingredients, so the book multiplies the sum by 1/6. Cheshta and Dig
+       carry double weight inside that sum, which is why a planet can pass 100:
+       the ceiling is 800/6 = 133, and the book's own figures live on this
+       scale (Jupiter 99, Adolf's Sun 88). */
+    result[pl]={final:Math.round(total/6),components:{'Kala':kalaBala,'Cheshta x2':cheshtaBala*2,'Uchcha':uchhaBala,'Dig x2':digBala*2,'Ayan':ayanBala,'Sthana':sthanaBala}};
   }
   return result;
 }
@@ -3467,6 +3629,7 @@ function computeAllYogas(chart){
   if(chart.suryaLagna)out.SuryaLagna=runAll(viewFromPlanetsAsc(chart.planets,chart.suryaLagna.signIdx));
   for(var vk in chart.vargas){
     if(vk==='D-2')continue;
+    if(vk==='D-60')continue;   /* reading layer only - no yogas, no scores */
     var vd=chart.vargas[vk],houseOf={},signOf={};
     for(var p in vd.planets){houseOf[p]=vd.planets[p].house;signOf[p]=vd.planets[p].signIdx;}
     out[vk]=runAll({ascIdx:vd.ascIdx,houseOf:houseOf,signOf:signOf});
@@ -3525,7 +3688,7 @@ function calculateChart(dateStr,timeStr,place,tzOverride,geoOv,ascOv){
   }
   var curAge=(nowDate-bDate)/(365.25*24*3600*1000);
   var dignities=allDigs(planets,asc.index),funcNature=FN[asc.sign.name]||{},ascInfo=ASC_INFO[asc.sign.name]||{},aspects=allAsps(planets,asc.index),shodasavarga=calcShodasavarga(planets,asc.index),shadbala=calcShadbala(planets,asc.index,asc.totalDeg,dateStr,timeStr||'12:00');
-  var vargas={};var vkeys={'D-1':1,'D-2':2,'D-3':3,'D-7':7,'D-9':9,'D-10':10,'D-12':12,'D-16':16,'D-30':30};for(var vk in vkeys)vargas[vk]=buildVarga(planets,asc.totalDeg,vkeys[vk]);
+  var vargas={};var vkeys={'D-1':1,'D-2':2,'D-3':3,'D-7':7,'D-9':9,'D-10':10,'D-12':12,'D-16':16,'D-30':30,'D-60':60};for(var vk in vkeys)vargas[vk]=buildVarga(planets,asc.totalDeg,vkeys[vk]);
   var nakshatras=calcNakshatras(_sid?(function(){var o={};for(var k in rawTrop)o[k]={deg:rawTrop[k]};return o;})():planets); /* nakshatra calc expects tropical input */
   var moonPhase=moonPhaseInfo(raw.Sun,raw.Moon);
   var suryaLagna=calcAltLagna(planets,'Sun'),chandraLagna=calcAltLagna(planets,'Moon');
@@ -3906,10 +4069,10 @@ function renderReading(name,date,time,place,chart,aiTxt){
   for(var svi=0;svi<svSorted.length;svi++){var svpl=svSorted[svi],sv=shodasavarga[svpl],svcol=PCOL[svpl]||'#aaa';html+='<div class="shadv-pill"><div class="shadv-hdr"><span class="shadv-pn">'+svpl+'</span><span class="shadv-sc" style="color:'+svcol+'">'+sv.final+'</span></div><div class="shadv-bw"><div class="shadv-b" style="width:'+Math.min(100,sv.final)+'%;background:'+svcol+'"></div></div><div class="shadv-rows">';for(var bk in sv.breakdown){var bd=sv.breakdown[bk],dbl=bk==='D-1'||bk==='D-9';html+='<div class="shadv-row"><span class="shadv-k">'+bk+(dbl?' x2':'')+'</span><span class="shadv-v">'+bd.sign+'</span><span class="shadv-p" style="color:'+svcol+'">'+bd.weighted+'</span></div>';}html+='</div></div>';}
   html+='</div></div>';
   if(chart.shadbala){
-    html+='<div class="section" id="secShadb"><p class="section-label">Shadbala - Sixfold Strength</p><p class="section-title">Total Planetary Power</p><p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:18px">Kala + Cheshta(x2) + Uchcha + Dig(x2) + Ayan + Sthana, divided by 7.</p><div class="shadb-grid">';
+    html+='<div class="section" id="secShadb"><p class="section-label">Shadbala - Sixfold Strength</p><p class="section-title">Total Planetary Power</p><p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:18px">Kala + Cheshta(x2) + Uchcha + Dig(x2) + Ayan + Sthana, divided by 6. The doubled ingredients lift the ceiling to 133, so a very strong planet passes 100.</p><div class="shadb-grid">';
     var sbk=Object.keys(chart.shadbala).sort(function(a,b){return chart.shadbala[b].final-chart.shadbala[a].final;});
     for(var si=0;si<sbk.length;si++){var sp=sbk[si],sb=chart.shadbala[sp],sc=PCOL[sp]||'#aaa';
-      html+='<div class="shadb-pill"><div class="shadb-hdr"><span class="shadb-pn">'+sp+'</span><span class="shadb-sc" style="color:'+sc+'">'+sb.final+'</span></div><div class="shadb-bw"><div class="shadb-b" style="width:'+sb.final+'%;background:'+sc+'"></div></div><div class="shadb-rows">';
+      html+='<div class="shadb-pill"><div class="shadb-hdr"><span class="shadb-pn">'+sp+'</span><span class="shadb-sc" style="color:'+sc+'">'+sb.final+'</span></div><div class="shadb-bw"><div class="shadb-b" style="width:'+Math.min(100,sb.final)+'%;background:'+sc+'"></div></div><div class="shadb-rows">';
       var ck=Object.keys(sb.components);for(var ci=0;ci<ck.length;ci++){html+='<div class="shadb-row"><span class="shadb-k">'+ck[ci]+'</span><span class="shadb-p" style="color:'+sc+'">'+sb.components[ck[ci]]+'</span></div>';}
       html+='</div></div>';}
     html+='</div></div>';}
@@ -3934,7 +4097,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     html+='</div>';
   }else{
   html+='<div class="section" id="secVargas"><p class="section-label">Varga - Divisional Charts</p><div class="vtabs">';
-  var vkeys2=['D-1','D-2','D-3','D-7','D-9','D-10','D-12','D-16','D-30'];
+  var vkeys2=['D-1','D-2','D-3','D-7','D-9','D-10','D-12','D-16','D-30','D-60'];
   for(var vki=0;vki<vkeys2.length;vki++)html+='<button class="vtab'+(vki===0?' vtab-active':'')+'" onclick="switchV(\''+vkeys2[vki]+'\',this)">'+vkeys2[vki]+'</button>';
   html+='</div>';
   for(var vki2=0;vki2<vkeys2.length;vki2++){var vk2=vkeys2[vki2],vd=vargas[vk2],vi=VINFO[vk2]||{};
@@ -3959,7 +4122,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     if(!(vk2==='D-2'&&typeof SB_OB_genderNA==='function'&&SB_OB_genderNA()))
     html+=SB_pillGrid(vd,{split:(vk2!=='D-2'),hora:(vk2==='D-2'),deg:(vk2==='D-1'),
                           naks:(vk2==='D-1'?chart.nakshatras:null),ctx:vk2});
-    if(vk2!=='D-2'&&vk2!=='D-3'&&vk2!=='D-30'&&vk2!=='D-7'&&vk2!=='D-16'){
+    if(vk2!=='D-2'&&vk2!=='D-3'&&vk2!=='D-30'&&vk2!=='D-7'&&vk2!=='D-16'&&vk2!=='D-60'){
       html+='<div style="margin:16px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Yogas ▲\':\'Show Yogas ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Yogas ▼</button><div class="adsub" style="margin-top:8px">'+yogaListHTML(vk2)+'</div></div>';
     }
     if(vk2==='D-2'){var _gEl=document.getElementById('iGender');var _g=_gEl?_gEl.value:'u';
@@ -3968,7 +4131,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
       if(typeof SB_OB_genderNA==='function'&&SB_OB_genderNA())html+=(typeof SB_OB_horaNote==='function'?SB_OB_horaNote():'');
       else html+=buildHoraPanel(planets,asc,_g);}
     else if(vk2==='D-3'){html+=buildDrekkanaPanel(planets,asc);}
-    else if(vk2==='D-30'){html+=buildTrimshaPanel(planets,asc);}else if(vk2==='D-7'){html+=buildVargaPanel(planets,asc,7);}else if(vk2==='D-16'){html+=buildVargaPanel(planets,asc,16);}else if(vk2==='D-9'){html+=buildVargaPanel(planets,asc,9,false);}else if(vk2==='D-10'){html+=buildVargaPanel(planets,asc,10,false);}else if(vk2==='D-12'){html+=buildVargaPanel(planets,asc,12,false);}
+    else if(vk2==='D-60'){html+=buildShashtiamshaPanel(planets,asc);}else if(vk2==='D-30'){html+=buildTrimshaPanel(planets,asc);}else if(vk2==='D-7'){html+=buildVargaPanel(planets,asc,7);}else if(vk2==='D-16'){html+=buildVargaPanel(planets,asc,16);}else if(vk2==='D-9'){html+=buildVargaPanel(planets,asc,9,false);}else if(vk2==='D-10'){html+=buildVargaPanel(planets,asc,10,false);}else if(vk2==='D-12'){html+=buildVargaPanel(planets,asc,12,false);}
     html+='</div>';}
   html+='</div>';
   } /* end of the timed-birth varga branch */
@@ -3989,7 +4152,18 @@ function renderReading(name,date,time,place,chart,aiTxt){
     for(var ai=0;ai<adSeq.length;ai++){
       var ad=adSeq[ai],asY=ad.startDate.toISOString().slice(0,10),aeY=ad.endDate.toISOString().slice(0,10);
       var isCurAd=nowDt>=ad.startDate&&nowDt<ad.endDate;
-      html+='<div class="adrow"'+(isCurAd?' style="color:var(--gold)"':'')+'><span class="adpn">'+ad.sym+' '+ad.planet+(isCurAd?' &lt;':'')+'</span><span>'+asY+' to '+aeY+'</span></div>';
+      var pdId='pdsub'+dsi+'_'+ai;
+      html+='<div class="adrow"'+(isCurAd?' style="color:var(--gold)"':'')+' onclick="toggleAntar(\''+pdId+'\')"><span class="adpn">'+ad.sym+' '+ad.planet+(isCurAd?' &lt;':'')+'</span><span>'+asY+' to '+aeY+'</span></div>';
+      /* Pratyantar - the third Vimshottari level. Same proportional split,
+         counted from the Antardasha lord. Reading view only, never the 3D. */
+      var pdSeq=calcAntardasha(ad);
+      html+='<div class="pdsub" id="'+pdId+'">';
+      for(var pdi=0;pdi<pdSeq.length;pdi++){
+        var pd=pdSeq[pdi],psY=pd.startDate.toISOString().slice(0,10),peY=pd.endDate.toISOString().slice(0,10);
+        var isCurPd=nowDt>=pd.startDate&&nowDt<pd.endDate;
+        html+='<div class="pdrow"'+(isCurPd?' style="color:var(--gold)"':'')+'><span class="pdpn">'+pd.sym+' '+pd.planet+(isCurPd?' &lt;':'')+'</span><span>'+psY+' to '+peY+'</span></div>';
+      }
+      html+='</div>';
     }
     html+='</div>';
   }
@@ -4680,7 +4854,7 @@ function SB_planetExtraHTML(chart,pl){
     for(var bk in sv.breakdown){var bd=sv.breakdown[bk],dbl=(bk==='D-1'||bk==='D-9');
       html+='<div class="shadv-row"><span class="shadv-k">'+bk+(dbl?' x2':'')+'</span><span class="shadv-v">'+bd.sign+'</span><span class="shadv-p" style="color:'+col+'">'+(dbl?bd.score+' <span style="opacity:.6">&rarr;</span> '+bd.weighted:bd.score)+'</span></div>';}
     html+='</div></div>';}
-  if(sb){html+='<div class="shadv-pill"><div class="shadv-hdr"><span class="shadv-pn">Shadbala</span><span class="shadv-sc" style="color:'+col+'">'+sb.final+'</span></div><div class="shadv-bw"><div class="shadv-b" style="width:'+sb.final+'%;background:'+col+'"></div></div><div class="shadv-rows">';
+  if(sb){html+='<div class="shadv-pill"><div class="shadv-hdr"><span class="shadv-pn">Shadbala</span><span class="shadv-sc" style="color:'+col+'">'+sb.final+'</span></div><div class="shadv-bw"><div class="shadv-b" style="width:'+Math.min(100,sb.final)+'%;background:'+col+'"></div></div><div class="shadv-rows">';
     var ck=Object.keys(sb.components);
     for(var ci=0;ci<ck.length;ci++){html+='<div class="shadv-row"><span class="shadv-k">'+ck[ci]+'</span><span class="shadv-p" style="color:'+col+'">'+sb.components[ck[ci]]+'</span></div>';}
     html+='</div></div>';}
@@ -4711,8 +4885,10 @@ function SB_houseSectionHTML(chart,h){
    PLANETARY EVALUATION  (grep: PLANETARY EVALUATION, SB_planetEval)
    The book's "Planetary Evaluation" chapter, on every planet page.
      score = dignity + house placement + composite aspects
-   HOUSE: 1,4,5,9,10,11 are beneficial, 3,6,8,12 (dusthana) harmful,
-   2 and 7 neutral. The term is the planet's alignment with its own
+   HOUSE: 1,4,5,9,10,11 are beneficial, 6,8,12 (dusthana) harmful,
+   2, 3 and 7 neutral. The 3rd is an upachaya house of effort, never
+   a dusthana - the book counts only the 6th, 8th and 12th.
+    The term is the planet's alignment with its own
    house cusp - the ascendant degree carried into the sign -
    (30 - distance)/30. Close to the cusp is good in a beneficial
    house and bad in a dusthana, so the sign of the term follows the
@@ -4725,7 +4901,7 @@ function SB_houseSectionHTML(chart,h){
    war, yogas) are reported separately, and the penalties among them
    are gathered into one expression factor.
    ============================================================ */
-var PEV_GOOD={1:1,4:1,5:1,9:1,10:1,11:1},PEV_DUS={3:1,6:1,8:1,12:1};
+var PEV_GOOD={1:1,4:1,5:1,9:1,10:1,11:1},PEV_DUS={6:1,8:1,12:1};
 var PEV_COMB={Moon:12,Venus:8,Mars:17,Mercury:12,Saturn:15,Jupiter:11};
 var PEV_BRIGHT={Moon:1,Venus:2,Jupiter:3,Mercury:4,Mars:5,Saturn:6};
 var PEV_AVA={
@@ -5288,13 +5464,19 @@ function SB_houseEvalHTML(chart,h){
    THE ONE METHODOLOGICAL DECISION, WRITTEN DOWN
    ---------------------------------------------
    The aspect fall-off ("one point per degree off the cusp") is
-   measured in REAL ZODIACAL DEGREES in every chart, never in
-   divisional degrees.  vDivDeg stretches a position across its
-   segment - by nine in D-9, by sixteen in D-16 - so a gap taken
-   in divisional coordinates would punish the higher vargas for
-   nothing but the projection.  Real degrees keep the arithmetic
-   identical to D-1: only the nominal strength changes, because
-   only the house changes.
+   measured in the DIVISIONAL DEGREES of the chart being read.
+   A varga is a chart in its own right: a planet at Taurus 4d20
+   sits at 9d00 of its D-9 sign, and 9d00 is where it stands in
+   that chart, so that is the degree the cusp and every aspect
+   are measured from.  vDivDeg already carries the number - it
+   was computed and then discarded.
+
+   The cost is known and accepted: vDivDeg stretches a position
+   across its segment, by nine in D-9 and by sixteen in D-16, so
+   two planets a few degrees apart in D-1 can fall outside each
+   other's orb in a high varga.  Aspects thin out as the charts
+   get finer.  That is a real property of the divisions, not an
+   artefact to be corrected away.
 
    A consequence worth knowing: SB_hevaEval(chart,h,1) returns
    the same numbers as SB_houseEval(chart,h).  hevalltest.js
@@ -5343,6 +5525,10 @@ function SB_hevaRotate(chart,h,v){
   var asc=chart.asc;
   var degInSign=asc.totalDeg-Math.floor(asc.totalDeg/30)*30;
   var vasc=vSign(asc.index,amFloor(degInSign),v);          /* varga lagna sign */
+  /* the cusp degree OF THIS CHART: the ascendant projected into its own
+     division. Taurus 4d20 becomes 9d00 in D-9, and every cusp of the
+     rotation carries that degree, exactly as D-1 carries 4d20. */
+  var vascDeg=vDivDeg(asc.index,amFloor(degInSign),v);
   var signIdx=(vasc+h-1)%12;                               /* the house itself */
   var pl=chart.planets,vp={};
   for(var n in pl){
@@ -5354,7 +5540,7 @@ function SB_hevaRotate(chart,h,v){
            divDeg:vDivDeg(pl[n].index,L,v)};
   }
   return{v:v,vascIdx:vasc,vascSign:SIGNS[vasc],
-         signIdx:signIdx,sign:SIGNS[signIdx],degInSign:degInSign,
+         signIdx:signIdx,sign:SIGNS[signIdx],degInSign:degInSign,vascDeg:vascDeg,
          planets:vp,raw:pl};
 }
 
@@ -5370,9 +5556,10 @@ function SB_hevaEval(chart,h,v){
     var base=getAspectOffsets(pl)[off];
     if(base===undefined){silent.push({planet:pl,fromHouse:fromH,
       reason:'casts no aspect on the '+SB_ordinal(h)+' house'});return null;}
-    /* real zodiacal degrees on both sides - see the header note */
-    var pdeg=planets[pl].degree+(planets[pl].minutes||0)/60;
-    var gap=Math.abs(pdeg-rot.degInSign);
+    /* divisional degrees on both sides - see the header note.
+       With v=1 vDivDeg is the identity, so D-1 is bit-for-bit unchanged. */
+    var pdeg=vp.divDeg;
+    var gap=Math.abs(pdeg-rot.vascDeg);
     var pct=Math.round(base-gap);if(pct<0)pct=0;
     if(pct<=0){silent.push({planet:pl,fromHouse:fromH,base:base,gap:gap,
       reason:'its '+HEV_ASPNAME[off]+' aspect starts at '+base+'% and it stands '
@@ -5418,7 +5605,7 @@ function SB_hevaEval(chart,h,v){
   var net=pos-neg,tot=pos+neg,V=SB_hevaVerdict(pos,neg);
   var verdict=V.v,vcol=V.c,vcls=V.k;
   return{house:h,v:v,sign:rot.sign,signIdx:rot.signIdx,vascSign:rot.vascSign,
-    ascDeg:rot.degInSign,rows:rows,nodes:nodes,silent:silent,fnTable:fn,
+    ascDeg:rot.vascDeg,natalAscDeg:rot.degInSign,rows:rows,nodes:nodes,silent:silent,fnTable:fn,
     positive:pos,negative:neg,net:net,total:tot,ratio:tot?pos/tot:0.5,
     countPos:nPos,countNeg:nNeg,countZero:nZero,verdict:verdict,verdictCol:vcol,
     verdictCls:vcls,lord:SIGNS[rot.signIdx].ruler};
@@ -5614,11 +5801,15 @@ function SB_pevaAsps(chart,v){
   var planets=chart.planets,asc=chart.asc;
   var ascDeg=asc.totalDeg-Math.floor(asc.totalDeg/30)*30;
   var vasc=vSign(asc.index,amFloor(ascDeg),v);
-  var si={},houses={},n;
+  /* the cusp degree of this chart, and every planet's degree inside its own
+     divisional sign. With v=1 vDivDeg is the identity, so D-1 is unchanged. */
+  var vascDeg=vDivDeg(asc.index,amFloor(ascDeg),v);
+  var si={},houses={},dd={},n;
   for(n in planets){
     if(!planets[n])continue;
     var L=planets[n].degree+(planets[n].minutes||0)/60;
     si[n]=vSign(planets[n].index,L,v);
+    dd[n]=vDivDeg(planets[n].index,L,v);
     houses[n]=((si[n]-vasc+12)%12)+1;
   }
   var recv={},all=SB_PEVA_ORDER;
@@ -5629,15 +5820,24 @@ function SB_pevaAsps(chart,v){
       var off=((houses[tgt]-houses[src])+12)%12;
       var base=getAspectOffsets(src)[off];
       if(base===undefined)continue;
-      var sDeg=planets[src].degree+(planets[src].minutes||0)/60;
-      var tDeg=planets[tgt].degree+(planets[tgt].minutes||0)/60;
+      var sDeg=dd[src],tDeg=dd[tgt];
       var str=Math.round(Math.max(0,base-Math.abs(sDeg-tDeg)));
       if(str>=60)recv[tgt].push({from:src,str:str});
     }
     recv[tgt].sort(function(a,b){return b.str-a.str;});
   }
-  return{v:v,vascIdx:vasc,vascSign:SIGNS[vasc],recv:recv,houses:houses,signIdx:si};
+  return{v:v,vascIdx:vasc,vascSign:SIGNS[vasc],recv:recv,houses:houses,signIdx:si,
+         divDeg:dd,vascDeg:vascDeg};
 }
+
+/* Cusp alignment inside a varga: the planet's divisional degree against the
+   divisional cusp. SB_pevaCusp(chart,pl,A) with A.v===1 returns exactly what
+   SB_pevCusp(chart,pl) returns, because vDivDeg is the identity at v=1. */
+function SB_pevaCusp(chart,pl,A){
+  var d=A.divDeg[pl],a=A.vascDeg;
+  if(d===undefined||a===undefined)return SB_pevCusp(chart,pl);
+  var raw=Math.abs(d-a),delta=Math.min(raw,30-raw);
+  return{delta:delta,pct:Math.round((30-delta)/30*100)};}
 
 /* --- lordship and linkage, read in a varga ------------------- */
 function SB_pevaLordOf(A,pl){
@@ -5717,13 +5917,13 @@ function SB_pevaEval(chart,pl,v,Apre){
   else{verdict='balanced';decided='nothing tips it';}
 
   /* 2. house placement
-     D-1 keeps the graded term: the cusp alignment, signed by the house.
-     The vargas get the flat judgement only - beneficial, dusthana or neither -
-     because the cusp is a real-sky degree and reusing it in six charts would
-     count one fact six times. Degree precision stays D-1's alone. */
+     The cusp alignment is read in THIS chart's degrees: the planet's
+     divisional degree against the divisional lagna degree, signed by the
+     house. Each varga therefore carries its own graded term rather than
+     borrowing D-1's. At v=1 the two are identical. */
   var h=A.houses[pl];
   var kind=PEV_GOOD[h]?'beneficial':PEV_DUS[h]?'dusthana':'neutral';
-  var cusp=SB_pevCusp(chart,pl);
+  var cusp=SB_pevaCusp(chart,pl,A);
   var houseTerm=(kind==='beneficial'?cusp.pct:kind==='dusthana'?-cusp.pct:0);
 
   /* 3. composite aspects, signed by this chart's functional natures */
@@ -6052,7 +6252,7 @@ function SB_buildPages(chart,out,b3,rb){
   /* top bar with three dropdowns */
   var chartDefs=window.SB_NOTIME
     ?[['transit','Western Transit'],['SL','Surya Lagna'],['CL','Chandra Lagna']]
-    :[['transit','Western Transit'],['D-1','D-1 - Natal Chart'],['D-9','D-9 - Navamsha'],['D-2','D-2 - Hora'],['D-3','D-3 - Drekkana'],['D-7','D-7 - Saptamsha'],['D-10','D-10 - Dashamsha'],['D-12','D-12 - Dwadashamsha'],['D-16','D-16 - Shodashamsha'],['D-30','D-30 - Trimshamsha']];
+    :[['transit','Western Transit'],['D-1','D-1 - Natal Chart'],['D-9','D-9 - Navamsha'],['D-2','D-2 - Hora'],['D-3','D-3 - Drekkana'],['D-7','D-7 - Saptamsha'],['D-10','D-10 - Dashamsha'],['D-12','D-12 - Dwadashamsha'],['D-16','D-16 - Shodashamsha'],['D-30','D-30 - Trimshamsha'],['D-60','D-60 - Shashtiamsha']];
   var chItems='';for(var i=0;i<chartDefs.length;i++){chItems+='<button class="sbDDItem'+(i===0?' cur':'')+'" type="button" onclick="SB_pickChart(\''+chartDefs[i][0]+'\',this)">'+chartDefs[i][1]+'</button>';}
   var PORD=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
   var plItems='<button class="sbDDItem" type="button" onclick="SB_pickPlanetAll(this)">Complete Planetary Evaluation</button>';
@@ -6092,9 +6292,16 @@ function SB_buildPages(chart,out,b3,rb){
       var _oc=_drs[_di].getAttribute('onclick')||'',_m=/adsub\d+/.exec(_oc);
       if(_m){_drs[_di].setAttribute('data-ad',_m[0]);_drs[_di].removeAttribute('onclick');_drs[_di].style.cursor='pointer';}
     }
+    var _ars=sD.querySelectorAll('.adrow');
+    for(var _ai=0;_ai<_ars.length;_ai++){
+      var _ao=_ars[_ai].getAttribute('onclick')||'',_am=/pdsub\d+_\d+/.exec(_ao);
+      if(_am){_ars[_ai].setAttribute('data-pd',_am[0]);_ars[_ai].removeAttribute('onclick');_ars[_ai].style.cursor='pointer';}
+    }
     sD.addEventListener('click',function(ev){
       var t=ev.target,r=(t&&t.closest)?t.closest('.dr'):null;
-      if(r&&r.getAttribute('data-ad'))toggleAntar(r.getAttribute('data-ad'));
+      if(r&&r.getAttribute('data-ad')){toggleAntar(r.getAttribute('data-ad'));return;}
+      var a=(t&&t.closest)?t.closest('.adrow'):null;
+      if(a&&a.getAttribute('data-pd'))toggleAntar(a.getAttribute('data-pd'));
     });
   }
   var sDC=grab('secDashaCh');if(sDC)pgDasha.appendChild(sDC);
@@ -7169,6 +7376,32 @@ function SB3D_buildVargaRings(set){
     rings.push({varga:'D-'+v, v:v, cells:cells});
   }
   return rings;
+}
+
+/* ------------------------------------------------------------
+   The D-60 ring is not built like the others, and cannot be.
+   720 cells on one band would be 0.4 units wide apiece - a
+   striped smear, not a chart. So the ring is drawn the way a
+   fine ruler is drawn: a plain dark band, a tick every fifth
+   segment to give the eye a scale, and a single lit, coloured,
+   glyphed cell wherever a planet or the Ascendant actually
+   pierces it. Everything else stays quiet.
+   ------------------------------------------------------------ */
+function SB3D_buildD60Ring(crossLons){
+  var ticks=[],lit=[],i,si;
+  /* a tick every 5 segments = every 2.5 degrees */
+  for(i=0;i<144;i++)ticks.push(i*2.5);
+  /* one lit cell per crossing, carrying its own D-60 sign and deity */
+  for(i=0;i<crossLons.length;i++){
+    var L=norm(crossLons[i]);
+    si=Math.floor(L/30)%12;
+    var inSign=L-si*30, S=SB_d60Seg(inSign);
+    var d0=(S-1)*0.5, d1=S*0.5;
+    var info=SB_d60(si,inSign);
+    lit.push({startLon:si*30+d0, endLon:si*30+d1, signIdx:si,
+              vSignIdx:info.signIdx, seg:S, deity:info.name, benefic:info.benefic});
+  }
+  return{varga:'D-60', v:60, ticks:ticks, lit:lit};
 }
 
 /* For one planet: which cell index it occupies in each ring (reuses vSign). */
@@ -8576,7 +8809,7 @@ function SB3D_buildMainScene(data,chart){
       }
       wisps.push(wisp);
     }else{
-      var sb=b.shadbala,inten=sb===null?0.35:(0.12+0.55*(sb/100)); /* brightness ~ Shadbala, always on */
+      var sb=b.shadbala,inten=sb===null?0.35:(0.12+0.55*Math.min(1,sb/100)); /* brightness ~ Shadbala; clamped, the scale now runs past 100 */
       var mat;
       if(n==='Moon'){
         var sunDirW=posMap.Sun.clone().sub(posMap[n]).normalize();
@@ -8631,7 +8864,7 @@ function SB3D_buildMainScene(data,chart){
       gring.visible=false;gring.material.depthTest=false;gring.renderOrder=20;
       grp.add(gring);balaLabels.push(gring);
       fireAnims.push({a:gring.material,t:Math.random()*10,still:true}); /* flicker, no spin */
-      var pct=SB3D_label(b.shadbala+'%',{color:'#ff4636',fs:150,weight:'bold',stroke:'rgba(46,4,2,0.95)'},3.6,1);
+      var pct=SB3D_label('Bala '+b.shadbala,{color:'#ff4636',fs:150,weight:'bold',stroke:'rgba(46,4,2,0.95)'},3.6,1);
       pct.material.depthTest=false;pct.renderOrder=21;pct.visible=false;
       grp.add(pct);balaLabels.push(pct);
       balaHats.push({ring:gring,pct:pct,size:vis.size});
@@ -8844,7 +9077,47 @@ function SB3D_buildMainScene(data,chart){
       gOvRings.add(SB3D_line([dvo.clone().multiplyScalar(r1o),dvo.clone().multiplyScalar(r2o)],0x2a2a4a,0.9));
     }
   });
-  /* nakshatra names at the exact FIRST HOUSE label size — Overview only
+  /* ---------- D-60 Shashtiamsha: the outermost band ----------
+     The place the red circle asked for, 44-40, is already D-7's in the
+     Overview, so the sixtieth division takes the seat past D-9 and closes
+     the nest: D-2, D-3, D-30, D-10, D-12 inside, then D-7, D-16, D-9, D-60.
+     Drawn as a ruler, not as 720 cells - see SB3D_buildD60Ring. */
+  (function(){
+    var r1s=61,r2s=65,midS=(r1s+r2s)/2;
+    var d60=SB3D_buildD60Ring(crossLons);
+    /* the quiet band: one dark arc per sign */
+    for(var s=0;s<12;s++){
+      gOvRings.add(SB3D_cellMesh(ctx,s*30,s*30+30,r1s,r2s,
+        (s%2===0)?'#141426':'#101020',0.5));
+    }
+    /* a tick every fifth segment, so the eye can count half-degrees */
+    d60.ticks.forEach(function(t){
+      var tv=SB3D_v3(SB3D_eclToVec(t,0,ctx));
+      var inner=(Math.abs(t%30)<0.001)?r1s:(r2s-1.3); /* sign borders run the full depth */
+      gOvRings.add(SB3D_line([tv.clone().multiplyScalar(inner),
+                              tv.clone().multiplyScalar(r2s)],0x2a2a4a,0.75));
+    });
+    /* and the cells that are actually occupied - full colour, full glyph */
+    d60.lit.forEach(function(c){
+      var cc=new THREE.Color(SB3D_SIGN_COLOR12[c.vSignIdx]);
+      gOvRings.add(SB3D_cellMesh(ctx,c.startLon,c.endLon,r1s,r2s,
+        '#'+cc.getHexString(),0.95));
+      var mv=SB3D_v3(SB3D_eclToVec(norm((c.startLon+c.endLon)/2),0,ctx));
+      /* the cell is half a degree wide, so the glyph rides just outside it */
+      var gs=SB3D_signSprite(c.vSignIdx,1.5,'fine');
+      gs.renderOrder=2;
+      gs.position.copy(mv.clone().multiplyScalar(r2s+1.9));
+      gOvRings.add(gs);
+      /* the presiding devata, which is the whole point of this chart */
+      var dl=SB3D_label(c.deity,{color:c.benefic?'#7fd99a':'#e08a8a',fs:90,
+        weight:'bold',stroke:'rgba(0,0,0,0.9)'},3.4,0.95);
+      dl.position.copy(mv.clone().multiplyScalar(r2s+4.2));
+      gOvRings.add(dl);
+    });
+    SB3D_ringNameArc(gOvRings,ctx,data.cusps[0].cuspLon,'SHASHTIAMSHA','D-60',r2s+7.4);
+  })();
+
+  /* nakshatra names at the exact FIRST HOUSE label size \u2014 Overview only
      (the tiny names inside the constellation cards were unreadable) */
   data.nakshatras.forEach(function(nk){
     var nl=SB3D_label(nk.name.toUpperCase(),{color:'#c9a84c',fs:64,stroke:'rgba(0,0,0,0.7)'},7,0.95);
@@ -8998,7 +9271,10 @@ function SB3D_injectStyles(){
   +'#sb3dWtFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}'
   +'#sb3dWtFoot #sb3dWtBtn{margin:0;flex:0 0 auto}'
   +'#sb3dWtMore{flex:1 1 auto;text-align:left;margin:0}'
-  +'#sb3dWtTxt,#sb3dWtP2{overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0}'
+  +'#sb3dWtBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}'
+    +'#sb3dWtBody::-webkit-scrollbar{width:4px}#sb3dWtBody::-webkit-scrollbar-track{background:transparent}'
+    +'#sb3dWtBody::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.35);border-radius:2px}'
+    +'#sb3dWtTxt,#sb3dWtP2{overflow:visible;min-height:0}'
   +'@media(min-width:641px){#sb3dWt{left:auto;right:24px;bottom:86px;transform:none;width:min(390px,34vw);max-height:68vh;text-align:left;background:rgba(13,13,26,0.62)}}'
   +'@media(min-width:641px){#sb3dWtTxt{color:#efe9db;font-size:14px}#sb3dWtTxt b{color:#f4dda0}'+'.wtRead{color:#e4dcc8}.wtInner,.wtFlag{color:#d6cec0}.wtSoft,.wtEmpty{color:#b8b0c2}'+'.wtSign{color:#e4dcc8}#sb3dWtP2{color:#ddd5c6}}'
   +'#sb3dWtPoint{position:absolute;left:50%;top:-6px;transform:translate(-50%,-100%);pointer-events:none;z-index:12;line-height:1}'
@@ -10046,8 +10322,8 @@ function SB3D_wtUI(){
   var card=document.getElementById('sb3dWt');
   if(!card){
     card=document.createElement('div');card.id='sb3dWt';
-    card.innerHTML='<div id="sb3dWtProg"></div><div id="sb3dWtTtl"></div><div id="sb3dWtTxt"></div>'
-      +'<div id="sb3dWtP2"></div>'
+    card.innerHTML='<div id="sb3dWtProg"></div><div id="sb3dWtTtl"></div>'
+      +'<div id="sb3dWtBody"><div id="sb3dWtTxt"></div><div id="sb3dWtP2"></div></div>'
       +'<div id="sb3dWtFoot"><button id="sb3dWtMore">Tell me more \u25BE</button></div>';
     ov.appendChild(card);
     /* Navigation lives on the screen, pinned to the bottom edge, so it stays put
@@ -10068,6 +10344,10 @@ function SB3D_wtUI(){
       var open=(p2.style.display!=='none'&&p2.style.display!=='');
       p2.style.display=open?'none':'block';
       mb.textContent=open?'Tell me more \u25BE':'Less \u25B4';
+      /* opening page 2 below the fold looked like nothing happened - bring it up */
+      var bd=document.getElementById('sb3dWtBody');
+      if(bd){if(open)bd.scrollTop=0;
+        else try{bd.scrollTop=Math.max(0,p2.offsetTop-bd.offsetTop-8);}catch(e){}}
     };
     sk.onclick=function(){SB3D_wtSkip();};
   }
@@ -10133,6 +10413,7 @@ function SB3D_wtNext(){
   /* page 2 lives behind "Tell me more" and only exists when the step has one */
   var more=document.getElementById('sb3dWtMore'),p2=document.getElementById('sb3dWtP2');
   if(p2){p2.innerHTML=st.html2||'';p2.style.display='none';}
+  var bdEl=document.getElementById('sb3dWtBody');if(bdEl)bdEl.scrollTop=0;
   if(more){
     more.style.display=st.html2?'block':'none';
     more.textContent='Tell me more \u25BE';
@@ -10909,7 +11190,7 @@ function SB3D_showInfoPanel(pl){
     html+='<div><span class="k">In this chart:</span> <b>'+SIGNS[b.signIdx].name+'</b> \u00B7 House <b>'+b.house+'</b></div>';
     if(b.dignity!==null&&b.dignity!==undefined)html+='<div><span class="k">Dignity here:</span> <b>'+b.dignity+'%</b>'+((b.digInfo&&b.digInfo.label)?' \u00B7 '+b.digInfo.label:'')+'</div>';
     if(b.digInfo&&b.digInfo.why)html+='<div><span class="k">Why:</span> '+b.digInfo.lord+' rules it \u00B7 '+b.digInfo.why+'</div>';
-    if(b.shadbala!==null&&b.shadbala!==undefined)html+='<div><span class="k">Shadbala:</span> <b>'+b.shadbala+'/100</b></div>';
+    if(b.shadbala!==null&&b.shadbala!==undefined)html+='<div><span class="k">Shadbala:</span> <b>'+b.shadbala+'</b></div>';
     var ckD=chart.charaKarakas?chart.charaKarakas[pl]:null;
     if(ckD)html+='<div><span class="k">Chara Karaka:</span> <b>'+ckD.role+'</b> \u00B7 '+ckD.meaning+'</div>';
   }else{
@@ -10927,7 +11208,7 @@ function SB3D_showInfoPanel(pl){
     if(typeof baladiAvastha==='function'){var av=baladiAvastha(d.index,d.degree+(d.minutes||0)/60);
       html+='<div><span class="k">Avastha:</span> <b>'+av.name+'</b> ('+av.eng+')</div>';}
     if(chart.shodasavarga&&chart.shodasavarga[pl])html+='<div><span class="k">Shodasa Varga (9 charts):</span> <b>'+chart.shodasavarga[pl].final+'</b></div>';
-    if(chart.shadbala&&chart.shadbala[pl])html+='<div><span class="k">Shadbala:</span> <b>'+chart.shadbala[pl].final+'/100</b></div>';
+    if(chart.shadbala&&chart.shadbala[pl])html+='<div><span class="k">Shadbala:</span> <b>'+chart.shadbala[pl].final+'</b></div>';
     if(nk===null&&b&&b.nakshatra)html+='<div><span class="k">Nakshatra:</span> <b>'+b.nakshatra+'</b></div>';
     var rec=(chart.aspects&&chart.aspects.recv)?chart.aspects.recv[pl]:null;
     if(rec&&rec.length){
