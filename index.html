@@ -147,8 +147,7 @@ select option{background:var(--deep)}
 .adrow{display:flex;justify-content:space-between;padding:6px 16px;font-size:12px;color:var(--silver);border-bottom:1px solid rgba(42,42,74,0.3);cursor:pointer;user-select:none}
 .adrow:hover{background:rgba(255,255,255,0.03)}
 .adrow .adpn{color:var(--gold-dim);font-weight:600}
-/* Pratyantar dasha - the third Vimshottari level, reading view only.
-   Same proportional split as Antardasha, one step deeper. */
+/* Pratyantar dasha - the third Vimshottari level, reading view only. */
 .pdsub{max-height:0;overflow:hidden;transition:max-height 0.35s ease;background:rgba(255,255,255,0.03);border-left:2px solid rgba(198,166,100,0.35)}
 .pdsub.open{max-height:420px}
 .pdrow{display:flex;justify-content:space-between;padding:4px 16px 4px 30px;font-size:11px;color:var(--silver);opacity:0.85;border-bottom:1px solid rgba(42,42,74,0.22)}
@@ -1692,6 +1691,7 @@ ka:{
 "(harsh), read forward from an odd sign and backward from an even one. Because half a degree of the zodiac is about two minutes of birth time, this chart is only as trustworthy as the birth record behind it.":"(მრისხანე), იკითხება პირდაპირი მიმართულებით კენტი ნიშნიდან და უკუღმა ლუწი ნიშნიდან. ვინაიდან ზოდიაქოს ნახევარი გრადუსი დაბადების დროის დაახლოებით ორი წუთია, ეს რუკა იმდენად სანდოა, რამდენადაც ზუსტია დაბადების ჩანაწერი.",
 "(it holds {2} lordship{3}), and {4}":"(ის ფლობს {2} მმართველობას{3}), და {4}",
 "(it lords {2} segment{3}), and {4}":"(ის მართავს {2} სეგმენტს{3}), და {4}",
+"({0} pts)":"({0} ქულა)",
 "({1} pts)":"({1} ქ)",
 "({2}%) — avoid being forced onto it.":"({2}%) — მოერიდე მასზე იძულებით გადასვლას.",
 "({2}%) — the area most exposed from below.":"({2}%) — სფერო, რომელიც ყველაზე მეტად დაუცველია ქვემოდან.",
@@ -1715,6 +1715,7 @@ ka:{
 "- House {2}":"- {2} სახლი",
 "- a shadow node - rules no house of its own.":"- ჩრდილოვანი კვანძი - საკუთარ სახლს არ მართავს.",
 "- also {0}; only the larger weight counts":"- ასევე {0}; ითვლება მხოლოდ უფრო დიდი წონა",
+"- and closeness to the cusp of an afflicted house counts against it":"- და დაზიანებული სახლის კუსპიდთან სიახლოვე მის წინააღმდეგ ითვლება",
 "- {0} with":"- {0} {1}-თან ერთად",
 "- {1}, elongation {2}°":"- {1}, ელონგაცია {2}°",
 "-Parivartana Yoga (houses {0} & {1}: {2} ↔ {3})":"-პარივართანა იოგა (სახლები {0} და {1}: {2} ↔ {3})",
@@ -1953,6 +1954,7 @@ ka:{
 "Avatar 1":"ავატარი 1",
 "Avatars":"ავატარები",
 "Axis":"ღერძი",
+"Axis {0}":"ღერძი {0}",
 "Ayan":"აინა",
 "Back":"უკან",
 "Back to my chart":"ჩემს რუკაზე დაბრუნება",
@@ -2299,6 +2301,7 @@ ka:{
 "Date of Birth":"დაბადების თარიღი",
 "Date of birth":"დაბადების თარიღი",
 "Davagni":"დავაგნი",
+"Dead":"მკვდარი",
 "Debating business":"სადისკუსიო ბიზნესი",
 "Decan lord":"დეკანის მმართველი",
 "December":"დეკემბერი",
@@ -2351,6 +2354,7 @@ ka:{
 "Dignity across 9 charts:":"ღირსება 9 რუკაზე:",
 "Dignity calculation":"ღირსების გამოთვლა",
 "Dignity here:":"ღირსება აქ:",
+"Dignity {0} → the planet itself reads":"ღირსება {0} → თავად პლანეტა იკითხება როგორც",
 "Dignity, house placement and the aspects it receives, added the way the book adds them. A planet above 50 points of dignity is read positively, below 50 negatively; at exactly 50 its functional nature decides, and if that is neutral too, its Shadbala layer does.":"ღირსება, სახლში განლაგება და მიღებული ასპექტები, შეკრებილი ისე, როგორც წიგნი კრებს. 50 ქულაზე მაღალი ღირსების პლანეტა დადებითად იკითხება, 50-ზე დაბლა - უარყოფითად; ზუსტად 50-ზე მისი ფუნქციური ბუნება წყვეტს, ხოლო თუ ისიც ნეიტრალურია - მისი შადბალას შრე.",
 "Dignity:":"ღირსება:",
 "Diplomatic childhood":"დიპლომატიური ბავშვობა",
@@ -3332,6 +3336,7 @@ ka:{
 "Own Sign":"საკუთარი ნიშანი",
 "Own sign":"საკუთარი ნიშანი",
 "Pada":"პადა",
+"Pada {0} (Lord {1})":"პადა {0} (მმართველი {1})",
 "Painful conflict":"მტკივნეული კონფლიქტი",
 "Papa-Kartari Yoga":"პაპა-კარტარი იოგა",
 "Parivartana Yoga":"პარივართანა იოგა",
@@ -3565,6 +3570,7 @@ ka:{
 "Refined image":"დახვეწილი იმიჯი",
 "Refined morality":"დახვეწილი მორალი",
 "Refined others":"დახვეწილი სხვები",
+"Refined reading of {0}":"დაზუსტებული წაკითხვა: {0}",
 "Refined society":"დახვეწილი საზოგადოება",
 "Refined speech":"დახვეწილი მეტყველება",
 "Refined transformation":"დახვეწილი ტრანსფორმაცია",
@@ -4223,6 +4229,7 @@ ka:{
 "Wandering pleasure":"მოხეტიალე სიამოვნება",
 "Wandering solitude":"მოხეტიალე მარტოობა",
 "Wandering teacher":"მოხეტიალე მასწავლებელი",
+"Waning":"კლებადი",
 "Waning Crescent":"კლებადი ნამგალი",
 "Waning Gibbous":"კლებადი ამოზნექილი",
 "Warm projection":"თბილი შთაბეჭდილება",
@@ -4230,6 +4237,7 @@ ka:{
 "Warrior father":"მეომარი მამა",
 "Warrior mentor":"მეომარი მენტორი",
 "Water":"წყალი",
+"Waxing":"ზრდადი",
 "Waxing Crescent":"ზრდადი ნამგალი",
 "Waxing Gibbous":"ზრდადი ამოზნექილი",
 "Weak":"სუსტი",
@@ -4390,15 +4398,18 @@ ka:{
 "emotional attunement and ease":"ემოციური მიღება და სიმსუბუქე",
 "emotional focus and desire":"ემოციური ფოკუსი და სურვილი",
 "emotional motivation, creativity and fertile response":"ემოციური მოტივაცია, შემოქმედებითობა და ნაყოფიერი რეაგირება",
+"enemy":"მტერი",
 "even sign - counted backward":"ლუწი ნიშანი - დათვლილი უკუღმა",
 "everyone else":"ყველა სხვა",
 "exceedingly cool":"ფრიად გრილი",
 "expansive, optimistic ease and fortune":"გაფართოებადი, ოპტიმისტური სიმსუბუქე და იღბალი",
 "falls in debilitation in Navamsha (D-9) — yoga may not fully manifest in real life.":"დაცემულია ნავამშაში (D-9) — იოგა შესაძლოა რეალურ ცხოვრებაში სრულად ვერ გამოვლინდეს.",
+"falls in segment":"ხვდება სეგმენტში",
 "fire, the sacrificial flame":"ცეცხლი, მსხვერპლშეწირვის ალი",
 "first":"პირველი",
 "force, aggression and direct strength":"ძალა, აგრესია და პირდაპირი სიმძლავრე",
 "fortune, father, teachers, faith and long journeys":"იღბალი, მამა, მასწავლებლები, რწმენა და შორეული მოგზაურობები",
+"friend":"მეგობარი",
 "friendship combined with the":"მეგობრობა გაერთიანებული",
 "functional nature":"ფუნქციური ბუნება",
 "functionally benefic":"ფუნქციურად ბენეფიკი",
@@ -4432,6 +4443,7 @@ ka:{
 "is workable but not automatic — usable when the situation suits it, never a knockout blow.":"არის გამოსადეგი, თუმცა არა ავტომატური — შესაბამის სიტუაციაში გამოგადგება, მაგრამ არასდროსაა ნოკაუტი.",
 "is your loudest voice.":"არის შენი ყველაზე ხმამაღალი ხმა.",
 "is your single most effective weapon in conflict — you reach for it by instinct and it genuinely works.":"არის შენი ყველაზე ეფექტური იარაღი კონფლიქტში — ინსტინქტურად მიმართავ და ნამდვილად მუშაობს.",
+"it neither helps nor harms":"არც შველის და არც ვნებს",
 "its best qualities come out effortlessly: disciplined, commanding, made to lead in its field":"მისი საუკეთესო თვისებები უპრობლემოდ ვლინდება: დისციპლინირებული, მბრძანებლური, თავის სფეროში ლიდერობისთვის შექმნილი",
 "keywords pending":"საკვანძო სიტყვები მზადდება",
 "leans toward the negative expression":"იხრება უარყოფითი გამოვლინებისკენ",
@@ -4451,10 +4463,12 @@ ka:{
 "muscular force, drive and raw physical vitality":"კუნთოვანი ძალა, სწრაფვა და უხეში ფიზიკური სასიცოცხლო ენერგია",
 "mutual aspect":"ორმხრივი ასპექტი",
 "natural":"ბუნებრივ",
+"negative":"უარყოფითი",
 "negative -":"უარყოფითი -",
 "negotiation, diplomacy and fair, intelligent exchange":"მოლაპარაკება, დიპლომატია და სამართლიანი, გონივრული გაცვლა",
 "neither.":"არცერთი.",
 "nerves, coordination, speech and clear thinking":"ნერვები, კოორდინაცია, მეტყველება და დალაგებული აზროვნება",
+"neutral":"ნეიტრალური",
 "neutral - dignity decides (":"ნეიტრალური - ღირსება წყვეტს (",
 "neutral rulership":"ნეიტრალური მმართველობა",
 "not a zodiacal chart":"არაზოდიაქური რუკა",
@@ -4467,10 +4481,12 @@ ka:{
 "one (that ruler standing in the 2nd, 3rd, 4th, 10th, 11th or 12th from it in the birth chart is a temporary friend, anything else - the same house included - a temporary enemy). Friend+friend 70, neutral+friend 60, friend+enemy or enemy+friend 50, neutral+enemy 30, enemy+enemy 10. The Ascendant inherits the dignity of its own divisional-sign ruler.":"-თან (მმართველი, რომელიც დაბადების რუკაში მისგან მე-2, მე-3, მე-4, მე-10, მე-11 ან მე-12 ნიშანში დგას, დროებითი მეგობარია; ნებისმიერი სხვა - იმავე სახლის ჩათვლით - დროებითი მტერი). მეგობარი+მეგობარი 70, ნეიტრალური+მეგობარი 60, მეგობარი+მტერი ან მტერი+მეგობარი 50, ნეიტრალური+მტერი 30, მტერი+მტერი 10. ასცენდენტი იღებს თავისივე დივიზიური ნიშნის მმართველის ღირსებას.",
 "one of the rest":"ერთ-ერთი დანარჩენი",
 "ordinary planet":"ჩვეულებრივი პლანეტა",
+"own":"საკუთარი",
 "parents, ancestry, and inherited karma":"მშობლები, წინაპრები და მემკვიდრეობითი კარმა",
 "partnership, aesthetics and generosity":"პარტნიორობა, ესთეტიკა და გულუხვობა",
 "pleasure-seeking, playful and naturally cheerful - it enjoys itself before it works":"სიამოვნების მაძიებელი, მხიარული და ბუნებრივად ოპტიმისტი - ჯერ ერთობა, მერე მუშაობს",
 "poison, venom":"შხამი, გველის შხამი",
+"positive":"დადებითი",
 "positive against":"დადებითი",
 "principled expansion, wisdom and the moral high ground":"პრინციპული გაფართოება, სიბრძნე და მორალური უპირატესობა",
 "provocation and the urge to be different":"პროვოკაცია და განსხვავებულობის სწრაფვა",
@@ -4492,6 +4508,7 @@ ka:{
 "second sign":"მეორე ნიშანი",
 "sees — work, reputation, what you're known for.":"ხედავს — სამუშაო, რეპუტაცია, ის, რის გამოც ცნობილი ხარ.",
 "sees — work, reputation, what you’re known for.":"ხედავს — სამუშაო, რეპუტაცია, ის, რის გამოც ცნობილი ხარ.",
+"segment":"სეგმენტი",
 "segment lord":"სეგმენტის მმართველი",
 "shadow node - governs no sign":"ჩრდილოვანი კვანძი - არ მართავს არცერთ ნიშანს",
 "shadow node - listed, not counted":"ჩრდილოვანი კვანძი - მითითებულია, არ ითვლება",
@@ -4562,6 +4579,7 @@ ka:{
 "{0} House · {1}":"{0} სახლი · {1}",
 "{0} Rising - Soul Imprint":"{0} ამომავალი - სულის ანაბეჭდი",
 "{0} aspect{1} no weight at all - a planet in fall has a dignity of 0, and 0 multiplied by any aspect is 0.":"{0} ასპექტს{1} წონა საერთოდ არ აქვს - დაცემაში მყოფი პლანეტის ღირსება 0-ია, ხოლო ნებისმიერ ასპექტზე გამრავლებული 0 ისევ 0-ია.",
+"{0} dignity {1} house {2} aspects":"{0} ღირსება {1} სახლი {2} ასპექტი",
 "{0} doesn't feel well in the {1} House":"{0} კარგად ვერ გრძნობს თავს {1} სახლში",
 "{0} doesn’t feel well in the {1} House":"{0} კარგად ვერ გრძნობს თავს {1} სახლში",
 "{0} feels great in the {1} House":"{0} შესანიშნავად გრძნობს თავს {1} სახლში",
@@ -4607,12 +4625,15 @@ ka:{
 "{0} in Vishakha":"{0} ვისაკაში",
 "{0} in the {1} House":"{0} {1} სახლში",
 "{0} in {1}":"{0} {1}-ში",
+"{0} is in your {1} House, in {2}.":"{0} შენს {1} სახლშია, {2}-ში.",
 "{0} is not at its best in the {1} House":"{0} საუკეთესო ფორმაში არ არის {1} სახლში",
+"{0} of {1}":"{0} / {1}",
 "{0} of {1} points ({2}%){3}":"{0} / {1} ქულიდან ({2}%){3}",
 "{0} outside, {1} inside.":"{0} გარეთ, {1} შიგნით.",
 "{0} rules it · {1}":"მას მართავს {0} · {1}",
 "{0} rules {1} · {2}":"{0} მართავს {1}-ს · {2}",
 "{0} · House":"{0} · სახლი",
+"{0}% aligned with the cusp ({1}° off)":"{0}% ემთხვევა კუსპიდს ({1}° სხვაობით)",
 "{0}Continue with Google":"{0}Google-ით გაგრძელება",
 "{1} ":" net {2}|{1} | წმინდა {2}",
 "{1} House":"{1} სახლი",
@@ -4683,22 +4704,19 @@ function SB_hasT(s){var d=SB_I18N[LANG];return !!(d&&typeof d[s]==='string'&&d[s
 
 /* ---- sentences assembled from pieces ---------------------------
    Much of the reading is glued together at run time:
-
      planet + " (100%) \u2014 " + keyword + ": " + verdict
-
-   The finished node matches nothing, while every piece of it is in
+   The finished node matches nothing while every piece of it is in
    the dictionary. So when the whole string misses, it is split on
    the joins the app actually uses and each piece is looked up on
-   its own. Only whole, trimmed pieces are matched - never a
-   substring - so a word inside a longer word can never be hit. A
-   piece with no entry is left in English rather than guessed at. */
+   its own. Only whole, trimmed pieces match - never a substring -
+   so a word inside a longer word can never be hit. A piece with no
+   entry is left in English rather than guessed at. */
 var SB_TR_SEPS=[': ',' \u00b7 ',' \u2014 ',' - '];
 function SB_trSegment(t,depth){
   if(!t)return t;
   if(SB_hasT(t))return T(t);
   depth=depth||0;
   if(depth>3)return t;
-  /* "Moon (100%)" - the label carries a figure the dictionary cannot hold */
   var pc=/^(.+?)(\s*\((?:\d+(?:\.\d+)?%|R)\))$/.exec(t);
   if(pc&&SB_hasT(pc[1]))return T(pc[1])+pc[2];
   for(var i=0;i<SB_TR_SEPS.length;i++){
@@ -4706,10 +4724,10 @@ function SB_trSegment(t,depth){
     if(t.indexOf(sep)<0)continue;
     var parts=t.split(sep),hit=false,out=[];
     for(var j=0;j<parts.length;j++){
-      var p=parts[j].trim();
-      var r=p?SB_trSegment(p,depth+1):p;
-      if(r!==p)hit=true;
-      out.push(parts[j].replace(p,r));
+      var pp=parts[j].trim();
+      var r=pp?SB_trSegment(pp,depth+1):pp;
+      if(r!==pp)hit=true;
+      out.push(parts[j].replace(pp,r));
     }
     if(hit)return out.join(sep);
   }
@@ -4733,8 +4751,8 @@ function translatePage(){
   for(i=0;i<nodes.length;i++){
     var nd=nodes[i];
     if(nd.__o===undefined){
-      /* a node re-serialised out of already-translated markup would record
-         Georgian as its "original"; map it back before storing */
+      /* a node re-serialised out of translated markup would record Georgian
+         as its "original"; map it back before storing */
       SB_buildInverse();
       var raw=nd.nodeValue,rt=(raw||'').trim();
       nd.__o=(rt&&SB_INV[rt]!==undefined)?raw.replace(rt,SB_INV[rt]):raw;
@@ -4742,8 +4760,7 @@ function translatePage(){
     var k=(nd.__o||'').trim();
     var tv=k?SB_trSegment(k):'';
     var nv=(k&&tv!==k)?nd.__o.replace(k,tv):nd.__o;
-    /* write only on a real change - otherwise the observer below would
-       see its own edit and loop */
+    /* write only on a real change - otherwise the observer would loop */
     if(nd.nodeValue!==nv)nd.nodeValue=nv;
   }
   for(var a=0;a<SB_TR_ATTRS.length;a++){
@@ -4758,9 +4775,8 @@ function translatePage(){
   }
 }
 /* reverse map, built once per language: a node whose English original was
-   never recorded - because some render read the page back with innerHTML
-   after it was translated - can still be turned back by looking the
-   translation up the other way round. */
+   never recorded can still be turned back by looking the translation up the
+   other way round. */
 var SB_INV={},SB_INV_L=null;
 function SB_buildInverse(){
   if(SB_INV_L===LANG)return;
@@ -4813,16 +4829,10 @@ function toggleLang(){
 try{var _sl=localStorage.getItem('sb_lang');if(_sl)LANG=(_sl==='en'||SB_I18N[_sl])?_sl:'en';}catch(e){}
 
 /* ---- keeping JS-built markup translated -------------------------
-   Almost every screen in this app is assembled as an HTML string and
-   dropped into the page, so there is no single place to call T() from.
-   Rather than hunt for two thousand call sites, the sweep is simply
-   re-run whenever the DOM changes: it matches whole text nodes, so a
-   freshly rendered panel is translated the moment it lands.
-
-   Text built around a run-time value - "from Mars to Leo" - is one
-   node that no dictionary can hold. Those strings call T() directly
-   with {0} placeholders, which is also what lets the translation put
-   the Georgian case ending where it belongs. */
+   Nearly every screen is assembled as an HTML string and dropped in,
+   so there is no single place to call T() from. The sweep is re-run
+   whenever the DOM changes: it matches whole text nodes, so a fresh
+   panel is translated the moment it lands. */
 var SB_trObs=null,SB_trTimer=null,SB_trBusy=false;
 function SB_scheduleTranslate(){
   if(LANG==='en'||SB_trBusy)return;
@@ -5018,16 +5028,13 @@ function SB3D_horaAnalysis(planets,asc,gender){
   // Ascendant
   var aDeg=norm(asc.deg)%30, aSi=asc.index, aFirst=aDeg<15, aSignMasc=(aSi%2===0);
   var aSide=horaSideOf(aSi,aDeg), aHoraGender=(aSide==="Sun"?"masculine":"feminine");
-  /* the noun form, kept whole: pasting a variable against "ity" cut the word in
-     half, which no translator can put back together in another language */
-  var aHoraNoun=(aSide==="Sun"?"masculinity":"femininity");
   var aSignGender=aSignMasc?"masculine":"feminine";
   var conflicted=(aHoraGender!==aSignGender);
   var aDignity=horaDignity("Ascendant",aSi,aDeg);
   var ascText="Your Ascendant is "+SIGNS[aSi].name+" at "+Math.floor(aDeg)+"\u00b0, in the "+aHoraGender+" half of the sign ("+(aFirst?"first":"second")+" half). "+
     (conflicted
-      ? "Because "+SIGNS[aSi].name+" is a "+aSignGender+" sign, hora and sign disagree \u2014 this is conflicted "+aHoraNoun+". The energy is real but sits in the ambiguous zone, so it reads with a twist and takes others a beat longer to place. Dignity here is 0 because the Ascendant wants clarity, not blend."
-      : "Because "+SIGNS[aSi].name+" is itself a "+aSignGender+" sign, hora and sign agree \u2014 this is unconflicted "+aHoraNoun+". You are genuinely comfortable in "+aHoraGender+" traits and express them steadily, so this reads clearly and reliably to others and becomes a dependable part of your appeal.");
+      ? "Because "+SIGNS[aSi].name+" is a "+aSignGender+" sign, hora and sign disagree \u2014 this is conflicted "+aHoraGender+"ity. The energy is real but sits in the ambiguous zone, so it reads with a twist and takes others a beat longer to place. Dignity here is 0 because the Ascendant wants clarity, not blend."
+      : "Because "+SIGNS[aSi].name+" is itself a "+aSignGender+" sign, hora and sign agree \u2014 this is unconflicted "+aHoraGender+"ity. You are genuinely comfortable in "+aHoraGender+" traits and express them steadily, so this reads clearly and reliably to others and becomes a dependable part of your appeal.");
   // Biological-gender overlay
   var g=(gender==="m")?"male":(gender==="f")?"female":"unknown";
   var overlay;
@@ -5173,7 +5180,7 @@ function drekSymbolPhrase(dig){
   if(dig>=100)return T("is your single most effective weapon in conflict \u2014 you reach for it by instinct and it genuinely works.");
   if(dig>=70)return T("is a strong, reliable weapon \u2014 it works for you more often than not.");
   if(dig>=50)return T("is workable but not automatic \u2014 usable when the situation suits it, never a knockout blow.");
-  /* one whole sentence with the figure as a slot, so it can be translated */
+  /* one whole sentence with the figure as a slot */
   return T("tends to fail or work against you \u2014 relying on it in conflict rarely succeeds (about {0}% of the time).",[dig]);
 }
 var DREK_SOFT={Mercury:1,Venus:1,Moon:1,Jupiter:1}; // cooperative/soft styles; the rest are hard/forceful
@@ -5467,42 +5474,29 @@ function amFloor(d){var f=Math.floor(d);return f+Math.floor((d-f)*60)/60;} // fl
 /* ============================================================
    SHASHTIAMSHA  D-60  (grep: D60, SB_D60)
    ------------------------------------------------------------
-   The sixtieth division: each sign cut into 60 parts of 0d30
-   each - the finest chart in the classical set, and the one
-   that reads the karmic residue a life is born carrying.
+   Each sign cut into 60 parts of 0d30 - the finest chart in the
+   classical set, and the one that reads the karmic residue a
+   life is born carrying.
 
-   THE SEGMENT.  S = floor(deg x 2) + 1, capped at 60. Floor and
-   not ceiling: segment 29 is the half-degree [14.00, 14.50), so
-   14.25 falls in 29 and 14.50 opens 30. Ceiling would push every
-   exact boundary one segment early, and it would disagree with
-   vSign, which floors everywhere else in this engine.
+   SEGMENT.  S = floor(deg x 2) + 1, capped at 60. Floor, not
+   ceiling: segment 29 is [14.00, 14.50), so 14.25 falls in 29
+   and 14.50 opens 30 - and it agrees with vSign, which floors
+   everywhere else in this engine.
 
-   THE SIGN.  Counted cyclically from the planet's own D-1 sign,
-   the same way for odd and even signs:
-       d60SignIdx = (si + S - 1) mod 12          (si 0-based)
-   Worked: the Sun in Gemini, S=6, gives Scorpio - which is the
-   answer the classical texts print for that example.
+   SIGN.  Counted cyclically from the planet's own D-1 sign, the
+   same way for odd and even:  (si + S - 1) mod 12, si 0-based.
 
-   THE DEITY.  Sixty presiding devatas, in the Brihat Parashara
-   Hora Shastra order, read forward from an ODD sign and backward
-   from an EVEN one:
+   DEITY.  Sixty presiding devatas in the BPHS order, read
+   forward from an ODD sign and backward from an EVEN one:
        odd  (si even, 0-based):  id = S
        even (si odd,  0-based):  id = 61 - S
-   Half are Krura and half Shubha - thirty each, which is the
-   check that the list is whole.
+   Thirty Krura and thirty Shubha - which is the check that the
+   list is whole. Numbers 5, 6 and 60 are disputed; the strict
+   reading is used, which is what makes the split exactly 30/30.
+   To take Phaladeepika's side, flip ids 5, 6 and 60 to 'S'.
 
-   Numbers 5, 6 and 60 are disputed. Phaladeepika reads Yaksha,
-   Kinnara and Chandrarekha as benefic; later commentators call
-   all three malefic, on the grounds that Yakshas are dangerous
-   in the epics, Kinnaras are not a compliment, and Indurekha is
-   the thin waning crescent rather than the full Moon. The strict
-   reading is used below, which is what makes the split exactly
-   30/30. To take Phaladeepika's side instead, flip the nature of
-   ids 5, 6 and 60 to 'S' - nothing else depends on it.
-
-   D-60 IS A READING LAYER ONLY. It is deliberately absent from
-   SHODASA_KEYS (the dignity canon) and from SB_HEVA_V (the two
-   Complete Evaluations). It changes no score anywhere.
+   D-60 IS A READING LAYER ONLY - absent from SHODASA_KEYS and
+   from SB_HEVA_V. It changes no score anywhere.
    ============================================================ */
 var SB_D60_DEITY=[null,
  ['Ghora','K'],['Rakshasa','K'],['Deva','S'],['Kubera','S'],['Yaksha','K'],
@@ -5518,8 +5512,6 @@ var SB_D60_DEITY=[null,
  ['Kaalagni','K'],['Dandayudha','K'],['Nirmala','S'],['Saumya','S'],['Kroora','K'],
  ['Atisheetala','S'],['Amrita','S'],['Payodhi','S'],['Bhramana','K'],['Chandrarekha','K']];
 
-/* Meaning of each name, so the panel can say what it is rather than
-   only what it is called. Repeated names share one gloss. */
 var SB_D60_MEAN={'Ghora':'terrible, fierce','Rakshasa':'demon, the unrighteous path',
  'Deva':'the shining one, righteousness','Kubera':'lord of wealth','Yaksha':'a guardian spirit, dangerous when crossed',
  'Kinnara':'half-human celestial musician','Bhrashta':'the fallen, the corrupt','Kulaghna':'destroyer of the family line',
@@ -5537,9 +5529,7 @@ var SB_D60_MEAN={'Ghora':'terrible, fierce','Rakshasa':'demon, the unrighteous p
  'Nirmala':'the spotless','Kroora':'the cruel','Atisheetala':'exceedingly cool','Payodhi':'the ocean',
  'Bhramana':'the wanderer, the deluded','Chandrarekha':'the thin crescent, a blemish on the Moon'};
 
-/* which half-degree of the sign a longitude falls in, 1 to 60 */
 function SB_d60Seg(L){var s=Math.floor(L*2)+1;return s<1?1:(s>60?60:s);}
-/* the whole reading for one point: segment, sign and presiding deity */
 function SB_d60(si,L){
   var S=SB_d60Seg(L),id=(si%2===0)?S:(61-S),row=SB_D60_DEITY[id]||['?','K'];
   return{seg:S,deityId:id,name:row[0],nature:row[1],
@@ -5547,6 +5537,7 @@ function SB_d60(si,L){
          signIdx:(si+S-1)%12,divDeg:vDivDeg(si,L,60),
          from:(si%2===0)?'odd sign - counted forward':'even sign - counted backward'};
 }
+
 function vargaDignityFor(point,planets,v){
   var p=planets[point];if(!p)return null;
   var si=p.index,L=p.degree+(p.minutes||0)/60,ds=vSign(si,L,v);
@@ -5619,7 +5610,7 @@ function buildVargaPanel(planets,asc,v,showInterp){
   var ov=Math.round(A.overall);
   var h="<div class='varga-analysis' style=\"text-align:left;margin-top:22px;border-top:1px solid rgba(212,175,90,0.25);padding-top:18px\">";
   h+="<p style='font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:"+DIM+";margin:0 0 4px'>"+meta.title+" \u00b7 D-"+v+"</p>";
-  h+="<p style='font-size:18px;color:"+GOLD+";margin:0 0 6px;font-family:\"Cinzel\",serif'>Refined reading of "+meta.theme+"</p>";
+  h+="<p style='font-size:18px;color:"+GOLD+";margin:0 0 6px;font-family:\"Cinzel\",serif'>"+T("Refined reading of {0}",[T(meta.theme)])+"</p>";
   h+="<p style='font-size:13px;line-height:1.6;color:"+SIL+";margin:0 0 6px'>Every point is scored on the one dignity ladder used everywhere in this book - exaltation 100, moolatrikona 90, own sign 80, then the relationship with the ruler of the divisional sign it lands in: its <b>natural</b> friendship combined with the <b>temporary</b> one (that ruler standing in the 2nd, 3rd, 4th, 10th, 11th or 12th from it in the birth chart is a temporary friend, anything else - the same house included - a temporary enemy). Friend+friend 70, neutral+friend 60, friend+enemy or enemy+friend 50, neutral+enemy 30, enemy+enemy 10. The Ascendant inherits the dignity of its own divisional-sign ruler.</p>";
   // precise positions
   h+="<p style='font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:"+DIM+";margin:14px 0 8px'>Precise D-"+v+" positions</p>";
@@ -5676,9 +5667,7 @@ function buildVargaPanel(planets,asc,v,showInterp){
 
 /* ============================================================
    SHASHTIAMSHA PANEL  (grep: buildShashtiamshaPanel)
-   The presiding deity of every point, which is the whole reason
-   the D-60 is drawn. Nothing here feeds a score - see the note
-   on SB_D60_DEITY.
+   The presiding deity of every point. Nothing here feeds a score.
    ============================================================ */
 function buildShashtiamshaPanel(planets,asc){
   var GOLD="var(--gold)",SIL="var(--silver)",DIM="var(--gold-dim)";
@@ -5688,44 +5677,38 @@ function buildShashtiamshaPanel(planets,asc){
   h+="<p style='font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:"+DIM+";margin:0 0 4px'>Shashtiamsha \u00b7 D-60</p>";
   h+="<p style='font-size:18px;color:"+GOLD+";margin:0 0 6px;font-family:\"Cinzel\",serif'>The Presiding Deities</p>";
   h+="<p style='font-size:13px;line-height:1.6;color:"+SIL+";margin:0 0 6px'>Each sign is cut into sixty parts of <b>30 arc-minutes</b> \u2014 the finest division in the classical set, and the one that reads what a life is born already carrying. Every part has a presiding <b>devata</b>, thirty of them <b>Shubha</b> (benign) and thirty <b>Krura</b> (harsh), read forward from an odd sign and backward from an even one. Because half a degree of the zodiac is about two minutes of birth time, this chart is only as trustworthy as the birth record behind it.</p>";
-
-  /* the Ascendant first - it sets the tone of the whole reading */
   var aL=asc.degree+(asc.minutes||0)/60, aD=SB_d60(asc.index,aL);
   h+="<div style='background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,90,0.2);border-radius:12px;padding:14px 16px;margin:14px 0 16px'>";
   h+="<div style='display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap'>";
   h+="<span style='font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:"+DIM+"'>Ascendant</span>";
-  h+="<span style='font-size:20px;font-weight:bold;color:"+(aD.benefic?GOOD:BAD)+"'>"+aD.name+"</span></div>";
-  h+="<p style='font-size:12.5px;color:"+SIL+";margin:6px 0 0;line-height:1.6'>"+asc.sign.name+" "+vgDegMin(aL)+
-     " falls in segment <b>"+aD.seg+"</b> of 60, which places the rising point in <b>"+SIGNS[aD.signIdx].name+
-     "</b> of the D-60 and hands it to <b>"+aD.name+"</b> \u2014 "+aD.mean+". Devata "+aD.deityId+", "+
-     (aD.benefic?"Shubha":"Krura")+"; "+aD.from+".</p></div>";
-
-  /* one row per point */
+  h+="<span style='font-size:20px;font-weight:bold;color:"+(aD.benefic?GOOD:BAD)+"'>"+T(aD.name)+"</span></div>";
+  h+="<p style='font-size:12.5px;color:"+SIL+";margin:6px 0 0;line-height:1.6'>"+T(asc.sign.name)+" "+vgDegMin(aL)
+     +" "+T("falls in segment")+" <b>"+aD.seg+"</b> "+T("of 60, which places the rising point in")+" <b>"+T(SIGNS[aD.signIdx].name)
+     +"</b> "+T("of the D-60 and hands it to")+" <b>"+T(aD.name)+"</b> \u2014 "+T(aD.mean)+". "+T("devata")+" "+aD.deityId+", "
+     +(aD.benefic?T("Shubha"):T("Krura"))+"; "+T(aD.from)+".</p></div>";
   var nB=0,nK=0;
   h+="<div style='display:flex;flex-direction:column;gap:0'>";
   for(var i=0;i<ORD.length;i++){
-    var pl=ORD[i],p=planets[pl];if(!p)continue;
-    var L=p.degree+(p.minutes||0)/60, D=SB_d60(p.index,L);
+    var pl=ORD[i],pp=planets[pl];if(!pp)continue;
+    var L=pp.degree+(pp.minutes||0)/60, D=SB_d60(pp.index,L);
     if(D.benefic)nB++;else nK++;
     var col=PCOL[pl]||'#aaa';
     h+="<div style='display:flex;align-items:flex-start;gap:10px;padding:9px 2px;border-bottom:1px solid rgba(42,42,74,0.4)'>";
-    h+="<span style='color:"+col+";font-weight:600;min-width:74px;font-size:13px'>"+pl+"</span>";
+    h+="<span style='color:"+col+";font-weight:600;min-width:74px;font-size:13px'>"+T(pl)+"</span>";
     h+="<span style='flex:1;min-width:0'>";
-    h+="<span style='color:"+(D.benefic?GOOD:BAD)+";font-weight:600;font-size:13.5px'>"+D.name+"</span>";
-    h+="<span style='color:"+DIM+";font-size:11px;margin-left:8px'>#"+D.deityId+" \u00b7 "+(D.benefic?"Shubha":"Krura")+"</span>";
-    h+="<div style='color:"+SIL+";font-size:11.5px;line-height:1.55;margin-top:2px'>"+D.mean+
-       " \u00b7 segment "+D.seg+"/60 \u00b7 "+SIGNS[D.signIdx].name+" "+vgDegMin(D.divDeg)+"</div>";
+    h+="<span style='color:"+(D.benefic?GOOD:BAD)+";font-weight:600;font-size:13.5px'>"+T(D.name)+"</span>";
+    h+="<span style='color:"+DIM+";font-size:11px;margin-left:8px'>#"+D.deityId+" \u00b7 "+(D.benefic?T("Shubha"):T("Krura"))+"</span>";
+    h+="<div style='color:"+SIL+";font-size:11.5px;line-height:1.55;margin-top:2px'>"+T(D.mean)
+       +" \u00b7 "+T("segment")+" "+D.seg+"/60 \u00b7 "+T(SIGNS[D.signIdx].name)+" "+vgDegMin(D.divDeg)+"</div>";
     h+="</span></div>";
   }
   h+="</div>";
-
   var tot=nB+nK, pct=tot?Math.round(nB/tot*100):0;
   h+="<div style='margin:16px 0 0'>";
-  h+="<div style='display:flex;align-items:baseline;justify-content:space-between;gap:10px'><span style='font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:"+DIM+"'>Benign Devatas</span><span style='font-size:22px;font-weight:bold;color:"+(pct>=50?GOOD:BAD)+"'>"+nB+" of "+tot+"</span></div>";
+  h+="<div style='display:flex;align-items:baseline;justify-content:space-between;gap:10px'><span style='font-size:12px;letter-spacing:0.15em;text-transform:uppercase;color:"+DIM+"'>Benign Devatas</span><span style='font-size:22px;font-weight:bold;color:"+(pct>=50?GOOD:BAD)+"'>"+T("{0} of {1}",[nB,tot])+"</span></div>";
   h+="<div style='height:8px;border-radius:4px;background:rgba(255,255,255,0.08);margin:10px 0 8px;overflow:hidden'><div style='height:100%;width:"+pct+"%;background:linear-gradient(90deg,#e08a8a,#e8c65a,#7fd99a)'></div></div>";
   h+="<p style='font-size:12.5px;line-height:1.6;color:"+SIL+";margin:0'>A point under a Krura devata is not a verdict on the planet \u2014 it says the ground it stands on was hard-won, and that whatever the rest of the chart promises there arrives with a debt attached. Read it beside the planet's dignity, never instead of it.</p>";
   h+="</div>";
-
   h+="<p style='font-size:11.5px;line-height:1.6;color:"+DIM+";margin:14px 0 0;font-style:italic'>Segment = floor(degree \u00d7 2) + 1. Sign counted cyclically from the natal sign; deity read forward from an odd sign, backward from an even one. The D-60 carries no weight in Shodasa Varga or in either Complete Evaluation \u2014 it is read, not scored.</p>";
   h+="</div>";
   return h;
@@ -5841,9 +5824,7 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
     var pLon=pdata.deg,pHouse=((pdata.index-ascIdx+12)%12)+1;
     /* Day/night peak, the book's anchors: the Sun, Jupiter and Saturn gather
        at 15:00, the Moon, Mars and Venus at 03:00 - twelve hours apart, so the
-       pair always sums to 40. Mercury peaks twice, at sunrise and sunset, which
-       the book fixes at 09:00 and 21:00 (its own worked example gives Mercury
-       40 there while every other planet gets 20). */
+       pair always sums to 40. Mercury peaks twice, at 09:00 and 21:00. */
     var dayNight=0;
     if(pl==='Mercury'){
       var dsr=Math.min(hDist(birthHour,9),hDist(birthHour,21));
@@ -5864,9 +5845,8 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
     if(pl==='Moon'){cheshtaBala=Math.round((moonPhase/180)*100);}
     else if(pl==='Sun'){cheshtaBala=Math.round(d180(pLon,270)/1.8);}
     else{var dop=d180(pLon,norm(sunLon+180));cheshtaBala=Math.round(Math.max(0,100-dop/1.8));}
-    /* The book's rule, plainly: a retrograde planet is physically nearest the
-       Earth, so it takes the full 100 of Cheshta bala outright. Only the five
-       can retrograde - the Sun and Moon never do. */
+    /* The book's rule: a retrograde planet is nearest the Earth, so it takes
+       the full 100 of Cheshta bala outright. Only the five can retrograde. */
     if(pdata.retro&&pl!=='Sun'&&pl!=='Moon')cheshtaBala=100;
     var uchhaBala=EXALT[pl]!==undefined?uPts(pLon,EXALT[pl]):50;
     var digBest=1;
@@ -5894,9 +5874,8 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
     var sthanaBala=divScore+houseScore+genderScore;
     var total=kalaBala+(cheshtaBala*2)+uchhaBala+(digBala*2)+ayanBala+sthanaBala;
     /* Six ingredients, so the book multiplies the sum by 1/6. Cheshta and Dig
-       carry double weight inside that sum, which is why a planet can pass 100:
-       the ceiling is 800/6 = 133, and the book's own figures live on this
-       scale (Jupiter 99, Adolf's Sun 88). */
+       carry double weight inside that sum, so the ceiling is 800/6 = 133 and
+       the book's own figures live on this scale (Jupiter 99, Adolf's Sun 88). */
     result[pl]={final:Math.round(total/6),components:{'Kala':kalaBala,'Cheshta x2':cheshtaBala*2,'Uchcha':uchhaBala,'Dig x2':digBala*2,'Ayan':ayanBala,'Sthana':sthanaBala}};
   }
   return result;
@@ -7064,8 +7043,8 @@ function renderReading(name,date,time,place,chart,aiTxt){
     html+='<div style="flex:1;min-width:240px"><p style="color:var(--silver);font-size:14px;line-height:1.9">';
     html+='Position: <span style="color:var(--gold)">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> - House '+h+'<br>';
     html+='Rules: <span style="color:var(--gold)">House '+rulerHouse+'</span> ('+rulerSign+')<br>';
-    if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> Pada '+nk.pada+' (Lord '+nk.lord+')<br>';
-    if(dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span> ('+dig.points+' pts)<br>';
+    if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
+    if(dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span> '+T('({0} pts)',[dig.points])+'<br>';
     if(fn)html+='Functional Nature: <span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnScore>0?'+':'')+fnScore+')<br>';
     html+='Avastha: <span style="color:var(--gold)">'+bav.name+'</span> ('+bav.eng+')<br>';if(sv!==null)html+='Shodasa varga: <span style="color:var(--gold)">'+sv+'/100</span><br>';
     if(sb!==null)html+='Shadbala: <span style="color:var(--gold)">'+sb+'/100</span>';
@@ -7107,7 +7086,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   html+='<div class="section" id="secMoon"><p class="section-label">Chandra - The Moon</p><p class="section-title">'+mp.name+'</p>';
     html+=planetProfileHTML('Moon',{icon:moonPhaseSVG(mp,90)});
     html+='<p style="color:var(--silver);font-size:13px;font-style:italic;margin-bottom:6px">Illumination: <span style="color:var(--gold)">'+mp.illum+'%</span> - '+(mp.waxing?'Waxing':'Waning')+', elongation '+Math.round(mp.elong)+'&deg;</p>';
-    html+=lagnaTableHTML(chart.chandraLagna,'Chandra Lagna - House Placements');
+    html+=lagnaTableHTML(chart.chandraLagna,T('Chandra Lagna - House Placements'));
     html+='<div style="margin:16px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Yogas ▲\':\'Show Yogas ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Yogas ▼</button><div class="adsub" style="margin-top:8px">'+yogaListHTML('ChandraLagna')+'</div></div>';
     html+='</div>';
   }
@@ -7244,8 +7223,8 @@ function renderReading(name,date,time,place,chart,aiTxt){
       var isCurAd=nowDt>=ad.startDate&&nowDt<ad.endDate;
       var pdId='pdsub'+dsi+'_'+ai;
       html+='<div class="adrow"'+(isCurAd?' style="color:var(--gold)"':'')+' onclick="toggleAntar(\''+pdId+'\')"><span class="adpn">'+ad.sym+' '+ad.planet+(isCurAd?' &lt;':'')+'</span><span>'+asY+' to '+aeY+'</span></div>';
-      /* Pratyantar - the third Vimshottari level. Same proportional split,
-         counted from the Antardasha lord. Reading view only, never the 3D. */
+      /* Pratyantar - the third Vimshottari level, counted from the Antardasha
+         lord. Reading view only, never the 3D. */
       var pdSeq=calcAntardasha(ad);
       html+='<div class="pdsub" id="'+pdId+'">';
       for(var pdi=0;pdi<pdSeq.length;pdi++){
@@ -7449,8 +7428,7 @@ var SB_HOUSE_TONE={
   Ketu   :[3,3,1,3,3,1,3,3,2,2,1,3]
 };
 /* One whole sentence per tone, not three fragments glued to a planet and an
-   ordinal. Georgian cannot take "in the" as a separate piece - the house has
-   to carry its own ending - so the placeholders travel with the sentence. */
+   ordinal: Georgian needs the house to carry its own ending. */
 var SB_TONE_TPL={1:'{0} feels great in the {1} House',
                  2:'{0} is not at its best in the {1} House',
                  3:'{0} doesn\u2019t feel well in the {1} House'};
@@ -7474,7 +7452,7 @@ function SB_openText(kind,planet,key,ctx,dig){
     entry=SB_txtGet('planetsInHouses',planet,key);
   }else if(kind==='sign'){
     label='Planet in Sign';
-    /* one template per sign, because Georgian inflects the sign itself
+    /* one template per sign: Georgian inflects the sign itself
        (Taurus -> kuroshi) and no single pattern covers all twelve */
     title=T('{0} in '+key,[T(planet)]);
     sgn=SB_signGet(planet,key);
@@ -7900,7 +7878,7 @@ function SB_karakaTableHTML(chart){
     h+='<td>'+(fn?('<span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnS>0?'+':'')+fnS+')'):'<span class="sbTblSub">-</span>')+'</td>';
     h+='<td>'+(dg&&dg.label?(dg.label+(dg.points!==undefined?'<div class="sbTblSub">'+dg.points+' pts</div>':'')):'-')+'</td>';
     h+='<td>'+(sv!==null?('<b>'+sv+'</b>/100'):'-')+'</td>';
-    h+='<td>'+(nk?(nk.name+'<div class="sbTblSub">Pada '+nk.pada+' \u00B7 '+nk.lord+'</div>'):'-')+'</td>';
+    h+='<td>'+(nk?(nk.name+'<div class="sbTblSub">'+T('Pada')+' '+nk.pada+' \u00B7 '+T(nk.lord)+'</div>'):'-')+'</td>';
     h+='</tr>';
   }
   h+='</tbody></table></div></div>';
@@ -7925,7 +7903,7 @@ function SB_planetSectionHTML(chart,pl){
   html+='Position: <span style="color:var(--gold)">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> - House '+h+'<br>';
   if(ruled.length){html+='Rules: <span style="color:var(--gold)">'+ruled.map(function(r){return 'House '+r.h+' ('+r.sign+')';}).join(', ')+'</span><br>';}
   else{html+='Rules: <span style="color:var(--gold-dim)">shadow node - governs no sign</span><br>';}
-  if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> Pada '+nk.pada+' (Lord '+nk.lord+')<br>';
+  if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
   if(dig&&dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span>'+(dig.points!==undefined?' ('+dig.points+' pts)':'')+'<br>';
   if(fn)html+='Functional Nature: <span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnScore>0?'+':'')+fnScore+')<br>';
   html+='Avastha: <span style="color:var(--gold)">'+bav.name+'</span> ('+bav.eng+')<br>';
@@ -7968,8 +7946,6 @@ function SB_houseSectionHTML(chart,h){
   var lines=[];
   for(var oi=0;oi<occ.length;oi++){var pl=occ[oi],ruled=SB_ruledHouses(pl,asc.index),pc=PCOL[pl]||'#aaa';
     if(ruled.length){
-      /* one sentence, two slots: Georgian cannot take "the lord of the" as a
-         loose fragment sitting in front of a house number */
       var _who='<span style="color:'+pc+'">'+T(pl)+'</span>';
       var _hs='<span style="color:var(--gold)">'
         +ruled.map(function(r){return T(SB_ordinal(r.h));}).join(T(' and '))+'</span>';
@@ -7991,8 +7967,7 @@ function SB_houseSectionHTML(chart,h){
      score = dignity + house placement + composite aspects
    HOUSE: 1,4,5,9,10,11 are beneficial, 6,8,12 (dusthana) harmful,
    2, 3 and 7 neutral. The 3rd is an upachaya house of effort, never
-   a dusthana - the book counts only the 6th, 8th and 12th.
-    The term is the planet's alignment with its own
+   a dusthana - the book counts only the 6th, 8th and 12th. The term is the planet's alignment with its own
    house cusp - the ascendant degree carried into the sign -
    (30 - distance)/30. Close to the cusp is good in a beneficial
    house and bad in a dusthana, so the sign of the term follows the
@@ -8159,12 +8134,14 @@ function SB_planetEvalHTML(chart,pl){
   html+='<p class="pevLead">Dignity, house placement and the aspects it receives, added the way the book adds them. A planet above 50 points of dignity is read positively, below 50 negatively; at exactly 50 its functional nature decides, and if that is neutral too, its Shadbala layer does.</p>';
   /* verdict */
   html+='<div class="pevCrown"><p class="pevCrownL">Evaluation</p><p class="pevCrownS" style="color:'+vcol+'">'+SB_pevSign(e.total)+'</p>'
-    +'<p class="pevCrownN">'+e.dignity.points+' dignity '+SB_pevSign(e.houseTerm)+' house '+SB_pevSign(e.aspectSum)+' aspects'
-    +'</p><p class="pevCrownN">Dignity '+e.dignity.points+' &rarr; the planet itself reads <b style="color:'+(e.verdict==='positive'?'#7fd99a':e.verdict==='negative'?'#e08a8a':'#e8c65a')+'">'+e.verdict+'</b> ('+e.decidedBy+')</p></div>';
+    +'<p class="pevCrownN">'+T('{0} dignity {1} house {2} aspects',
+      [e.dignity.points,SB_pevSign(e.houseTerm),SB_pevSign(e.aspectSum)])
+    +'</p><p class="pevCrownN">'+T('Dignity {0} \u2192 the planet itself reads',[e.dignity.points])+' <b style="color:'+(e.verdict==='positive'?'#7fd99a':e.verdict==='negative'?'#e08a8a':'#e8c65a')+'">'+e.verdict+'</b> ('+e.decidedBy+')</p></div>';
   /* the three components */
   html+='<div class="pevRow"><span class="pevK">Dignity</span><span class="pevV">'+e.dignity.label+(e.dignity.why?' <i>('+e.dignity.why+')</i>':'')+'</span><span class="pevN" style="color:'+col+'">'+SB_pevSign(e.dignity.points)+'</span></div>';
-  html+='<div class="pevRow"><span class="pevK">'+SB_ordinal(e.house)+' house</span><span class="pevV">'+e.houseKind
-    +(e.houseKind==='neutral'?' - it neither helps nor harms':' &middot; '+e.cusp.pct+'% aligned with the cusp ('+e.cusp.delta.toFixed(2)+'&#176; off)'
+  html+='<div class="pevRow"><span class="pevK">'+T('{0} house',[T(SB_ordinal(e.house))])+'</span><span class="pevV">'+T(e.houseKind)
+    +(e.houseKind==='neutral'?' - '+T('it neither helps nor harms')
+       :' &middot; '+T('{0}% aligned with the cusp ({1}\u00b0 off)',[e.cusp.pct,e.cusp.delta.toFixed(2)])
       +(e.houseKind==='dusthana'?' - and closeness to the cusp of an afflicted house counts against it':''))
     +'</span><span class="pevN" style="color:'+col+'">'+SB_pevSign(e.houseTerm)+'</span></div>';
   html+='<div class="pevRow"><span class="pevK">Aspects</span><span class="pevV">'+(e.aspects.length?e.aspects.length+' received':'none received')+'</span><span class="pevN" style="color:'+col+'">'+SB_pevSign(e.aspectSum)+'</span></div>';
@@ -8579,9 +8556,8 @@ function SB_houseEvalHTML(chart,h){
    The cost is known and accepted: vDivDeg stretches a position
    across its segment, by nine in D-9 and by sixteen in D-16, so
    two planets a few degrees apart in D-1 can fall outside each
-   other's orb in a high varga.  Aspects thin out as the charts
-   get finer.  That is a real property of the divisions, not an
-   artefact to be corrected away.
+   other's orb in a high varga.  That is a real property of the
+   divisions, not an artefact to be corrected away.
 
    A consequence worth knowing: SB_hevaEval(chart,h,1) returns
    the same numbers as SB_houseEval(chart,h).  hevalltest.js
@@ -8631,8 +8607,7 @@ function SB_hevaRotate(chart,h,v){
   var degInSign=asc.totalDeg-Math.floor(asc.totalDeg/30)*30;
   var vasc=vSign(asc.index,amFloor(degInSign),v);          /* varga lagna sign */
   /* the cusp degree OF THIS CHART: the ascendant projected into its own
-     division. Taurus 4d20 becomes 9d00 in D-9, and every cusp of the
-     rotation carries that degree, exactly as D-1 carries 4d20. */
+     division. Taurus 4d20 becomes 9d00 in D-9. */
   var vascDeg=vDivDeg(asc.index,amFloor(degInSign),v);
   var signIdx=(vasc+h-1)%12;                               /* the house itself */
   var pl=chart.planets,vp={};
@@ -8660,7 +8635,7 @@ function SB_hevaEval(chart,h,v){
     var fromH=vp.house,off=((1-fromH)+12)%12;
     var base=getAspectOffsets(pl)[off];
     if(base===undefined){silent.push({planet:pl,fromHouse:fromH,
-      reason:T('casts no aspect on the {0} house',[T(SB_ordinal(h))])});return null;}
+      reason:'casts no aspect on the '+SB_ordinal(h)+' house'});return null;}
     /* divisional degrees on both sides - see the header note.
        With v=1 vDivDeg is the identity, so D-1 is bit-for-bit unchanged. */
     var pdeg=vp.divDeg;
@@ -8936,8 +8911,7 @@ function SB_pevaAsps(chart,v){
 }
 
 /* Cusp alignment inside a varga: the planet's divisional degree against the
-   divisional cusp. SB_pevaCusp(chart,pl,A) with A.v===1 returns exactly what
-   SB_pevCusp(chart,pl) returns, because vDivDeg is the identity at v=1. */
+   divisional cusp. With A.v===1 this returns exactly what SB_pevCusp returns. */
 function SB_pevaCusp(chart,pl,A){
   var d=A.divDeg[pl],a=A.vascDeg;
   if(d===undefined||a===undefined)return SB_pevCusp(chart,pl);
@@ -9024,8 +8998,7 @@ function SB_pevaEval(chart,pl,v,Apre){
   /* 2. house placement
      The cusp alignment is read in THIS chart's degrees: the planet's
      divisional degree against the divisional lagna degree, signed by the
-     house. Each varga therefore carries its own graded term rather than
-     borrowing D-1's. At v=1 the two are identical. */
+     house. At v=1 the two are identical. */
   var h=A.houses[pl];
   var kind=PEV_GOOD[h]?'beneficial':PEV_DUS[h]?'dusthana':'neutral';
   var cusp=SB_pevaCusp(chart,pl,A);
@@ -10484,19 +10457,15 @@ function SB3D_buildVargaRings(set){
 }
 
 /* ------------------------------------------------------------
-   The D-60 ring is not built like the others, and cannot be.
-   720 cells on one band would be 0.4 units wide apiece - a
-   striped smear, not a chart. So the ring is drawn the way a
-   fine ruler is drawn: a plain dark band, a tick every fifth
-   segment to give the eye a scale, and a single lit, coloured,
-   glyphed cell wherever a planet or the Ascendant actually
-   pierces it. Everything else stays quiet.
+   The D-60 ring cannot be built like the others: 720 cells on one
+   band would be 0.4 units wide apiece. So it is drawn like a fine
+   ruler - a plain dark band, a tick every fifth segment, and a
+   single lit, coloured, glyphed cell wherever a planet or the
+   Ascendant actually pierces it.
    ------------------------------------------------------------ */
 function SB3D_buildD60Ring(crossLons){
   var ticks=[],lit=[],i,si;
-  /* a tick every 5 segments = every 2.5 degrees */
   for(i=0;i<144;i++)ticks.push(i*2.5);
-  /* one lit cell per crossing, carrying its own D-60 sign and deity */
   for(i=0;i<crossLons.length;i++){
     var L=norm(crossLons[i]);
     si=Math.floor(L/30)%12;
@@ -12183,38 +12152,31 @@ function SB3D_buildMainScene(data,chart){
     }
   });
   /* ---------- D-60 Shashtiamsha: the outermost band ----------
-     The place the red circle asked for, 44-40, is already D-7's in the
-     Overview, so the sixtieth division takes the seat past D-9 and closes
-     the nest: D-2, D-3, D-30, D-10, D-12 inside, then D-7, D-16, D-9, D-60.
-     Drawn as a ruler, not as 720 cells - see SB3D_buildD60Ring. */
+     44-40 is already D-7's in the Overview, so the sixtieth division takes
+     the seat past D-9 and closes the nest. Drawn as a ruler, not as 720
+     cells - see SB3D_buildD60Ring. */
   (function(){
-    var r1s=61,r2s=65,midS=(r1s+r2s)/2;
+    var r1s=61,r2s=65;
     var d60=SB3D_buildD60Ring(crossLons);
-    /* the quiet band: one dark arc per sign */
-    for(var s=0;s<12;s++){
-      gOvRings.add(SB3D_cellMesh(ctx,s*30,s*30+30,r1s,r2s,
-        (s%2===0)?'#141426':'#101020',0.5));
+    for(var sI=0;sI<12;sI++){
+      gOvRings.add(SB3D_cellMesh(ctx,sI*30,sI*30+30,r1s,r2s,
+        (sI%2===0)?'#141426':'#101020',0.5));
     }
-    /* a tick every fifth segment, so the eye can count half-degrees */
     d60.ticks.forEach(function(t){
       var tv=SB3D_v3(SB3D_eclToVec(t,0,ctx));
-      var inner=(Math.abs(t%30)<0.001)?r1s:(r2s-1.3); /* sign borders run the full depth */
+      var inner=(Math.abs(t%30)<0.001)?r1s:(r2s-1.3);
       gOvRings.add(SB3D_line([tv.clone().multiplyScalar(inner),
                               tv.clone().multiplyScalar(r2s)],0x2a2a4a,0.75));
     });
-    /* and the cells that are actually occupied - full colour, full glyph */
     d60.lit.forEach(function(c){
       var cc=new THREE.Color(SB3D_SIGN_COLOR12[c.vSignIdx]);
-      gOvRings.add(SB3D_cellMesh(ctx,c.startLon,c.endLon,r1s,r2s,
-        '#'+cc.getHexString(),0.95));
+      gOvRings.add(SB3D_cellMesh(ctx,c.startLon,c.endLon,r1s,r2s,'#'+cc.getHexString(),0.95));
       var mv=SB3D_v3(SB3D_eclToVec(norm((c.startLon+c.endLon)/2),0,ctx));
-      /* the cell is half a degree wide, so the glyph rides just outside it */
       var gs=SB3D_signSprite(c.vSignIdx,1.5,'fine');
       gs.renderOrder=2;
       gs.position.copy(mv.clone().multiplyScalar(r2s+1.9));
       gOvRings.add(gs);
-      /* the presiding devata, which is the whole point of this chart */
-      var dl=SB3D_label(c.deity,{color:c.benefic?'#7fd99a':'#e08a8a',fs:90,
+      var dl=SB3D_label(T(c.deity),{color:c.benefic?'#7fd99a':'#e08a8a',fs:90,
         weight:'bold',stroke:'rgba(0,0,0,0.9)'},3.4,0.95);
       dl.position.copy(mv.clone().multiplyScalar(r2s+4.2));
       gOvRings.add(dl);
@@ -12271,14 +12233,13 @@ function SB3D_buildMainScene(data,chart){
     var kws=SB3D_getHouseKeywords(ascSignName,cu.house);
     var lines,pending=false;
     if(kws){lines=[];var buf='';kws.forEach(function(k0){
-        /* the card is painted into a canvas texture, so the DOM sweep can
-           never reach it - each keyword has to be translated here */
+        /* painted into a canvas texture, so the DOM sweep can never reach it */
         var k=T(k0);
         if((buf+' '+k).length>26){lines.push(buf);buf=k;}else buf=buf?buf+' \u00B7 '+k:k;});
       if(buf)lines.push(buf);lines=lines.slice(0,4);
     }else{lines=[T('keywords pending')];pending=true;}
     var tex=SB3D_frostedTex(512,90+lines.length*34,
-      T('{0} House \u00B7 {1}',[T(SB_ORD[cu.house-1]),T(SIGNS[cu.signIdx].name)]),lines,pending);
+      T('{0} House \u00b7 {1}',[T(SB_ORD[cu.house-1]),T(SIGNS[cu.signIdx].name)]),lines,pending);
     var hpx=90+lines.length*34;
     var pm=new THREE.Mesh(new THREE.PlaneGeometry(24,24*hpx/512),
       new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:THREE.DoubleSide}));
@@ -12379,7 +12340,9 @@ function SB3D_injectStyles(){
   +'#sb3dWtFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}'
   +'#sb3dWtFoot #sb3dWtBtn{margin:0;flex:0 0 auto}'
   +'#sb3dWtMore{flex:1 1 auto;text-align:left;margin:0}'
-  +'#sb3dWtBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;'+'-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent 100%);'+'mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent 100%)}'
+  +'#sb3dWtBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;'
+    +'-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent 100%);'
+    +'mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent 100%)}'
     +'#sb3dWtBody::-webkit-scrollbar{width:4px}#sb3dWtBody::-webkit-scrollbar-track{background:transparent}'
     +'#sb3dWtBody::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.35);border-radius:2px}'
     +'#sb3dWtTxt,#sb3dWtP2{overflow:visible;min-height:0}'
@@ -13199,8 +13162,9 @@ function SB3D_wtInner(s,pl,first){
   var out=SB3D_wtSign(b.signIdx),inn=SB3D_wtSign(b.navamshaSignIdx);
   if(!out||!inn)return'';
   var lead=first?'Look closely: there\u2019s a <b>second sign</b> drawn on the planet. That\u2019s the sign behind the sign \u2014 how it behaves when nobody\u2019s watching.<br>':'';
-  if(out===inn)return lead+'<b>Same sign inside and out.</b> Rare \u2014 this one doesn\u2019t change when nobody\u2019s watching.';
-  return lead+'<b>'+out+' outside, '+inn+' inside.</b>';
+  if(out===inn)return lead+'<b>'+T('Same sign inside and out.')+'</b> '
+    +T('Rare \u2014 this one doesn\u2019t change when nobody\u2019s watching.');
+  return lead+'<b>'+T('{0} outside, {1} inside.',[T(out),T(inn)])+'</b>';
 }
 /* dignity, in plain words */
 var SB3D_DIG_LINE=[
@@ -13222,7 +13186,7 @@ function SB3D_wtDig(pl,b){
 /* a planet sub-POV card */
 /* ------------------------------------------------------------------
    Flexbox was asked to shrink the scrolling body against the card's
-   max-height, and would not do it reliably - long steps kept being
+   max-height and would not do it reliably - long steps kept being
    clipped instead of scrolling. So the height is measured and set
    outright: whatever the card is allowed to be, minus the fixed rows
    above and below it, is what the body gets.
@@ -13235,7 +13199,6 @@ function SB3D_wtFit(){
   bd.style.maxHeight='none';
   var cs=null;
   try{cs=window.getComputedStyle(card);}catch(e){}
-  /* how tall the card is allowed to get, from its own max-height */
   var cap=0;
   if(cs&&cs.maxHeight&&cs.maxHeight!=='none'){
     var mh=parseFloat(cs.maxHeight);
@@ -13259,14 +13222,17 @@ function SB3D_wtFit(){
 function SB3D_wtPlanetStep(s,pl,firstPlanet,extraLead){
   var b=s.data.bodies[pl];
   var sign=SB3D_wtSign(b.signIdx),ord=SB3D_wtOrd(b.house);
-  var tone={cls:'',text:pl+' in the '+ord+' House'};
+  var tone={cls:'',text:T('{0} in the {1} House',[T(pl),T(ord)])};
   try{tone=SB_toneTitle(pl,b.house);}catch(e){}
-  var p1='<p class="wtLead">'+(extraLead||'You\u2019re not alone in this house.')+'</p>'
-        +'<p><b>'+pl+'</b> is in your <b>'+ord+' House</b>, in <b>'+sign+'</b>. '
+  /* one sentence with three slots: the house and the sign each need to carry
+     their own ending, which no glued fragment can do */
+  var p1='<p class="wtLead">'+(extraLead||T('You\u2019re not alone in this house.'))+'</p>'
+        +'<p>'+T('{0} is in your {1} House, in {2}.',
+                 ['<b>'+T(pl)+'</b>','<b>'+T(ord)+'</b>','<b>'+T(sign)+'</b>'])+' '
         +'<span class="wtTone '+(tone.cls||'')+'">'+tone.text+'.</span></p>';
   var read=SB3D_wtFrag(SB3D_wtHouseRead(pl,b.house),3);
   if(read)p1+='<p class="wtRead">'+read+'</p>';
-  if(tone.cls==='tone-3')p1+='<p class="wtSoft">That\u2019s not a verdict on you \u2014 it\u2019s where this planet has to work hardest.</p>';
+  if(tone.cls==='tone-3')p1+='<p class="wtSoft">'+T('That\u2019s not a verdict on you \u2014 it\u2019s where this planet has to work hardest.')+'</p>';
   var inner=SB3D_wtInner(s,pl,firstPlanet);
   if(inner)p1+='<p class="wtInner">'+inner+'</p>';
   var flags=SB3D_wtFlags(s,pl);
@@ -13276,7 +13242,7 @@ function SB3D_wtPlanetStep(s,pl,firstPlanet,extraLead){
   try{var e2=SB_txtGet('planetsInHouses',pl,b.house);neg=e2?(e2.neg||''):'';}catch(err){}
   var p2='';
   if(full)p2+='<p>'+full+'</p>';
-  if(neg)p2+='<p class="wtEdgeH">The other edge</p><p class="wtSoft">Every placement has a second edge. This is what this one asks you to watch.</p><p>'+neg+'</p>';
+  if(neg)p2+='<p class="wtEdgeH">'+T('The other edge')+'</p><p class="wtSoft">Every placement has a second edge. This is what this one asks you to watch.</p><p>'+neg+'</p>';
   var mob='';
   if(flags.length)mob+='<p>'+flags[0]+'</p>';
   if(mob)p2='<div class="wtMobOnly">'+mob+'</div>'+p2;
@@ -13496,9 +13462,8 @@ function SB3D_wtUI(){
     if(window.addEventListener)window.addEventListener('resize',function(){SB3D_wtFit();});
     sk.onclick=function(){SB3D_wtSkip();};
   }
-  /* 'block' here quietly undid the card's own display:flex, so the scrolling
-     body stopped being a flex item and its height was never constrained -
-     which is why long steps were cut off instead of scrolling. */
+  /* 'block' would quietly undo the card's own display:flex, and the scrolling
+     body would stop being a flex item - which is what cut long steps off. */
   card.style.display='flex';
   /* the fitter measures, so it can only run once the card is on screen */
   SB3D_wtFit();
@@ -13557,7 +13522,7 @@ function SB3D_wtNext(){
   }else SB3D_wtPoint(null);
   var tt=document.getElementById('sb3dWtTtl');if(tt)tt.textContent=st.ttl||'';
   var pg=document.getElementById('sb3dWtProg');
-  if(pg){if(st.prog){pg.textContent='Axis '+st.prog;pg.style.display='block';}else pg.style.display='none';}
+  if(pg){if(st.prog){pg.textContent=T('Axis {0}',[st.prog]);pg.style.display='block';}else pg.style.display='none';}
   var tx=document.getElementById('sb3dWtTxt');
   if(tx){if(st.html)tx.innerHTML=st.html;else tx.textContent=st.txt||'';}
   /* page 2 lives behind "Tell me more" and only exists when the step has one */
@@ -14349,7 +14314,7 @@ function SB3D_showInfoPanel(pl){
     var ck=chart.charaKarakas?chart.charaKarakas[pl]:null;
     if(ck)html+='<div><span class="k">Chara Karaka:</span> <b>'+ck.role+'</b> \u00B7 '+ck.meaning+'</div>';
     var nk=(chart.nakshatras&&chart.nakshatras[pl])?chart.nakshatras[pl]:null;
-    if(nk)html+='<div><span class="k">Nakshatra:</span> <b>'+nk.name+'</b> \u00B7 Pada '+nk.pada+' (Lord '+nk.lord+')</div>';
+    if(nk)html+='<div><span class="k">Nakshatra:</span> <b>'+nk.name+'</b> \u00B7 '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'</div>';
     var dg=(chart.dignities&&chart.dignities[pl])||(((pl==='Rahu'||pl==='Ketu')&&typeof nodeDig==='function')?nodeDig(pl,chart.planets,chart.asc.index):null);
     if(dg&&dg.label)html+='<div><span class="k">Dignity:</span> <b>'+dg.label+'</b>'+(dg.points!==undefined?' ('+dg.points+' pts)':'')+'</div>';
     if(dg&&dg.why)html+='<div><span class="k">Why:</span> '+dg.lord+' rules '+dg.sign+' \u00B7 '+dg.why+'</div>';
