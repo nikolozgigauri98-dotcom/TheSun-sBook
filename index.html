@@ -2441,6 +2441,8 @@ ka:{
 "Dwadashamsha":"დვადაშამშა",
 "Dying":"მიმავალი",
 "Dynamic labour":"დინამიკური შრომა",
+"EIGHTH":"მერვე",
+"ELEVENTH":"მეთერთმეტე",
 "Each sign is cut into sixty parts of":"თითოეული ნიშანი დაყოფილია სამოც ნაწილად, რომელთაგან თითოეულია",
 "Earned benefit":"დამსახურებული სარგებელი",
 "Earned fame":"დამსახურებული დიდება",
@@ -2580,6 +2582,9 @@ ka:{
 "Explore your creative self · D-7 Saptamsha":"გამოიკვლიე შენი შემოქმედებითი „მე\" · D-7 საპტამშა",
 "Explore your true self · D-9 Navamsha":"შეიცანი შენი ჭეშმარიტი „მე\" · D-9 ნავამშა",
 "Explored underworld":"გამოკვლეული ქვესკნელი",
+"FIFTH":"მეხუთე",
+"FIRST":"პირველი",
+"FOURTH":"მეოთხე",
 "Factor":"ფაქტორი",
 "Factor · Sign · Weight · Why":"ფაქტორი · ნიშანი · წონა · მიზეზი",
 "Fair ambition":"სამართლიანი ამბიცია",
@@ -3181,6 +3186,7 @@ ka:{
 "Mystical mother":"მისტიკური დედა",
 "Mystical study":"მისტიკური სწავლა",
 "Mysticism":"მისტიციზმი",
+"NINTH":"მეცხრე",
 "Nakshatra":"ნაკშატრა",
 "Nakshatra:":"ნაკშატრა:",
 "Nakshatras - Lunar Mansions":"ნაკშატრები - მთვარის სავანეები",
@@ -3630,6 +3636,9 @@ ka:{
 "Ruthless routine":"სასტიკი რუტინა",
 "Ruthless transformation":"სასტიკი ტრანსფორმაცია",
 "Ruthless work":"სასტიკი სამუშაო",
+"SECOND":"მეორე",
+"SEVENTH":"მეშვიდე",
+"SIXTH":"მეექვსე",
 "Sacred journey":"წმინდა მოგზაურობა",
 "Sacred retreat":"წმინდა განმარტოება",
 "Sacred wandering":"წმინდა ხეტიალი",
@@ -3923,7 +3932,10 @@ ka:{
 "Surya-Shukr Yoga":"სურია-შუკრა იოგა",
 "Swati":"შვატი",
 "Systematic network":"სისტემატური ქსელი",
+"TENTH":"მეათე",
+"THIRD":"მესამე",
 "TRIMSAMSA · GROUPED BY SEGMENT LORD":"ტრიმშამშა · დაჯგუფებული სეგმენტის მმართველის მიხედვით",
+"TWELFTH":"მეთორმეტე",
 "Talkative appearance":"მოსაუბრე გარეგნობა",
 "Talkative employees":"მოსაუბრე თანამშრომლები",
 "Talkative friendships":"მოსაუბრე მეგობრობა",
@@ -4489,6 +4501,7 @@ ka:{
 "sits in its own segment — a genuine pillar of hidden strength you can lean on.":"დგას საკუთარ სეგმენტში — ფარული ძალის ჭეშმარიტი ბურჯი, რომელსაც შეგიძლია დაეყრდნო.",
 "strength, leadership, ambition, boldness, drive and self-direction":"სიძლიერე, ლიდერობა, ამბიცია, სიმამაცე, სწრაფვა და თვითმართვა",
 "temporary":"დროებით",
+"tends to fail or work against you — relying on it in conflict rarely succeeds (about {0}% of the time).":"მიდრეკილია მარცხისკენ ან შენს წინააღმდეგ მუშაობს — კონფლიქტში მასზე დაყრდნობა იშვიათად ამართლებს (დაახლოებით {0}%-ში).",
 "tension":"დაძაბულობა",
 "terrible, fierce":"საშინელი, მრისხანე",
 "the Moon":"მთვარე",
@@ -4543,8 +4556,10 @@ ka:{
 "{0} - the lord of the {1} house - stands here.":"{0} - {1} სახლის მმართველი - აქ დგას.",
 "{0} - the lord of the {1} houses - stands here.":"{0} - {1} სახლების მმართველი - აქ დგას.",
 "{0} Ascendant - {1}":"{0} ასცენდენტი - {1}",
+"{0} HOUSE":"{0} სახლი",
 "{0} House":"{0} სახლი",
 "{0} House - {1}":"{0} სახლი - {1}",
+"{0} House · {1}":"{0} სახლი · {1}",
 "{0} Rising - Soul Imprint":"{0} ამომავალი - სულის ანაბეჭდი",
 "{0} aspect{1} no weight at all - a planet in fall has a dignity of 0, and 0 multiplied by any aspect is 0.":"{0} ასპექტს{1} წონა საერთოდ არ აქვს - დაცემაში მყოფი პლანეტის ღირსება 0-ია, ხოლო ნებისმიერ ასპექტზე გამრავლებული 0 ისევ 0-ია.",
 "{0} doesn't feel well in the {1} House":"{0} კარგად ვერ გრძნობს თავს {1} სახლში",
@@ -4666,6 +4681,41 @@ function T(s,args){
 /* is there a translation at all? used by the DOM sweep below */
 function SB_hasT(s){var d=SB_I18N[LANG];return !!(d&&typeof d[s]==='string'&&d[s]!=='');}
 
+/* ---- sentences assembled from pieces ---------------------------
+   Much of the reading is glued together at run time:
+
+     planet + " (100%) \u2014 " + keyword + ": " + verdict
+
+   The finished node matches nothing, while every piece of it is in
+   the dictionary. So when the whole string misses, it is split on
+   the joins the app actually uses and each piece is looked up on
+   its own. Only whole, trimmed pieces are matched - never a
+   substring - so a word inside a longer word can never be hit. A
+   piece with no entry is left in English rather than guessed at. */
+var SB_TR_SEPS=[': ',' \u00b7 ',' \u2014 ',' - '];
+function SB_trSegment(t,depth){
+  if(!t)return t;
+  if(SB_hasT(t))return T(t);
+  depth=depth||0;
+  if(depth>3)return t;
+  /* "Moon (100%)" - the label carries a figure the dictionary cannot hold */
+  var pc=/^(.+?)(\s*\((?:\d+(?:\.\d+)?%|R)\))$/.exec(t);
+  if(pc&&SB_hasT(pc[1]))return T(pc[1])+pc[2];
+  for(var i=0;i<SB_TR_SEPS.length;i++){
+    var sep=SB_TR_SEPS[i];
+    if(t.indexOf(sep)<0)continue;
+    var parts=t.split(sep),hit=false,out=[];
+    for(var j=0;j<parts.length;j++){
+      var p=parts[j].trim();
+      var r=p?SB_trSegment(p,depth+1):p;
+      if(r!==p)hit=true;
+      out.push(parts[j].replace(p,r));
+    }
+    if(hit)return out.join(sep);
+  }
+  return t;
+}
+
 /* ---- the static-HTML sweep -------------------------------------
    Markup written directly in the page cannot call T(), so its text
    nodes are swept once per language change. Only whole, trimmed
@@ -4690,7 +4740,8 @@ function translatePage(){
       nd.__o=(rt&&SB_INV[rt]!==undefined)?raw.replace(rt,SB_INV[rt]):raw;
     }
     var k=(nd.__o||'').trim();
-    var nv=(k&&SB_hasT(k))?nd.__o.replace(k,T(k)):nd.__o;
+    var tv=k?SB_trSegment(k):'';
+    var nv=(k&&tv!==k)?nd.__o.replace(k,tv):nd.__o;
     /* write only on a real change - otherwise the observer below would
        see its own edit and loop */
     if(nd.nodeValue!==nv)nd.nodeValue=nv;
@@ -5119,10 +5170,11 @@ var DREK_SYMBOL={
   Ketu:"inscrutability, detachment and unpredictability"
 };
 function drekSymbolPhrase(dig){
-  if(dig>=100)return "is your single most effective weapon in conflict \u2014 you reach for it by instinct and it genuinely works.";
-  if(dig>=70)return "is a strong, reliable weapon \u2014 it works for you more often than not.";
-  if(dig>=50)return "is workable but not automatic \u2014 usable when the situation suits it, never a knockout blow.";
-  return "tends to fail or work against you \u2014 relying on it in conflict rarely succeeds (about "+dig+"% of the time).";
+  if(dig>=100)return T("is your single most effective weapon in conflict \u2014 you reach for it by instinct and it genuinely works.");
+  if(dig>=70)return T("is a strong, reliable weapon \u2014 it works for you more often than not.");
+  if(dig>=50)return T("is workable but not automatic \u2014 usable when the situation suits it, never a knockout blow.");
+  /* one whole sentence with the figure as a slot, so it can be translated */
+  return T("tends to fail or work against you \u2014 relying on it in conflict rarely succeeds (about {0}% of the time).",[dig]);
 }
 var DREK_SOFT={Mercury:1,Venus:1,Moon:1,Jupiter:1}; // cooperative/soft styles; the rest are hard/forceful
 function drekIsJarring(a,b){return (!!DREK_SOFT[a])!==(!!DREK_SOFT[b]);}
@@ -12095,7 +12147,7 @@ function SB3D_buildMainScene(data,chart){
     g.userData.zBase=6.5;zGlyphs.push(g); /* grows x3 in Overview */
     g.position.copy(SB3D_v3(cu.midVec).multiplyScalar(130)).add(vUp.clone().multiplyScalar(9));
     gVargaDeco.add(g);
-    var hn=SB3D_label(ORDINAL[cu.house-1]+' HOUSE',{color:'#c9a84c',fs:64,stroke:'rgba(0,0,0,0.7)'},7,0.95);
+    var hn=SB3D_label(T('{0} HOUSE',[T(ORDINAL[cu.house-1])]),{color:'#c9a84c',fs:64,stroke:'rgba(0,0,0,0.7)'},7,0.95);
     hn.position.copy(SB3D_v3(cu.midVec).multiplyScalar(112));
     gVargaDeco.add(hn);
   });
@@ -12218,12 +12270,15 @@ function SB3D_buildMainScene(data,chart){
   data.cusps.forEach(function(cu){
     var kws=SB3D_getHouseKeywords(ascSignName,cu.house);
     var lines,pending=false;
-    if(kws){lines=[];var buf='';kws.forEach(function(k){
+    if(kws){lines=[];var buf='';kws.forEach(function(k0){
+        /* the card is painted into a canvas texture, so the DOM sweep can
+           never reach it - each keyword has to be translated here */
+        var k=T(k0);
         if((buf+' '+k).length>26){lines.push(buf);buf=k;}else buf=buf?buf+' \u00B7 '+k:k;});
       if(buf)lines.push(buf);lines=lines.slice(0,4);
-    }else{lines=['keywords pending'];pending=true;}
+    }else{lines=[T('keywords pending')];pending=true;}
     var tex=SB3D_frostedTex(512,90+lines.length*34,
-      'House '+cu.house+' \u00B7 '+SIGNS[cu.signIdx].name,lines,pending);
+      T('{0} House \u00B7 {1}',[T(SB_ORD[cu.house-1]),T(SIGNS[cu.signIdx].name)]),lines,pending);
     var hpx=90+lines.length*34;
     var pm=new THREE.Mesh(new THREE.PlaneGeometry(24,24*hpx/512),
       new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:THREE.DoubleSide}));
