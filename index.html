@@ -335,7 +335,7 @@ body.sb3d-open #sbCorner{display:none!important}
 body.sbTxtOpen{overflow:hidden}
 #sbTxtOv{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(4,4,12,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #sbTxtOv.on{display:flex;animation:sbFade .28s ease}
-.sbTxtWin{position:relative;width:100%;max-width:720px;max-height:84vh;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(20,20,40,.99),rgba(10,10,22,.99));border:1px solid rgba(201,168,76,.42);border-radius:12px;box-shadow:0 30px 70px -18px rgba(0,0,0,.95);padding:26px 30px 24px}
+.sbTxtWin{position:relative;width:100%;max-width:720px;max-height:84vh;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(180deg,rgba(20,20,40,.99),rgba(10,10,22,.99));border:1px solid rgba(201,168,76,.42);border-radius:12px;box-shadow:0 30px 70px -18px rgba(0,0,0,.95);padding:26px 30px 24px}
 .sbTxtX{position:absolute;top:10px;right:14px;background:transparent;border:none;color:var(--gold-dim);font-size:26px;line-height:1;cursor:pointer;transition:color .2s}
 .sbTxtX:hover{color:var(--gold)}
 .sbTxtLbl{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px}
@@ -343,7 +343,9 @@ body.sbTxtOpen{overflow:hidden}
 .sbTxtTtl.tone-1{color:#5cc275}
 .sbTxtTtl.tone-2{color:#e0913c}
 .sbTxtTtl.tone-3{color:#d16a6a}
-.sbTxtScroll{overflow-y:auto;padding-right:6px}
+/* without flex:1/min-height:0 this child refuses to shrink, and its
+   overflow spills past the window's rounded edge instead of scrolling */
+.sbTxtScroll{flex:1 1 auto;min-height:0;overflow-y:auto;padding-right:6px}
 .sbTxtBody{font-family:'EB Garamond',serif;font-size:16px;line-height:1.85;color:var(--cream)}
 .sbTxtBody p{margin-bottom:14px}
 .sbTxtSide{border-left:2px solid;padding:2px 0 2px 14px;margin-bottom:20px}
@@ -812,13 +814,21 @@ body.sb-light .sbLockTxt{color:#4a4a58}
 </style>
 </head>
 <body class="sb-cast">
-<div id="sbBootLoad"><div class="wheel"></div><div class="orbit-wrap"><div class="orbit-center"><div class="loader-sym" id="loadSym">&#9737;</div><div class="loader-name" id="loadPlanet">The Sun</div></div><div class="orbit-ring" id="orbitRing"></div></div><p class="loading-text">Casting the celestial circle</p></div>
+<div id="sbBootLoad"><div class="wheel"></div><div class="orbit-wrap"><div class="orbit-center"><div class="loader-sym" id="loadSym">&#9737;</div><div class="loader-name" id="loadPlanet"></div></div><div class="orbit-ring" id="orbitRing"></div></div><p class="loading-text" id="loadTag">Casting the celestial circle</p></div>
 <script>
 /* Boot loader — self-contained so it paints instantly, before the main app
    script (with PLANET_KW) has even parsed. It hides itself once the real UI is
    ready: either the onboarding card is up, or the chart reading / 3D sky is
    visible. A hard cap guarantees it never gets stuck. */
 (function(){
+  /* The loader paints before SB_I18N exists, so it carries its own copy of the
+     handful of words it shows. Every string here is lifted verbatim from the
+     main dictionary - if one is edited there, edit it here too. BOOT_LANG is
+     read straight from the same localStorage key setLang() writes. */
+  var BOOT_LANG='en';
+  try{var _bl=localStorage.getItem('sb_lang');if(_bl)BOOT_LANG=_bl;}catch(e){}
+  var BOOT_KA={"The Sun":"მზე","The Moon":"მთვარე","Mercury":"მერკური","Venus":"ვენერა","Mars":"მარსი","Jupiter":"იუპიტერი","Saturn":"სატურნი","Rahu":"რაჰუ","Ketu":"კეტუ","Soul":"სული","Self":"მე","Father":"მამა","Authority":"ავტორიტეტი","Confidence":"თვითრწმენა","Health":"ჯანმრთელობა","Status":"სტატუსი","Leadership":"ლიდერობა","Dominance":"დომინირება","Mind":"გონება","Mother":"დედა","Comfort":"კომფორტი","Intuition":"ინტუიცია","Memory":"მეხსიერება","Nurture":"მზრუნველობა","Emotion":"ემოცია","Reflection":"ანარეკლი","Intellect":"ინტელექტი","Communication":"კომუნიკაცია","Wit":"მახვილგონიერება","Analysis":"ანალიზი","Adaptability":"ადაპტურობა","Trade":"ვაჭრობა","Networking":"კავშირების დამყარება","Love":"სიყვარული","Beauty":"სილამაზე","Pleasure":"სიამოვნება","Art":"ხელოვნება","Harmony":"ჰარმონია","Receptivity":"მიმღებლობა","Romance":"რომანტიკა","Energy":"ენერგია","Courage":"სიმამაცე","War":"ომი","Passion":"ვნება","Ambition":"ამბიცია","Discipline":"დისციპლინა","Endurance":"გამძლეობა","Wisdom":"სიბრძნე","Growth":"ზრდა","Faith":"რწმენა","Abundance":"სიუხვე","Optimism":"ოპტიმიზმი","Generosity":"გულუხვობა","Guru":"გურუ","Time":"დრო","Patience":"მოთმინება","Restriction":"შეზღუდვა","Truth":"ჭეშმარიტება","Karma":"კარმა","Labor":"შრომა","Illusion":"ილუზია","Obsession":"ობსესია","Chaos":"ქაოსი","Future":"მომავალი","Foreign":"უცხოური","Desire":"სურვილი","Detachment":"გამიჯვნა","Past Karma":"წარსული კარმა","Liberation":"განთავისუფლება","Mysticism":"მისტიციზმი","Escape":"გაქცევა","Drive":"სწრაფვა","Speech":"მეტყველება","Logic":"ლოგიკა","Fortune":"იღბალი","Teacher":"მასწავლებელი","Grace":"მადლი","Union":"კავშირი","Action":"მოქმედება","Will":"ნება","Lesson":"გაკვეთილი","Structure":"სტრუქტურა","Casting the celestial circle":"ციური წრის შედგენა"};
+  function BT(x){return (BOOT_LANG==='ka'&&BOOT_KA[x])?BOOT_KA[x]:x;}
   var FB={
     Sun:{sym:'\u2609',name:'The Sun',words:['Soul','Self','Authority','Confidence','Status','Leadership']},
     Moon:{sym:'\u263D',name:'The Moon',words:['Mind','Mother','Comfort','Intuition','Memory','Emotion']},
@@ -829,16 +839,21 @@ body.sb-light .sbLockTxt{color:#4a4a58}
     Saturn:{sym:'\u2644',name:'Saturn',words:['Discipline','Time','Karma','Structure','Endurance','Lesson']}
   };
   var FBO=['Sun','Moon','Mars','Mercury','Jupiter','Venus','Saturn'];
-  var idx=0,ang=0,spin=null,swap=null,done=false;
+  var _tag=document.getElementById('loadTag');
+  if(_tag)_tag.textContent=BT('Casting the celestial circle');
+  /* The loader rarely runs long enough to reach Ketu, so a fixed start meant
+     four of the nine were never seen by anyone. The order still runs
+     Sun->Ketu and wraps; only the entry point moves. */
+  var idx=Math.floor(Math.random()*9),ang=0,spin=null,swap=null,done=false;
   function src(){return (window.PLANET_KW&&window.PLANET_ORDER)?{d:window.PLANET_KW,o:window.PLANET_ORDER}:{d:FB,o:FBO};}
   function words(w){
     var r=document.getElementById('orbitRing');if(!r)return;r.innerHTML='';
-    for(var i=0;i<w.length;i++){var e=document.createElement('div');e.className='orbit-word';e.textContent=w[i];e.setAttribute('data-angle',(360/w.length*i));r.appendChild(e);}
+    for(var i=0;i<w.length;i++){var e=document.createElement('div');e.className='orbit-word';e.textContent=BT(w[i]);e.setAttribute('data-angle',(360/w.length*i));r.appendChild(e);}
   }
   function show(){
     var s=src(),pl=s.o[idx%s.o.length],data=s.d[pl];if(!data)return;
     var sy=document.getElementById('loadSym'),nm=document.getElementById('loadPlanet');
-    if(sy)sy.textContent=data.sym;if(nm)nm.textContent=data.name;
+    if(sy)sy.textContent=data.sym;if(nm)nm.textContent=BT(data.name);
     words(data.words||[]);
   }
   function tick(){
@@ -1710,7 +1725,7 @@ ka:{
 ", is what you’re hungry for and haven’t reached. It never quite feels like enough.":", არის ის, რისიც გშია და ჯერ არ მიგიღწევია. არასდროს გეყოფა ბოლომდე.",
 ", one of 27 lunar mansions. This is the most personal point in the whole chart.":", 27 მთვარის სავანიდან ერთ-ერთი. ეს მთელ რუკაში ყველაზე პირადი წერტილია.",
 ", one of only five (Mars, Mercury, Jupiter, Venus, Saturn); the Sun and Moon own no segment. This is":"-ის მიხედვით, რომელიც მხოლოდ ხუთიდან ერთ-ერთია (მარსი, მერკური, იუპიტერი, ვენერა, სატურნი); მზე და მთვარე სეგმენტს არ ფლობენ. ეს არის",
-", so functional nature is read from {6} here. House column:":", ამიტომ ფუნქციური ბუნება აქ {6}-იდან იკითხება. სახლის სვეტი:",
+", so functional nature is read from {0} here. House column:":", ამიტომ ფუნქციური ბუნება აქ {0|gen} მიხედვით იკითხება. სახლის სვეტი:",
 ", so the subtle chart is broadly manageable.":", ასე რომ ფარული რუკა ზოგადად მართვადია.",
 ", so the subtle chart is net-negative and worth watching even when the main chart looks sound.":", ასე რომ ფარული რუკა საბოლოო ჯამში უარყოფითია და ყურადღებას მოითხოვს მაშინაც კი, როცა მთავარი რუკა საიმედოდ გამოიყურება.",
 ", so {2} {3} stands as the Ascendant of this evaluation, and the whole chart is read again from there. Everything below concerns {4}.":", ამიტომ {2} {3} დგას ამ შეფასების ასცენდენტად და მთელი რუკა იქიდან იკითხება ხელახლა. ქვემოთ მოცემული ყველაფერი {4}-ს ეხება.",
@@ -4326,7 +4341,7 @@ ka:{
 "Your whole life leans along this line — away from what's easy, toward what isn't.":"შენი მთელი ცხოვრება ამ ხაზის გასწვრივ იხრება — იქიდან, რაც მარტივია, იქითკენ, რაც არ არის.",
 "Your whole life leans along this line — away from what’s easy, toward what isn’t.":"შენი მთელი ცხოვრება ამ ხაზის გასწვრივ იხრება — იქიდან, რაც მარტივია, იქითკენ, რაც არ არის.",
 "Yours is":"შენი არის",
-"Yours leans toward":"შენი იხრება იმისკენ,",
+"Yours leans toward":"შენი გადახრაა:",
 "Yours sits evenly across them — no single pull. That is its own kind of chart.":"შენი მათ შორის თანაბრად ნაწილდება — ცალმხრივი მიზიდულობის გარეშე. ეს თავისთავად განსაკუთრებული რუკაა.",
 "Youth":"ახალგაზრდა",
 "Youthful body":"ახალგაზრდული სხეული",
@@ -4629,8 +4644,8 @@ ka:{
 "{0} in Virgo":"{0} ქალწულში",
 "{0} in Vishakha":"{0} ვისაკაში",
 "{0} in the {1} House":"{0} {1} სახლში",
-"{0} in {1}":"{0} {1}-ში",
-"{0} is in your {1} House, in {2}.":"{0} შენს {1} სახლშია, {2}-ში.",
+"{0} in {1}":"{0} {1|in}",
+"{0} is in your {1} House, in {2}.":"{0} შენს {1|adj} სახლშია, {2|in}.",
 "{0} is not at its best in the {1} House":"{0} საუკეთესო ფორმაში არ არის {1} სახლში",
 "{0} of {1}":"{0} / {1}",
 "{0} of {1} points ({2}%){3}":"{0} / {1} ქულიდან ({2}%){3}",
@@ -4644,6 +4659,33 @@ ka:{
 "{1} House Chart":"{1} სახლის რუკა",
 "{0} House as Lagna - {1} {2}":"{0} სახლი როგორც ლაგნა - {1} {2}",
 "Weighed":"შეწონვა",
+"Art":"ხელოვნება",
+"War":"ომი",
+"Wit":"მახვილგონიერება",
+"Rising ↔ Setting":"ამომავალი ↔ ჩამავალი",
+"Private ↔ Visible":"პირადი ↔ ხილული",
+"Resources ↔ Other’s resources":"რესურსები ↔ სხვისი რესურსები",
+"Thoughts ↔ Beliefs":"აზრები ↔ რწმენა",
+"Creative ↔ Collective":"შემოქმედება ↔ საზოგადო",
+"Routine ↔ Freedom":"რუტინა ↔ თავისუფლება",
+"you":"შენ",
+"everybody":"ყველა",
+"don’t":"არ",
+"Continue ▸":"გაგრძელება ▸",
+"strong":"ძლიერი",
+"moderate":"საშუალო",
+"weak":"სუსტი",
+"Yoga Strength: {0}":"იოგას სიძლიერე: {0}",
+"yogas read":"იოგები წაკითხულია",
+"Hide Yogas ▲":"იოგების დამალვა ▲",
+"Raja Yoga (lords of {0} & {1} houses related)":"რაჯა იოგა ({0} და {1} სახლის მმართველები დაკავშირებულია)",
+"Dignity {0}%":"ღირსება {0}%",
+"Bala {0}":"ბალა {0}",
+"Net":"წმინდა",
+"Resources":"რესურსები",
+"Meaning":"აზრი",
+"Freedom":"თავისუფლება",
+"in {0}":"{0}-ში",
 "masculine":"მამრობითი",
 "feminine":"მდედრობითი",
 "D-{0} sign":"D-{0} ნიშანი",
@@ -4699,7 +4741,7 @@ ka:{
 "All":"ყველა",
 "None":"არცერთი",
 "{0} rules it · {1}":"{0} მართავს მას · {1}",
-"Primary weight is how close each point's divisional degree-in-sign sits to the Ascendant's ({0}); this is then nudged by ruling angular/trine houses (1,5,9,10, a boost) versus dusthana houses (6,8,12, a drag), and by any conjunction with the divisional Sun or Moon. Nodes never rule houses. Weighting is approximate.":"ძირითადი წონა განისაზღვრება იმით, თუ რამდენად ახლოს ზის თითოეული წერტილის დივიზიონური გრადუსი ნიშანში ასცენდენტთან ({0}); ეს შემდეგ კორექტირდება კენდრული/ტრინალური სახლების მმართველობით (1,5,9,10, მატება) დუსტჰანა სახლებთან შედარებით (6,8,12, კლება), და დივიზიონურ მზესთან ან მთვარესთან ნებისმიერი შეერთებით. კვანძები არასდროს მართავენ სახლებს. წონის შეფასება მიახლოებითია.",
+"Primary weight is how close each point's divisional degree-in-sign sits to the Ascendant's ({0}); this is then nudged by ruling angular/trine houses (1,5,9,10, a boost) versus dusthana houses (6,8,12, a drag), and by any conjunction with the divisional Sun or Moon. Nodes never rule houses. Weighting is approximate.":"ძირითადი წონა განისაზღვრება იმით, თუ რამდენად ახლოს ზის თითოეული წერტილის დივიზიონური გრადუსი ნიშანში ასცენდენტთან ({0}); ეს შემდეგ კორექტირდება კენდრული/ტრინალური სახლების მმართველობით (1,5,9,10, მატება) დუშტანა სახლებთან შედარებით (6,8,12, კლება), და დივიზიონურ მზესთან ან მთვარესთან ნებისმიერი შეერთებით. კვანძები არასდროს მართავენ სახლებს. წონის შეფასება მიახლოებითია.",
 "conflicted":"კონფლიქტური",
 "unconflicted":"არაკონფლიქტური",
 "soft":"რბილი",
@@ -4735,7 +4777,7 @@ ka:{
 "{1}° from the Sun, against a visibility threshold of {2}°{3}":"{1}° მზიდან, ხილვადობის ზღვართან შედარებით: {2}°{3}",
 "{2} Each card combines functional nature, D-1 dignity and Baladi avastha.":"{2} თითოეული ბარათი აერთიანებს ფუნქციურ ბუნებას, D-1 ღირსებასა და ბალადი ავასთას.",
 "{2} House":"{2} სახლი",
-"{2} carries a dignity of {3} in this chart, so the placement {4}.":"{2} ამ რუკაში ატარებს ღირსებას {3}, ამიტომ განლაგება {4}.",
+"{0} carries a dignity of {1} in this chart, so the placement {2}.":"{0} ამ რუკაში ატარებს ღირსებას {1}, ამიტომ განლაგება {2}.",
 "{2} dignity {3} house {4} aspects":"{2} ღირსება {3} სახლი {4} ასპექტი",
 "{2} house":"{2} სახლში",
 "{2} of {3}":"{2} {3}-დან",
@@ -4785,14 +4827,15 @@ ka:{
    last Georgian word in the argument, so a value that arrives wrapped in
    markup - <b>მერკური</b> - still declines correctly. Any other language
    ignores this entirely. */
-var SB_KA_CASE={gen:'\u10D8\u10E1',dat:'\u10E1','in':'\u10E8\u10D8'};
+var SB_KA_CASE={gen:'\u10D8\u10E1',dat:'\u10E1','in':'\u10E8\u10D8',adj:''};
 /* two words in this vocabulary lose a vowel in the genitive and only there:
    მშვილდოსანი -> მშვილდოსნის, and რქა (of თხის რქა) -> რქის */
 var SB_KA_STEM={'\u10DB\u10E8\u10D5\u10D8\u10DA\u10D3\u10DD\u10E1\u10D0\u10DC\u10D8':'\u10DB\u10E8\u10D5\u10D8\u10DA\u10D3\u10DD\u10E1\u10DC','\u10E0\u10E5\u10D0':'\u10E0\u10E5'};
 function SB_decline(v,c){
   v=(v===undefined||v===null)?'':String(v);
-  if(LANG!=='ka'||!SB_KA_CASE[c])return v;
+  if(LANG!=='ka'||!(c in SB_KA_CASE))return v;   /* adj's ending is '' */
   return v.replace(/[\u10D0-\u10FF]+(?![\s\S]*[\u10D0-\u10FF])/,function(w){
+    if(c==='adj')return (w.charAt(w.length-1)==='\u10D8')?w.slice(0,-1):w;
     if(c==='gen'&&SB_KA_STEM[w])return SB_KA_STEM[w]+SB_KA_CASE[c];
     var last=w.charAt(w.length-1);
     if(last==='\u10D8')w=w.slice(0,-1);                       /* -i drops */
@@ -6370,7 +6413,7 @@ function checkRajaYoga(view,res){
       var mutual=vMutualAspect(view,kl,tl);
       var exchange=view.houseOf[kl]===th && view.houseOf[tl]===kh;
       if(conj||mutual||exchange)
-        res.push({key:'rajayoga_'+kh+'_'+th,name:'Raja Yoga (lords of '+kh+' & '+th+' houses related)'});
+        res.push({key:'rajayoga_'+kh+'_'+th,name:T('Raja Yoga (lords of {0} & {1} houses related)',[kh,th])});
     });
   });
 }
@@ -7140,7 +7183,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   var sections={};try{sections=JSON.parse(aiTxt.replace(/```json|```/g,'').trim());}catch(e){}
   var age=(function(){var dp=date.split('-'),nn=new Date(),a=nn.getFullYear()-(+dp[0]),mm=(nn.getMonth()+1)-(+dp[1]);if(mm<0||(mm===0&&nn.getDate()<+dp[2]))a--;return a;})();
   var DCOLS={exaltation:'#c9a84c',moolatrikona:'#e8c97a',own:'#90c060',highlyFriendly:'#60a8c0',friendly:'#6080b0',neutral:'#888',enemy:'#c07050',highlyInimical:'#c06040',fall:'#a02020'};
-  var html=SB_restoreNotice()+'<div class="reading-header"><div class="chart-name">'+name+'</div><div class="chart-meta">'+date+(time?' - '+time:'')+' - '+place+'</div><div class="chart-meta" style="margin-top:5px;font-size:13px;color:var(--gold-dim)">'+asc.sign.name+' Rising - Age '+age+' \u00B7 running year '+(age+1)+'</div></div>';
+  var html=SB_restoreNotice()+'<div class="reading-header"><div class="chart-name">'+name+'</div><div class="chart-meta">'+date+(time?' - '+time:'')+' - '+place+'</div><div class="chart-meta" style="margin-top:5px;font-size:13px;color:var(--gold-dim)">'+T(asc.sign.name)+' Rising - Age '+age+' \u00B7 running year '+(age+1)+'</div></div>';
   /* ---- Current Sky: the very first thing on the page — the transit
      bi-wheel (outer = right now, inner = natal) and the list of where
      every planet stands at this moment ---- */
@@ -7152,16 +7195,28 @@ function renderReading(name,date,time,place,chart,aiTxt){
   html+='<p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:14px;text-align:center">'+T('Outer wheel - the transiting sky at {0} (device time). Inner wheel - the natal chart. Whole sign houses from the natal Ascendant.',[tStamp])+'</p>';
   html+='<div class="planet-grid">';
   trans.order.forEach(function(tn){var t=trans.planets[tn],th=((t.index-asc.index+12)%12)+1;
-    html+='<div class="planet-pill"><div class="p-name">'+tn+(t.retro?' <span style="color:var(--ruby)">(R)</span>':'')+'</div><div class="p-pos">'+t.sign.name+' '+t.degree+(t.minutes?"'"+t.minutes:'')+" H"+th+'</div></div>';});
+    html+='<div class="planet-pill"><div class="p-name">'+tn+(t.retro?' <span style="color:var(--ruby)">(R)</span>':'')+'</div><div class="p-pos">'+T(t.sign.name)+' '+t.degree+(t.minutes?"'"+t.minutes:'')+" H"+th+'</div></div>';});
   html+='</div></div>';
   html+='<div class="section" id="secPos"><p class="section-label">Celestial Positions</p><p class="section-title">The Planetary Map</p><div class="planet-grid">';
-  for(var p in planets){var d=planets[p],h=((d.index-asc.index+12)%12)+1;html+='<div class="planet-pill"><div class="p-name">'+p+(d.retro?' <span style="color:var(--ruby)">(R)</span>':'')+'</div><div class="p-pos">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+" H"+h+'</div></div>';}
+  for(var p in planets){var d=planets[p],h=((d.index-asc.index+12)%12)+1;html+='<div class="planet-pill"><div class="p-name">'+p+(d.retro?' <span style="color:var(--ruby)">(R)</span>':'')+'</div><div class="p-pos">'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+" H"+h+'</div></div>';}
   /* the outer three: natal position + house, shown here and nowhere else */
   if(chart.outerPlanets)['Uranus','Neptune','Pluto'].forEach(function(op){var d=chart.outerPlanets[op],h=((d.index-asc.index+12)%12)+1;
-    html+='<div class="planet-pill" style="opacity:0.85;border-style:dashed"><div class="p-name">'+op+(d.retro?' <span style="color:var(--ruby)">(R)</span>':'')+'</div><div class="p-pos">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+" H"+h+'</div></div>';});
+    html+='<div class="planet-pill" style="opacity:0.85;border-style:dashed"><div class="p-name">'+op+(d.retro?' <span style="color:var(--ruby)">(R)</span>':'')+'</div><div class="p-pos">'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+" H"+h+'</div></div>';});
   html+='</div></div>';
   html+=SB_zodDominanceHTML(chart);   /* ZODIAC DOMINANCE - sits right under the Planetary Map */
   var yogaUid=0;
+  /* Most yoga names are plain and sit in the dictionary as they are. The
+     generated ones carry a parenthesis - "Voshi Yoga (Mars)", "Sunapha
+     (Venus) Yoga" - which no single key can cover, so the bracket is peeled
+     off and the two halves are looked up separately. */
+  function SB_yogaName(n){
+    if(SB_hasT(n))return T(n);
+    var m=/^(.*?)\s*\(([^()]*)\)\s*(.*)$/.exec(n);
+    if(!m)return T(n);
+    var head=T((m[1]+' '+m[3]).replace(/\s+/g,' ').trim());
+    var inner=m[2].split(/\s*&\s*/).map(function(x){return T(x.trim());}).join(' & ');
+    return head+' ('+inner+')';
+  }
   function yogaListHTML(frameKey){
     var list=chart.yogas&&chart.yogas[frameKey];
     if(!list||!list.length)return'<p class="ylist-empty">No notable yogas detected in this chart.</p>';
@@ -7174,10 +7229,10 @@ function renderReading(name,date,time,place,chart,aiTxt){
       var col=NATCOL[r.nature]||'#d9c177';
       var strcol=STRCOL[r.strength||'strong'];
       var strLabel=r.strength||'strong';
-      html+='<div class="yrow" onclick="toggleAntar(\''+id+'\')"><span style="color:'+col+'">'+r.name+'</span><div style="display:flex;gap:6px;align-items:center"><span class="ytag" style="color:'+col+';border-color:'+col+'">'+r.nature+'</span><span class="ytag" style="color:'+strcol+';border-color:'+strcol+'">'+strLabel+'</span></div></div>';
+      html+='<div class="yrow" onclick="toggleAntar(\''+id+'\')"><span style="color:'+col+'">'+SB_yogaName(r.name)+'</span><div style="display:flex;gap:6px;align-items:center"><span class="ytag" style="color:'+col+';border-color:'+col+'">'+r.nature+'</span><span class="ytag" style="color:'+strcol+';border-color:'+strcol+'">'+strLabel+'</span></div></div>';
       html+='<div class="adsub" id="'+id+'"><div class="ydesc">'+r.text;
       if(r.breakers&&r.breakers.length){
-        html+='<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)"><p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:'+strcol+';margin-bottom:6px">Yoga Strength: '+strLabel.toUpperCase()+'</p>';
+        html+='<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)"><p style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:'+strcol+';margin-bottom:6px">'+T('Yoga Strength: {0}',[T(strLabel)])+'</p>';
         r.breakers.forEach(function(b){html+='<p style="font-size:12px;color:var(--silver);margin-bottom:4px">⚠ '+b+'</p>';});
         html+='</div>';
       }
@@ -7198,7 +7253,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     var html='<div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:22px">';
     html+='<div style="flex:0 0 auto">'+opts.icon+'</div>';
     html+='<div style="flex:1;min-width:240px"><p style="color:var(--silver);font-size:14px;line-height:1.9">';
-    html+='Position: <span style="color:var(--gold)">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> '+T('- House {0}',[h])+'<br>';
+    html+='Position: <span style="color:var(--gold)">'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> '+T('- House {0}',[h])+'<br>';
     html+='Rules: <span style="color:var(--gold)">House '+rulerHouse+'</span> ('+rulerSign+')<br>';
     if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
     if(dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span> '+T('({0} pts)',[dig.points])+'<br>';
@@ -7277,7 +7332,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     html+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px"><span style="font-family:Cinzel,serif;font-size:15px;letter-spacing:0.05em;color:'+mpcol+'">'+mp+'</span><span style="font-size:23px;font-weight:bold;line-height:1;color:'+mdcol+'">'+mdg.points+'</span></div>';
     html+='<div style="height:7px;border-radius:5px;background:rgba(255,255,255,0.07);overflow:hidden;margin-bottom:6px"><div style="height:100%;width:'+mdg.points+'%;border-radius:5px;background:linear-gradient(90deg,'+mdcol+'99,'+mdcol+');box-shadow:0 0 7px '+mdcol+'55"></div></div>';
     html+='<div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:'+mdcol+';margin-bottom:2px">'+mdg.label+'</div>';
-    html+='<div style="font-size:12px;color:var(--silver);opacity:0.75;margin-bottom:11px">'+mpd.sign.name+' '+mpd.degree+'</div>';
+    html+='<div style="font-size:12px;color:var(--silver);opacity:0.75;margin-bottom:11px">'+T(mpd.sign.name)+' '+mpd.degree+'</div>';
     if(mfn){var mbw=Math.round(((mfsc+3)/6)*100),msg=mfsc>0?'+':'';
       html+='<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;margin-bottom:4px"><span style="color:var(--gold-dim);letter-spacing:0.1em;text-transform:uppercase">Functional</span><span style="color:'+mfn.col+';font-weight:bold">'+msg+mfsc+' \u00b7 '+mfn.label+'</span></div>';
       html+='<div style="height:5px;border-radius:3px;background:rgba(255,255,255,0.07);overflow:hidden;margin-bottom:11px"><div style="height:100%;width:'+mbw+'%;border-radius:3px;background:linear-gradient(90deg,'+mfn.col+'99,'+mfn.col+')"></div></div>';
@@ -7288,7 +7343,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   html+='</div></div>';
   var SEV=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
   html+='<div class="section" id="secAsp"><p class="section-label">Drishti - Planetary Aspects</p><p class="section-title">Aspects Received (60%+ only)</p><div class="asp-grid">';
-  for(var ai=0;ai<SEV.length;ai++){var apl=SEV[ai],recv=aspects.recv[apl]||[],aph=aspects.houses[apl],apd=planets[apl],apcol=PCOL[apl]||'#aaa';html+='<div class="asp-pill"><div class="asp-hdr"><span class="asp-pn" style="color:'+apcol+'">'+apl+'</span><span class="asp-hn">H'+aph+'</span></div><div class="asp-pp">'+apd.sign.name+' '+apd.degree+'</div><div class="asp-list">';if(!recv.length){html+='<span class="asp-none">No significant aspects</span>';}else{for(var ri=0;ri<recv.length;ri++){var asp=recv[ri],ac=PCOL[asp.from]||'#aaa';html+='<div class="asp-row"><span class="asp-fr" style="color:'+ac+'">'+asp.from+'</span><span class="asp-bw"><span class="asp-b" style="width:'+asp.str+'%;background:'+ac+'44;border-left:2px solid '+ac+'"></span></span><span class="asp-pc" style="color:'+ac+'">'+asp.str+'%</span></div>';}}html+='</div></div>';}
+  for(var ai=0;ai<SEV.length;ai++){var apl=SEV[ai],recv=aspects.recv[apl]||[],aph=aspects.houses[apl],apd=planets[apl],apcol=PCOL[apl]||'#aaa';html+='<div class="asp-pill"><div class="asp-hdr"><span class="asp-pn" style="color:'+apcol+'">'+apl+'</span><span class="asp-hn">H'+aph+'</span></div><div class="asp-pp">'+T(apd.sign.name)+' '+apd.degree+'</div><div class="asp-list">';if(!recv.length){html+='<span class="asp-none">No significant aspects</span>';}else{for(var ri=0;ri<recv.length;ri++){var asp=recv[ri],ac=PCOL[asp.from]||'#aaa';html+='<div class="asp-row"><span class="asp-fr" style="color:'+ac+'">'+asp.from+'</span><span class="asp-bw"><span class="asp-b" style="width:'+asp.str+'%;background:'+ac+'44;border-left:2px solid '+ac+'"></span></span><span class="asp-pc" style="color:'+ac+'">'+asp.str+'%</span></div>';}}html+='</div></div>';}
   html+='</div></div>';
   html+='<div class="section" id="secShadv"><p class="section-label">Shodasa Varga - Divisional Collection</p><p class="section-title">Refined Dignity Across 9 Charts</p><p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:18px">D-1 and D-9 count double; the other seven count once. Final = total divided by 9.</p><div class="shadv-grid">';
   var svSorted=Object.keys(shodasavarga).sort(function(a,b){return shodasavarga[b].final-shodasavarga[a].final;});
@@ -7511,7 +7566,9 @@ function SB_pillAttr(s){return String(s).replace(/&/g,'&amp;').replace(/'/g,'&#3
    zodiac sign) open the house reading only. */
 function SB_pill(planet,signName,house,opts){
   opts=opts||{};
-  var pc=PCOL[planet]||'#aaa',sub=signName+(opts.deg?' '+opts.deg:'');
+  /* the visible sub-line is translated; signName itself stays English just
+     below, because SB_openText uses it as the key into SB_TEXTS */
+  var pc=PCOL[planet]||'#aaa',sub=T(signName)+(opts.deg?' '+opts.deg:'');
   var dg=(opts.dig===null||opts.dig===undefined)?'null':opts.dig;
   var ctx=SB_pillAttr(opts.ctx||'');
   var hOn='SB_openText(\'house\',\''+planet+'\','+house+',\''+ctx+'\','+dg+')';
@@ -7670,8 +7727,10 @@ function SB_openText(kind,planet,key,ctx,dig){
   var band=SB_digBand(dig),foot='';
   if(band)foot='<div class="sbTxtDig sbDig-'+band.key+'">'
       +'<span class="sbDigN">'+Math.round(dig)+'</span>'
-      +'<span class="sbDigT">'+planet+(ctx?' in '+ctx:'')+' carries a dignity of '
-      +Math.round(dig)+' in this chart, so the placement '+band.label+'.</span></div>';
+      +'<span class="sbDigT">'
+      +T('{0} carries a dignity of {1} in this chart, so the placement {2}.',
+         [T(planet)+(ctx?' '+T('in {0}',[ctx]):''),Math.round(dig),T(band.label)])
+      +'</span></div>';
 
   var ov=document.getElementById('sbTxtOv');
   if(!ov){
@@ -8030,7 +8089,7 @@ function SB_karakaTableHTML(chart){
     var nk=(chart.nakshatras&&chart.nakshatras[pl])?chart.nakshatras[pl]:null;
     var sym=(typeof PLANET_KW!=='undefined'&&PLANET_KW[pl])?PLANET_KW[pl].sym:'';
     h+='<tr'+(kk&&kk.role==='Atmakaraka'?' class="sbAtma"':'')+'>';
-    h+='<td><span style="color:'+col+'">'+sym+'</span> '+pl+(d.retro?' <span style="color:#c96060">R</span>':'')+'<div class="sbTblSub">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</div></td>';
+    h+='<td><span style="color:'+col+'">'+sym+'</span> '+pl+(d.retro?' <span style="color:#c96060">R</span>':'')+'<div class="sbTblSub">'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</div></td>';
     h+='<td>'+(kk?('<b>'+kk.role+'</b><div class="sbTblSub">'+kk.meaning+'</div>'):'<span class="sbTblSub">outside the seven</span>')+'</td>';
     h+='<td>'+(fn?('<span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnS>0?'+':'')+fnS+')'):'<span class="sbTblSub">-</span>')+'</td>';
     h+='<td>'+(dg&&dg.label?(dg.label+(dg.points!==undefined?'<div class="sbTblSub">'+T('{0} pts',[dg.points])+'</div>':'')):'-')+'</td>';
@@ -8057,7 +8116,7 @@ function SB_planetSectionHTML(chart,pl){
   var ruled=SB_ruledHouses(pl,asc.index);
   var html='<div class="section"><p class="section-label">'+KW.name+'</p><p class="section-title">'+T('{0} in '+d.sign.name,[T(pl)])+(d.retro?' <span style="color:var(--ruby);font-size:13px">(R)</span>':'')+'</p>';
   html+='<div class="sbPlHead"><span class="sbPlGlyph" style="color:'+col+'">'+KW.sym+'</span><div style="flex:1;min-width:240px"><p style="color:var(--silver);font-size:14px;line-height:1.9">';
-  html+='Position: <span style="color:var(--gold)">'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> '+T('- House {0}',[h])+'<br>';
+  html+='Position: <span style="color:var(--gold)">'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> '+T('- House {0}',[h])+'<br>';
   if(ruled.length){html+='Rules: <span style="color:var(--gold)">'+ruled.map(function(r){return T('House {0} ({1})',[r.h,T(r.sign)]);}).join(', ')+'</span><br>';}
   else{html+='Rules: <span style="color:var(--gold-dim)">shadow node - governs no sign</span><br>';}
   if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
@@ -8439,14 +8498,14 @@ function SB_zodDominanceHTML(chart){
   for(i=0;i<z.winners.length;i++){var wsg=z.winners[i].sign;
     html+=(i?' <span class="zdAmp">&amp;</span> ':'')+'<span style="color:'+(ZD_ELCOL[wsg.element]||'var(--gold)')+'">'+wsg.sym+' '+wsg.name+'</span>';}
   html+='</p><p class="zdCrownN">'+T('{0} of {1} points ({2}%)',[z.top.score,z.total,z.top.pct])
-    +(z.runner?' &nbsp;|&nbsp; next: '+z.runner.sign.name+' '+z.runner.score:'')+'</p></div>';
+    +(z.runner?' &nbsp;|&nbsp; next: '+T(z.runner.sign.name)+' '+z.runner.score:'')+'</p></div>';
 
   /* the ranking */
   html+='<div class="zdBars">';
   for(i=0;i<z.ranked.length;i++){
     var r=z.ranked[i];if(!r.score)continue;
     var c=ZD_ELCOL[r.sign.element]||'#c9a84c',win=(r.score===z.top.score);
-    html+='<div class="zdRow'+(win?' zdWin':'')+'"><span class="zdName" style="color:'+c+'">'+r.sign.sym+' '+r.sign.name+'</span>'
+    html+='<div class="zdRow'+(win?' zdWin':'')+'"><span class="zdName" style="color:'+c+'">'+r.sign.sym+' '+T(r.sign.name)+'</span>'
       +'<span class="zdTrack"><i style="width:'+Math.round(r.score/max*100)+'%;background:linear-gradient(90deg,'+c+'55,'+c+')"></i></span>'
       +'<span class="zdVal">'+r.score+'<span class="zdPct">'+r.pct+'%</span></span></div>';}
   html+='</div>';
@@ -8600,7 +8659,7 @@ function SB_houseEval(chart,h){
 function SB_hevReadingHTML(chart,ev){
   var h=ev.house,out='';
   var topic=HEV_TOPIC[h]||'this field of life';
-  out+='<p>The '+SB_ordinal(h)+' house falls in <b>'+ev.sign.name+'</b>, so '+ev.sign.name+' '+vgDegMin(ev.ascDeg)+' stands as the Ascendant of this evaluation, and the whole chart is read again from there. Everything below concerns '+topic+'.</p>';
+  out+='<p>The '+SB_ordinal(h)+' house falls in <b>'+T(ev.sign.name)+'</b>, so '+T(ev.sign.name)+' '+vgDegMin(ev.ascDeg)+' stands as the Ascendant of this evaluation, and the whole chart is read again from there. Everything below concerns '+topic+'.</p>';
   var L=ev.lord;
   if(L){
     var lfn=SB_hevFNLabel(L.natalFN);
@@ -8631,10 +8690,10 @@ function SB_houseEvalHTML(chart,h){
   html+='<p class="hevH">Step 1 - The House Turned Into the Ascendant</p>';
   html+='<div class="vlayout"><div>'+drawChart(vd,360)+'</div><div>'
     +'<p class="vdn">'+SB_ORD[h-1]+' House Chart</p>'
-    +'<p class="vdt">The same sky, counted again from the '+SB_ordinal(h)+' house. The ascendant degree travels with it, so '+ev.sign.name+' '+vgDegMin(ev.ascDeg)+' becomes the cusp.</p>'
-    +'<p class="vda">ASC: <span style="color:var(--gold)">'+ev.sign.name+' '+vgDegMin(ev.ascDeg)+'</span> &nbsp;|&nbsp; Lord: <span style="color:'+SB_hevPC(ev.sign.ruler)+'">'+ev.sign.ruler+'</span></p><div class="vdps">';
+    +'<p class="vdt">The same sky, counted again from the '+SB_ordinal(h)+' house. The ascendant degree travels with it, so '+T(ev.sign.name)+' '+vgDegMin(ev.ascDeg)+' becomes the cusp.</p>'
+    +'<p class="vda">ASC: <span style="color:var(--gold)">'+T(ev.sign.name)+' '+vgDegMin(ev.ascDeg)+'</span> &nbsp;|&nbsp; Lord: <span style="color:'+SB_hevPC(ev.sign.ruler)+'">'+ev.sign.ruler+'</span></p><div class="vdps">';
   for(var pn in vd.planets){var pp=vd.planets[pn];
-    html+='<div class="vdpr"><span style="color:'+SB_hevPC(pn)+'">'+pn+'</span><span style="color:var(--silver)">'+pp.sign.name+' '+vgDegMin(pp.divDeg)+'</span><span style="color:var(--gold-dim)">H'+pp.house+'</span></div>';}
+    html+='<div class="vdpr"><span style="color:'+SB_hevPC(pn)+'">'+pn+'</span><span style="color:var(--silver)">'+T(pp.sign.name)+' '+vgDegMin(pp.divDeg)+'</span><span style="color:var(--gold-dim)">H'+pp.house+'</span></div>';}
   html+='</div></div></div>';
 
   /* step 2 - functional nature */
@@ -8874,7 +8933,7 @@ function SB_hevaVargaHTML(data,v){
   for(i=0;i<12;i++){
     var e=rowsV[i];
     out+='<tr><td class="hevaTh">'+SB_HEVA_ROM[i]+'</td>'
-      +'<td>'+e.sign.name+' '+vgDegMin(e.ascDeg)+'</td>'
+      +'<td>'+T(e.sign.name)+' '+vgDegMin(e.ascDeg)+'</td>'
       +'<td>'+e.countPos+'&#43; / '+e.countNeg+'&#8722;'
       +(e.countZero?' / '+e.countZero+'&#9900;':'')+'</td>'
       +'<td class="hevPos">'+e.positive+'</td>'
@@ -9274,8 +9333,9 @@ function SB_planetEvalAllHTML(chart){
       +'<span class="hevaCaret">&#9662;</span></button>'
       +'<div class="hevaBody" id="pevaBody-'+v+'" style="display:none">'
       +'<p class="hevaBodyNote">Lagna of this chart: <b>'+data.asps[v].vascSign.name
-      +'</b>, so functional nature is read from '+data.asps[v].vascSign.name
-      +' here. House column: <span class="pevaKind">b</span> beneficial, '
+      +'</b>'+T(', so functional nature is read from {0} here. House column:',
+                [T(data.asps[v].vascSign.name)])
+      +' <span class="pevaKind">b</span> beneficial, '
       +'<span class="pevaKind">d</span> dusthana, <span class="pevaKind">n</span> neither.</p>'
       +SB_pevaVargaHTML(data,v)+'</div>';
   }
@@ -11148,11 +11208,20 @@ function SB3D_textTex(text,opts){
   g.fillStyle=opts.color||'#c9a84c';g.fillText(text,w/2,h/2);
   var t=new THREE.CanvasTexture(c);t.__aspect=aspect;return t;
 }
-function SB3D_label(text,opts,scale,opacity){
+/* Latin gets capitals, Georgian does not: JS would map it to Mtavruli,
+   which the 3D label font cannot draw. */
+function SB3D_up(x){x=String(x);return /^[\x00-\x7F]*$/.test(x)?x.toUpperCase():x;}
+function SB3D_label(text,opts,scale,opacity,maxAspect){
   var t=SB3D_textTex(text,opts);
   var m=new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false,
     opacity:opacity===undefined?1:opacity});
-  var s=new THREE.Sprite(m);s.scale.set(scale*t.__aspect,scale,1);return s;
+  var s=new THREE.Sprite(m);
+  /* Sprite width follows the rendered text, so the same tag is noticeably
+     wider in Georgian than in Latin and starts colliding with its neighbours.
+     maxAspect caps the world width; the tag shrinks as a whole rather than
+     stretching sideways. */
+  var a=t.__aspect,k=(maxAspect&&a>maxAspect)?maxAspect/a:1;
+  s.scale.set(scale*a*k,scale*k,1);return s;
 }
 /* ---------- realistic procedural planet textures (per reference photos) ---------- */
 function SB3D_noise2(x,y){var n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n);}
@@ -11980,7 +12049,7 @@ function SB3D_buildMainScene(data,chart){
   /* big sign names next to the Roman numerals — shown at the true center */
   var gSignNames=new THREE.Group();gSignNames.visible=false;
   data.cusps.forEach(function(cu){
-    var nm=SB3D_label(SIGNS[cu.signIdx].name.toUpperCase(),
+    var nm=SB3D_label(SB3D_up(T(SIGNS[cu.signIdx].name)),
       {color:'#e8c97a',fs:76,stroke:'rgba(0,0,0,0.8)'},6.2,0.95);
     nm.position.copy(SB3D_v3(cu.midVec).multiplyScalar(102)).add(vUpH.clone().multiplyScalar(-11));
     gSignNames.add(nm);
@@ -12095,7 +12164,7 @@ function SB3D_buildMainScene(data,chart){
       gring.visible=false;gring.material.depthTest=false;gring.renderOrder=20;
       grp.add(gring);balaLabels.push(gring);
       fireAnims.push({a:gring.material,t:Math.random()*10,still:true}); /* flicker, no spin */
-      var pct=SB3D_label('Bala '+b.shadbala,{color:'#ff4636',fs:150,weight:'bold',stroke:'rgba(46,4,2,0.95)'},3.6,1);
+      var pct=SB3D_label(T('Bala {0}',[b.shadbala]),{color:'#ff4636',fs:150,weight:'bold',stroke:'rgba(46,4,2,0.95)'},3.6,1,5.0);
       pct.material.depthTest=false;pct.renderOrder=21;pct.visible=false;
       grp.add(pct);balaLabels.push(pct);
       balaHats.push({ring:gring,pct:pct,size:vis.size});
@@ -12103,7 +12172,7 @@ function SB3D_buildMainScene(data,chart){
     if(b.dignity!==null){
       /* Dignity tag: large and bold, worn just below the planet; follows
          camera-up every frame so it reads cleanly from the true center */
-      var svl=SB3D_label('Dignity '+b.dignity+'%',{color:(SB3D_VEDIC_LBL[n]||'#ffd98a'),fs:130,weight:'bold',stroke:'rgba(0,0,0,0.95)'},3.4,1);
+      var svl=SB3D_label(T('Dignity {0}%',[b.dignity]),{color:(SB3D_VEDIC_LBL[n]||'#ffd98a'),fs:130,weight:'bold',stroke:'rgba(0,0,0,0.95)'},3.4,1,5.0);
       svl.material.depthTest=false;svl.renderOrder=21;svl.visible=false;
       grp.add(svl);svLabels.push(svl);
       balaHats.push({pct:svl,size:vis.size,below:true,stag:(pIdx%3)*2.4}); /* three staggered rows: clustered planets never stack their tags */
@@ -12344,7 +12413,7 @@ function SB3D_buildMainScene(data,chart){
   /* nakshatra names at the exact FIRST HOUSE label size \u2014 Overview only
      (the tiny names inside the constellation cards were unreadable) */
   data.nakshatras.forEach(function(nk){
-    var nl=SB3D_label(nk.name.toUpperCase(),{color:'#c9a84c',fs:64,stroke:'rgba(0,0,0,0.7)'},7,0.95);
+    var nl=SB3D_label(SB3D_up(T(nk.name)),{color:'#c9a84c',fs:64,stroke:'rgba(0,0,0,0.7)'},7,0.95);
     nl.position.copy(SB3D_v3(nk.centerVec).multiplyScalar(156));
     gOvRings.add(nl);
   });
@@ -12473,6 +12542,8 @@ function SB3D_injectStyles(){
   +'#sb3dWt.wtLow{top:auto!important;bottom:16px!important;max-height:52vh!important}'
   +'#sb3dWt.wtLow #sb3dWtFoot{justify-content:space-between}'
   +'#sb3dWt.wtLow #sb3dWtFoot #sb3dWtBtn{margin:0;padding:10px 18px;font-size:11px}'
+  /* Skip is styled through #sb3dWtNav, so it needs its own rule once it moves */
+  +'#sb3dWt.wtLow #sb3dWtFoot #sb3dWtSkip2{flex:0 0 auto;background:none;border:none;color:#9b90a8;font-family:Cinzel,serif;letter-spacing:.12em;text-transform:uppercase;font-size:10px;cursor:pointer;padding:10px 4px;margin:0}'
   +'#sb3dWt.wtLow ~ #sb3dWtNav #sb3dWtBtn{display:none}'
   +'@media(min-width:641px){#sb3dWt.wtLow{bottom:20px!important}}'
   +'#sb3dWt{padding-top:10px}'
@@ -12497,7 +12568,7 @@ function SB3D_injectStyles(){
   +'#sb3dWtFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}'
   +'#sb3dWtFoot #sb3dWtBtn{margin:0;flex:0 0 auto}'
   +'#sb3dWtMore{flex:1 1 auto;text-align:left;margin:0}'
-  +'#sb3dWtBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;'
+  +'#sb3dWtBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;'
     +'-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent 100%);'
     +'mask-image:linear-gradient(180deg,#000 calc(100% - 18px),transparent 100%)}'
     +'#sb3dWtBody::-webkit-scrollbar{width:4px}#sb3dWtBody::-webkit-scrollbar-track{background:transparent}'
@@ -12925,7 +12996,23 @@ function SB3D_open(divV){
   /* the 3D sky owns every touch: no browser pinch-zoom, no swipe-back,
      no pull-to-refresh while the overlay is open */
   renderer.domElement.style.touchAction='none';
-  ov.addEventListener('touchmove',function(ev){ev.preventDefault();},{passive:false});
+  /* ...with one exception. A panel that scrolls itself - the walkthrough card
+     once "Tell me more" is open - has to keep its own touchmove, or the finger
+     drags nothing at all. Desktop never noticed: the wheel event is separate. */
+  function SB3D_ownScroll(el){
+    for(var n=el;n&&n!==document.body;n=n.parentNode){
+      if(n.nodeType!==1)continue;
+      if(n.scrollHeight-n.clientHeight>1){
+        var oy='';try{oy=window.getComputedStyle(n).overflowY;}catch(e){}
+        if(oy==='auto'||oy==='scroll')return true;
+      }
+    }
+    return false;
+  }
+  ov.addEventListener('touchmove',function(ev){
+    if(SB3D_ownScroll(ev.target))return;
+    ev.preventDefault();
+  },{passive:false});
   ov.addEventListener('gesturestart',function(ev){ev.preventDefault();});
   ov.addEventListener('gesturechange',function(ev){ev.preventDefault();});
   ov.addEventListener('gestureend',function(ev){ev.preventDefault();});
@@ -13440,7 +13527,7 @@ function SB3D_wtBuildSteps(){
       var lord=(typeof SIGNS!=='undefined'&&sign)?(function(){for(var i=0;i<SIGNS.length;i++)if(SIGNS[i].name===sign)return SIGNS[i].ruler;return null;})():null;
       var lh=(lord&&bodies[lord])?bodies[lord].house:null;
       html+='<p class="wtEmpty">No planet stands here \u2014 and that\u2019s normal. Seven planets, twelve houses.</p>';
-      if(lord&&lh)html+='<p class="wtEmpty">It\u2019s run by <b>'+lord+'</b>, which is standing in your <b>'+SB3D_wtOrd(lh)+' House</b>.</p>';
+      if(lord&&lh)html+='<p class="wtEmpty">It\u2019s run by <b>'+lord+'</b>, which is standing in your <b>'+T('{0} House',[T(SB3D_wtOrd(lh))])+'</b>.</p>';
     }
     return html;
   }
@@ -13454,7 +13541,7 @@ function SB3D_wtBuildSteps(){
        are just green field, so we fly down into them. The rest (1, 7-12) read
        properly from the centre with the head turned, which keeps the sense of
        standing inside the sphere. */
-    steps.push(SB3D_wtHouseStep(ax,ax.a,0,(ai+1)+' of '+total,houseBlock(ax,ax.a,0,true)));
+    steps.push(SB3D_wtHouseStep(ax,ax.a,0,T('{0} of {1}',[ai+1,total]),houseBlock(ax,ax.a,0,true)));
     (planetsIn[ax.a]||[]).forEach(function(pl,pi){
       steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
       firstPlanetDone=true;
@@ -13467,7 +13554,7 @@ function SB3D_wtBuildSteps(){
       }
     });
     /* side B */
-    steps.push(SB3D_wtHouseStep(ax,ax.b,1,(ai+1)+' of '+total,
+    steps.push(SB3D_wtHouseStep(ax,ax.b,1,T('{0} of {1}',[ai+1,total]),
       houseBlock(ax,ax.b,1,false)+'<p class="wtAnt">'+copy[2]+'</p>'));
     (planetsIn[ax.b]||[]).forEach(function(pl,pi){
       steps.push(SB3D_wtPlanetStep(s,pl,!firstPlanetDone,pi?'And one more stands beside it.':null));
@@ -13511,7 +13598,7 @@ function SB3D_wtLeanStep(s){
   var tied=0;for(var g2 in cnt)if(cnt[g2]===cnt[best])tied++;
   var last=(tied>1)
     ?'Yours sits evenly across them \u2014 no single pull. That is its own kind of chart.'
-    :'Yours leans toward <b>'+best+'</b> \u2014 '+cnt[best]+' of your seven planets sit there.';
+    :'Yours leans toward <b>'+T(best)+'</b> \u2014 '+cnt[best]+' of your seven planets sit there.';
   return{center:true,ttl:'Your lean',html:
     '<p>Your twelve houses fall into four groups:</p>'
    +'<p><b>Pleasure \u00B7 Resources \u00B7 Meaning \u00B7 Freedom</b></p>'
@@ -13700,6 +13787,13 @@ function SB3D_wtNext(){
   if(nb&&footEl&&navEl){
     if(st.lowCard){if(nb.parentNode!==footEl)footEl.appendChild(nb);}
     else{if(nb.parentNode!==navEl)navEl.appendChild(nb);}
+  }
+  /* Skip lives in the bottom bar, which is exactly where a low card lands -
+     the card was covering it. Move it inside, on the opposite end from Next. */
+  var sk2=document.getElementById('sb3dWtSkip2');
+  if(sk2&&footEl&&navEl){
+    var host=st.lowCard?footEl:navEl;
+    if(sk2.parentNode!==host)host.insertBefore(sk2,host.firstChild);
   }
 }
 /* A bouncing arrow parked on a real toolbar button, the way a game teaches
@@ -14396,7 +14490,7 @@ function SB3D_showPPanel(planet,px,py){
     var od=(chart&&chart.outerPlanets)?chart.outerPlanets[planet]:null;
     if(!od)return;
     el.innerHTML='<div class="h">'+planet+'</div><div class="sub">'+SB3D_PSYM[planet]+' '
-      +od.sign.name+' '+od.degree+(od.minutes?"'"+od.minutes:'')+(od.retro?' \u00B7 R':'')+'</div>';
+      +T(od.sign.name)+' '+od.degree+(od.minutes?"'"+od.minutes:'')+(od.retro?' \u00B7 R':'')+'</div>';
     el.style.display='block';s.hovered=planet;
     SB3D_updatePPanelPos(px,py);
     return;
@@ -14467,7 +14561,7 @@ function SB3D_showInfoPanel(pl){
     var ckD=chart.charaKarakas?chart.charaKarakas[pl]:null;
     if(ckD)html+='<div><span class="k">Chara Karaka:</span> <b>'+ckD.role+'</b> \u00B7 '+ckD.meaning+'</div>';
   }else{
-    html+='<div><span class="k">Position:</span> <b>'+d.sign.name+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</b>'+(d.retro?' <b style="color:#c96060">R</b>':'')+(b?' \u00B7 House <b>'+b.house+'</b>':'')+'</div>';
+    html+='<div><span class="k">Position:</span> <b>'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</b>'+(d.retro?' <b style="color:#c96060">R</b>':'')+(b?' \u00B7 House <b>'+b.house+'</b>':'')+'</div>';
     var ck=chart.charaKarakas?chart.charaKarakas[pl]:null;
     if(ck)html+='<div><span class="k">Chara Karaka:</span> <b>'+ck.role+'</b> \u00B7 '+ck.meaning+'</div>';
     var nk=(chart.nakshatras&&chart.nakshatras[pl])?chart.nakshatras[pl]:null;
