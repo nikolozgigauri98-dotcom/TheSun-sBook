@@ -58,8 +58,8 @@
 :root{--void:#080810;--deep:#0d0d1a;--card:#111122;--border:#2a2a4a;--gold:#c9a84c;--gold-light:#e8c97a;--gold-dim:#7a6030;--silver:#a0a8c0;--cream:#d8d0b8;--ruby:#8b2040;--glow:rgba(201,168,76,0.15)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--void)}
-body{background:var(--void);color:var(--cream);font-family:'EB Garamond',serif;min-height:100vh;padding-top:env(safe-area-inset-top);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
-.app{max-width:960px;margin:0 auto;padding:0 20px 80px}
+body{background:var(--void);color:var(--cream);font-family:'EB Garamond',serif;min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:env(safe-area-inset-top) 20px 80px}
 header{text-align:center;padding:50px 0 36px;border-bottom:1px solid var(--border);margin-bottom:44px}
 .sigil{font-size:44px;margin-bottom:14px;display:block;filter:drop-shadow(0 0 20px rgba(201,168,76,0.6))}
 h1{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:var(--gold);letter-spacing:0.06em;margin-bottom:8px}
@@ -291,7 +291,10 @@ body.sb-light .sbRestored button{color:#8a6f26;border-color:#a8935f}
 .sbGateBuy{width:100%;padding:12px}
 .sbGateNote{font-size:11px;color:var(--gold-dim);font-style:italic;margin-top:16px;line-height:1.6}
 body.sb-light .sbGateWin{background:linear-gradient(180deg,rgba(255,252,244,.99),rgba(248,244,232,.99))}
-#sbCorner{position:fixed;top:10px;left:10px;z-index:60;display:flex;gap:8px;align-items:center}
+/* fixed layers sit against the viewport, and viewport-fit=cover put the
+   viewport under the status bar. Each one clears the notch itself; the
+   scrolling content is handled by .app's own top padding. */
+#sbCorner{position:fixed;top:calc(10px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left));z-index:60;display:flex;gap:8px;align-items:center}
 /* The 3D sky mounts at z-index 9999 and carries its OWN controls (mute, exit,
    walkthrough — see #sb3dBar / #sb3dMute). The main-page corner bar (language,
    settings, terms, account) has no business floating over the sky: it used to
@@ -453,7 +456,7 @@ body.sb-read #sbDock{display:flex}
 .sbDockMain svg{--lift:-20px;width:58px;height:58px;margin-bottom:-20px}
 .sbDockLbl{font-size:12px;letter-spacing:.02em;white-space:normal;line-height:1.05;text-align:center;max-width:72px;min-height:2.2em;display:flex;align-items:center;justify-content:center}
 .sbDockMain .sbDockLbl{font-size:13px;letter-spacing:.05em}
-#sbCorner{left:0;right:0;top:8px;gap:2px;padding:0 8px;justify-content:space-between;transition:transform .35s ease,opacity .35s ease}
+#sbCorner{left:0;right:0;top:calc(8px + env(safe-area-inset-top));gap:2px;padding:0 calc(8px + env(safe-area-inset-left)) 0 calc(8px + env(safe-area-inset-right));justify-content:space-between;transition:transform .35s ease,opacity .35s ease}
 #sbCorner.sbCornerHide{transform:translateY(-160%);opacity:0;pointer-events:none}
 #sbCorner button{padding:5px 7px;font-size:11px;letter-spacing:.04em}
 #sbCorner button svg{width:19px;height:19px}}
@@ -1342,7 +1345,46 @@ function moonPhaseSVG(phase,sz){
   var offsetMag=R+R*Math.cos(rad);
   var offset=(phase.waxing?1:-1)*offsetMag;
   var id='mc'+Math.round(Math.random()*100000);
-  return '<svg viewBox="0 0 '+sz+' '+sz+'" width="'+sz+'" height="'+sz+'"><defs><clipPath id="'+id+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+R+'"/></clipPath></defs><circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="#0d0d1a"/><g clip-path="url(#'+id+')"><circle cx="'+(cx+offset)+'" cy="'+cy+'" r="'+R+'" fill="#e8c97a"/></g><circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#7a6030" stroke-width="1.5"/></svg>';
+  /* The lit face used to be one flat disc. It now carries a warm radial
+     gradient, a fixed set of craters (fixed, so the moon does not shimmer
+     when the card re-renders) and a softened terminator. Everything scales
+     off R, so it reads at 40px in a pill and at 200px on the reading page. */
+  var g='mg'+id,t='mt'+id;
+  /* x, y and radius as fractions of R - a plausible near-side arrangement */
+  var CRAT=[[-0.34,-0.30,0.155],[0.22,-0.46,0.105],[0.46,-0.10,0.135],
+            [-0.10,0.14,0.200],[0.30,0.40,0.115],[-0.46,0.32,0.140],
+            [0.04,-0.66,0.075],[-0.62,-0.06,0.080],[0.62,0.30,0.070],
+            [-0.22,0.62,0.085],[0.14,0.66,0.060],[0.40,-0.66,0.055]];
+  var cr='';
+  for(var ci=0;ci<CRAT.length;ci++){
+    var c0=CRAT[ci],cxx=cx+c0[0]*R,cyy=cy+c0[1]*R,rr=c0[2]*R;
+    if(rr<0.9)continue;                       /* too small to matter at this size */
+    /* a shaded floor plus a lit rim on the upper-left: reads as a dish */
+    cr+='<circle cx="'+cxx.toFixed(1)+'" cy="'+cyy.toFixed(1)+'" r="'+rr.toFixed(1)+'" fill="#b8933f" fill-opacity="0.42"/>'
+      + '<circle cx="'+(cxx-rr*0.16).toFixed(1)+'" cy="'+(cyy-rr*0.16).toFixed(1)+'" r="'+(rr*0.86).toFixed(1)+'" fill="#f2dc9a" fill-opacity="0.20"/>';
+  }
+  return '<svg viewBox="0 0 '+sz+' '+sz+'" width="'+sz+'" height="'+sz+'">'
+   +'<defs>'
+   +'<clipPath id="'+id+'"><circle cx="'+cx+'" cy="'+cy+'" r="'+R+'"/></clipPath>'
+   +'<radialGradient id="'+g+'" cx="38%" cy="32%" r="78%">'
+     +'<stop offset="0%" stop-color="#fdf0c4"/><stop offset="46%" stop-color="#eccd80"/>'
+     +'<stop offset="82%" stop-color="#d4ab55"/><stop offset="100%" stop-color="#a87f34"/>'
+   +'</radialGradient>'
+   /* the lit crescent itself: the offset disc that used to be drawn straight
+      is now a clip, so surface and craters are cut by the same edge */
+   +'<clipPath id="'+t+'"><circle cx="'+(cx+offset)+'" cy="'+cy+'" r="'+R+'"/></clipPath>'
+   +'</defs>'
+   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="#0d0d1a"/>'
+   +'<g clip-path="url(#'+id+')">'
+     /* the craters are part of the LIT face, so both share one clip: the
+        terminator then hides them exactly where it hides the surface */
+     +'<g clip-path="url(#'+t+')">'
+       +'<circle cx="'+(cx+offset)+'" cy="'+cy+'" r="'+R+'" fill="url(#'+g+')"/>'
+       +cr
+     +'</g>'
+   +'</g>'
+   +'<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#c9a84c" stroke-opacity="0.75" stroke-width="1.5"/>'
+   +'</svg>';
 }
 function calcAltLagna(planets,srcPlanet){
   var p=planets[srcPlanet];if(!p)return null;
@@ -4696,6 +4738,10 @@ ka:{
 "{1} House Chart":"{1} სახლის რუკა",
 "{0} House as Lagna - {1} {2}":"{0} სახლი როგორც ლაგნა - {1} {2}",
 "Weighed":"შეწონვა",
+"Illumination":"განათებულობა",
+"Waxing":"ზრდადი",
+"Waning":"კლებადი",
+"elongation":"ელონგაცია",
 "Change transit time":"ტრანზიტული დროის შეცვლა",
 "Show this sky":"ეს ცა მაჩვენე",
 "Back to now":"ახლანდელ დროზე დაბრუნება",
@@ -5134,6 +5180,19 @@ function drawChart(vd,sz){
   var REG=[null,['H','A','ip'],['A','B','Q'],['B','C','Q'],['C','D','R'],['D','E','R'],['E','F','S'],['F','G','S'],['G','H','ip'],['A','ip','CC','Q'],['Q','C','R','CC'],['R','E','S','CC'],['G','ip','CC','S']];
   var H2R=[0,9,1,8,12,7,6,11,5,4,10,3,2];
   function poly(ri){return REG[ri].map(function(k){return K[k].join(',');}).join(' ');}
+  /* How far left and right the region actually reaches at a given height.
+     Crowded houses use it to size their row instead of guessing. */
+  function spanAtY(ri,y){
+    var ps=REG[ri].map(function(k){return K[k];}),lo=Infinity,hi=-Infinity;
+    for(var i=0;i<ps.length;i++){
+      var a=ps[i],b=ps[(i+1)%ps.length];
+      if((a[1]-y)*(b[1]-y)>0)continue;          /* edge does not cross this y */
+      if(a[1]===b[1]){lo=Math.min(lo,a[0],b[0]);hi=Math.max(hi,a[0],b[0]);continue;}
+      var x=a[0]+(b[0]-a[0])*((y-a[1])/(b[1]-a[1]));
+      lo=Math.min(lo,x);hi=Math.max(hi,x);
+    }
+    return (lo>hi)?null:{lo:lo,hi:hi,w:hi-lo};
+  }
   function ctr(ri){var ps=REG[ri].map(function(k){return K[k];});return[Math.round(ps.reduce(function(a,pt){return a+pt[0];},0)/ps.length),Math.round(ps.reduce(function(a,pt){return a+pt[1];},0)/ps.length)];}
   var fs=Math.max(10,Math.round(sz*0.044)),fp=Math.max(9,Math.round(sz*0.040)),fd=Math.max(6,Math.round(sz*0.022));
   var uid='ch'+Math.round(Math.random()*99999);
@@ -5162,22 +5221,45 @@ function drawChart(vd,sz){
     var pl=byH[h2],pn=pl.length;
     if(!pn)continue;
     svg+='<g clip-path="url(#'+uid+'h'+h2+')">';
-    var pcols=pn<=2?pn:2,prowH=fp+fd+4;
+    /* Houses 5 and 6 are triangles whose apex points UP: the room narrows the
+       higher you go. Four planets in two rows pushed the top row past the apex
+       and the clip-path ate it. When they are crowded they go in one row
+       across the wide base instead, at a size that fits. */
+    var wideRow=(pn>2&&(h2===5||h2===6));
+    var pcols=wideRow?pn:(pn<=2?pn:2),prowH=fp+fd+4;
+    var fpW=wideRow?Math.round(fp*0.78):fp,fdW=wideRow?Math.round(fd*0.85):fd;
     // Offset planet group UP from centroid so they don't sit on top of the sign symbol
     var ancY=ct[1]-Math.round(m2*0.6)-Math.round((Math.ceil(pn/pcols)-1)*prowH/2);
     // For bottom houses shift up more to avoid clipping
     if(h2===5||h2===6||h2===7)ancY=ct[1]-Math.round(m2*1.1)-Math.round((Math.ceil(pn/pcols)-1)*prowH/2);
+    /* one wide row sits just above the sign symbol, in the roomy part */
+    var rowPitch=fpW*1.62,rowMid=ct[0];
+    if(wideRow){
+      ancY=ct[1]-Math.round(m2*0.62);
+      /* size the row to the room that is actually there at this height */
+      var sp=spanAtY(H2R[h2],ancY);
+      if(sp){
+        var pad=fpW*1.25;
+        var room=Math.max(fpW,sp.w-pad*2);
+        rowPitch=Math.min(rowPitch,room/pn);
+        /* if the room forced the pitch down, the type has to come down with it
+           or the degree numbers run into the next glyph */
+        var shrink=Math.min(1,rowPitch/(fpW*1.62));
+        if(shrink<1){fpW=Math.max(8,Math.round(fpW*shrink));fdW=Math.max(6,Math.round(fdW*shrink));}
+        rowMid=Math.min(Math.max(ct[0],sp.lo+pad+rowPitch*(pn-1)/2),sp.hi-pad-rowPitch*(pn-1)/2);
+      }
+    }
     // For top houses shift down slightly so not hidden at edge
     if(h2===2)ancY=ct[1]-Math.round(m2*0.2);
     if(h2===3||h2===9)ancY=ct[1]-Math.round(m2*0.3);
     for(var pi=0;pi<pn;pi++){
       var nm2=pl[pi],prow=Math.floor(pi/pcols),pcol=pi%pcols;
-      var px=ct[0]+Math.round((pcol-(pcols-1)/2)*(fp*1.65));
+      var px=Math.round(rowMid+(pcol-(pcols-1)/2)*rowPitch);
       var py=ancY+prow*prowH;
       var rp=vd.planets?vd.planets[nm2]:null,col=PCOL[nm2]||'#eee';
       var sw=Math.max(2,Math.round(fp*0.14));
-      svg+='<text x="'+px+'" y="'+py+'" text-anchor="middle" font-size="'+fp+'px" fill="'+col+'" font-weight="bold" font-family="sans-serif" stroke="#000" stroke-width="'+sw+'" stroke-linejoin="round" paint-order="stroke fill">'+(PGLY[nm2]||'')+'</text>';
-      if(rp&&isFinite(rp.divDeg))svg+='<text x="'+(px+Math.round(fp*0.55))+'" y="'+(py-Math.round(fp*0.5))+'" text-anchor="start" font-size="'+fd+'px" fill="'+col+'" stroke="#000" stroke-width="1" paint-order="stroke fill" font-family="sans-serif">'+Math.floor(rp.divDeg)+'</text>';
+      svg+='<text x="'+px+'" y="'+py+'" text-anchor="middle" font-size="'+fpW+'px" fill="'+col+'" font-weight="bold" font-family="sans-serif" stroke="#000" stroke-width="'+sw+'" stroke-linejoin="round" paint-order="stroke fill">'+(PGLY[nm2]||'')+'</text>';
+      if(rp&&isFinite(rp.divDeg))svg+='<text x="'+(px+Math.round(fpW*0.55))+'" y="'+(py-Math.round(fpW*0.5))+'" text-anchor="start" font-size="'+fdW+'px" fill="'+col+'" stroke="#000" stroke-width="1" paint-order="stroke fill" font-family="sans-serif">'+Math.floor(rp.divDeg)+'</text>';
     }
     svg+='</g>';
   }
@@ -7380,7 +7462,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     html+='<div style="flex:0 0 auto">'+opts.icon+'</div>';
     html+='<div style="flex:1;min-width:240px"><p style="color:var(--silver);font-size:14px;line-height:1.9">';
     html+='Position: <span style="color:var(--gold)">'+T(d.sign.name)+' '+d.degree+(d.minutes?"'"+d.minutes:'')+'</span> '+T('- House {0}',[h])+'<br>';
-    html+='Rules: <span style="color:var(--gold)">House '+rulerHouse+'</span> ('+rulerSign+')<br>';
+    html+='Rules: <span style="color:var(--gold)">'+T('House {0} ({1})',[rulerHouse,T(rulerSign)])+'</span><br>';
     if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
     if(dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span> '+T('({0} pts)',[dig.points])+'<br>';
     if(fn)html+='Functional Nature: <span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnScore>0?'+':'')+fnScore+')<br>';
@@ -7423,7 +7505,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     html+=SB_karakaTableHTML(chart);
   html+='<div class="section" id="secMoon"><p class="section-label">Chandra - The Moon</p><p class="section-title">'+mp.name+'</p>';
     html+=planetProfileHTML('Moon',{icon:moonPhaseSVG(mp,90)});
-    html+='<p style="color:var(--silver);font-size:13px;font-style:italic;margin-bottom:6px">Illumination: <span style="color:var(--gold)">'+mp.illum+'%</span> - '+(mp.waxing?'Waxing':'Waning')+', elongation '+Math.round(mp.elong)+'&deg;</p>';
+    html+='<p style="color:var(--silver);font-size:13px;font-style:italic;margin-bottom:6px">'+T('Illumination')+': <span style="color:var(--gold)">'+mp.illum+'%</span> - '+T(mp.waxing?'Waxing':'Waning')+', '+T('elongation')+' '+Math.round(mp.elong)+'&deg;</p>';
     html+=lagnaTableHTML(chart.chandraLagna,T('Chandra Lagna - House Placements'));
     html+='<div style="margin:16px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Yogas ▲\':\'Show Yogas ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Yogas ▼</button><div class="adsub" style="margin-top:8px">'+yogaListHTML('ChandraLagna')+'</div></div>';
     html+='</div>';
@@ -12673,6 +12755,7 @@ function SB3D_injectStyles(){
   +'#sb3dOverlay{position:fixed;inset:0;z-index:9999;background:#000;overflow:hidden;touch-action:none;overscroll-behavior:none;-webkit-user-select:none;user-select:none}'
   +'#sb3dOverlay canvas{display:block;touch-action:none}'
   +'#sb3dJoy{position:absolute;left:18px;bottom:52px;width:112px;height:112px;border-radius:50%;border:1px solid rgba(201,168,76,0.55);background:transparent;z-index:7;display:none;touch-action:none}'
+  +'body.sb3d-wt #sb3dJoy{display:none!important}'
   +'#sb3dJoyKnob{position:absolute;left:36px;top:36px;width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,0.28);border:1px solid rgba(201,168,76,0.85);pointer-events:none}'
   +'#sb3dInfo{position:absolute;top:64px;right:14px;width:min(320px,76vw);max-height:60vh;overflow-y:auto;background:rgba(13,13,26,0.78);border:1px solid rgba(201,168,76,0.55);border-radius:12px;padding:14px 16px 12px;z-index:7;display:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#d8d0b8;font-size:13px;line-height:1.85}'
   +'#sb3dInfo .ttl2{font-family:Cinzel,serif;letter-spacing:0.2em;color:#e8c97a;font-size:13px;margin:0 54px 6px 0;text-transform:uppercase}'
@@ -13307,8 +13390,18 @@ function SB3D_setPOV(id,instant){
       .add(new THREE.Vector3(0,p.objSize*1.1+3.5,0));
     fwd=camPos.clone().negate().normalize();
   }
-  var right=new THREE.Vector3().crossVectors(fwd,up).normalize();
-  if(right.lengthSq()<0.01)right.set(1,0,0);
+  /* The guard used to sit AFTER normalize(), where lengthSq() is always 1 and
+     it could never fire. When an object sits almost straight above or below
+     the centre, fwd is nearly parallel to world-up and the cross product is
+     nearly zero; normalizing it turns floating-point noise into an arbitrary
+     direction, which is why the odd POV arrived rolled with no pattern to it.
+     Measure first, then normalize. */
+  var right=new THREE.Vector3().crossVectors(fwd,up);
+  if(right.lengthSq()<1e-6){
+    right.crossVectors(fwd,new THREE.Vector3(0,0,1));
+    if(right.lengthSq()<1e-6)right.crossVectors(fwd,new THREE.Vector3(1,0,0));
+  }
+  right.normalize();
   var trueUp=new THREE.Vector3().crossVectors(right,fwd).normalize();
   if(id==='overview'&&s.dashaOn){
     /* Alter Time framing (his screenshot): the whole wheel rides to the
@@ -13832,7 +13925,11 @@ function SB3D_wtFrame(){
 }
 function SB3D_wtFrameOff(){
   try{if(!window.matchMedia('(max-width:640px)').matches)return 0;}catch(e){return 0;}
-  return -(72*Math.PI/180)*0.15;
+  /* Aiming up pushes the subject down, which is right while the card holds the
+     TOP of the screen. The closing card sits at the bottom instead, so the
+     same offset was burying the wheel underneath it - there the aim flips. */
+  var s=SB3D.state;
+  return (s&&s.wtLow?1:-1)*(72*Math.PI/180)*0.15;
 }
 function SB3D_wtLookAt(dir,dur){
   var s=SB3D.state;if(!s)return;
@@ -13903,7 +14000,9 @@ function SB3D_wtStart(auto){
   if(s.syncToggles)s.syncToggles();
   document.getElementById('sb3dBar').style.display='none';
   /* the tour drives the camera itself, so the stick is dead weight on screen */
-  var jy=document.getElementById('sb3dJoy');if(jy)jy.style.display='none';
+  /* a class, not an inline style: the touch setup and the dial handler both
+     write to this element and would otherwise put it straight back */
+  document.body.classList.add('sb3d-wt');
   var cq=document.getElementById('sb3dCineQuit');if(cq)cq.style.display='none';
   var hint=document.getElementById('sb3dHint');if(hint)hint.style.display='none';
   if(typeof SB3D_hideInfoPanel==='function')SB3D_hideInfoPanel();
@@ -13966,6 +14065,8 @@ function SB3D_wtNext(){
   var cardEl=document.getElementById('sb3dWt'),navEl=document.getElementById('sb3dWtNav'),
       footEl=document.getElementById('sb3dWtFoot');
   if(cardEl)cardEl.classList.toggle('wtLow',!!st.lowCard);
+  /* the framing offset needs to know which end of the screen the card took */
+  if(SB3D.state)SB3D.state.wtLow=!!st.lowCard;
   if(nb&&footEl&&navEl){
     if(st.lowCard){if(nb.parentNode!==footEl)footEl.appendChild(nb);}
     else{if(nb.parentNode!==navEl)navEl.appendChild(nb);}
@@ -14006,7 +14107,7 @@ function SB3D_wtEnd(toMainPage){
   var card=document.getElementById('sb3dWt');if(card)card.style.display='none';
   var nv=document.getElementById('sb3dWtNav');if(nv)nv.style.display='none';
   var sk=document.getElementById('sb3dWtSkip');if(sk)sk.style.display='none';
-  var jy=document.getElementById('sb3dJoy');if(jy)jy.style.display='';
+  document.body.classList.remove('sb3d-wt');
   if(toMainPage){SB3D_close();return;} /* the closing card lands on the main page UI */
   document.getElementById('sb3dBar').style.display='flex';
   if(s.syncToggles)s.syncToggles();
@@ -15116,9 +15217,11 @@ function SBScene_mount(parent){
        +'color:transparent;-webkit-text-stroke:1.7px rgba(0,0,0,.94);text-stroke:1.7px rgba(0,0,0,.94);'
        +'transition:color 1s ease,text-shadow 1s ease}'
      +'@media (min-width:641px){#sbObBrand{top:26px;font-size:clamp(46px,4.4vw,70px);-webkit-text-stroke-width:2.1px}}'
-     +'#sbOb #sbObCard{position:absolute;left:50%;transform:translateX(-50%);top:37vh;height:46vh;top:36dvh;height:48dvh;width:min(92vw,460px);max-width:460px;margin:0;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:4;background:rgba(9,9,20,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}'
+     +'#sbOb #sbObCard{position:absolute;left:50%;transform:translateX(-50%);top:37vh;height:42vh;top:36dvh;height:43dvh;width:min(92vw,460px);max-width:460px;margin:0;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:4;background:rgba(9,9,20,.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}'
      /* Titles are gone from steps 2-5, so each card is tuned by hand to sit inside
-        the fixed box (tree line above, moon below) with no scaling tricks. */
+        the fixed box (tree line above, moon below) with no scaling tricks.
+        48dvh put the bottom edge at 84dvh, which is where the moon's top is:
+        the card covered it. 43dvh lands the edge at 79dvh, just clear. */
      +'#sbOb #sbObCard>*:first-child{margin-top:0!important}'
      +'#sbOb #sbObCard .sbObLbl{margin:10px 0 4px!important}'
      +'#sbOb #sbObCard .sbObIn{padding:7px 2px!important;font-size:16px!important}'
