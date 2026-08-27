@@ -887,15 +887,37 @@ body.sb-light .sbLockTxt{color:#4a4a58}
   }
   function advance(){idx++;show();}
   var cover=document.getElementById('sbBootLoad');
-  function reveal(){if(cover&&!cover.classList.contains('sbHide'))cover.classList.add('sbHide');}
+  /* ONE WAY ONLY. The cover is a curtain, not a shutter: it goes up once and
+     never comes down again. Re-covering a page the reader is already looking
+     at is worse than any half-built frame it was meant to hide - a finished
+     chart was on screen and the loading screen came back over it. */
+  var revealed=false;
+  function reveal(){
+    if(revealed)return;
+    revealed=true;
+    if(cover&&!cover.classList.contains('sbHide'))cover.classList.add('sbHide');
+  }
   function recover(){
-    /* snap back to fully opaque with NO fade-in, so a blank frame is never seen */
+    if(revealed)return;                    /* the curtain is up. it stays up. */
     if(cover&&cover.classList.contains('sbHide')){
       cover.style.transition='none';
       cover.classList.remove('sbHide');
       void cover.offsetWidth; /* commit opacity:1 instantly */
       cover.style.transition='';
     }
+  }
+  /* The cover must never uncover an empty shell. If the boot has run out of
+     time with nothing painted, put something real on screen first. */
+  function bail(){
+    try{
+      if(ready())return;
+      var rd=document.getElementById('reading');
+      if(rd&&rd.style.display!=='none'&&rd.innerHTML)return;   /* it is painting */
+      if(typeof SB_isSignedIn==='function'&&SB_isSignedIn()&&
+         typeof SB_restoreBirth==='function'&&SB_restoreBirth())return;
+      if(typeof window.SB_restartOnboarding==='function'){window.SB_restartOnboarding();return;}
+      var f=document.getElementById('formCard');if(f)f.style.display='block';
+    }catch(e){}
   }
   function killCover(){
     try{clearInterval(spin);clearInterval(swap);}catch(e){}
@@ -904,11 +926,13 @@ body.sb-light .sbLockTxt{color:#4a4a58}
   window.SB_bootDone=reveal;
   function ready(){
     try{
-      /* onboarding / cast cinematic overlay is up — an intentional screen */
-      var ob=document.getElementById('sbOb');
-      if(ob&&ob.offsetParent!==null)return true;
+      /* onboarding is up — an intentional screen. The empty shell that
+         OB_mount puts on screen before auth has resolved does NOT count:
+         uncovering it there is what let the walk flash past and the cover
+         snap back a moment later. Only a card with something written in it
+         is a screen worth showing. */
       var card=document.getElementById('sbObCard');
-      if(card&&card.offsetParent!==null)return true;
+      if(card&&card.offsetParent!==null&&card.children.length)return true;
       /* 3D sky is open */
       if(document.body.classList.contains('sb3d-open'))return true;
       /* the chart reading is actually PAINTED (sb-read hides the bare shell) */
@@ -933,17 +957,18 @@ body.sb-light .sbLockTxt{color:#4a4a58}
      half-built shell can never appear on screen. Once content holds for SETTLE ms
      (fully booted) — or a hard CAP elapses — monitoring stops and the cover is
      removed for good. */
-  var REVEAL=450,SETTLE=5000,CAP=25000,t0=Date.now(),okSince=0,raf=0;
+  var REVEAL=450,SETTLE=1600,CAP=12000,GRACE=2500,t0=Date.now(),okSince=0,raf=0,bailed=0;
   function mon(){
     var now=Date.now();
     if(ready()){
       if(!okSince)okSince=now;
       if(now-okSince>=REVEAL)reveal();
-      if(now-okSince>=SETTLE||now-t0>CAP){killCover();return;}
-    }else{
-      okSince=0;recover();
-      if(now-t0>CAP){killCover();return;}
+      if(now-okSince>=SETTLE){killCover();return;}   /* shown and steady: done */
+      raf=requestAnimationFrame(mon);return;
     }
+    okSince=0;recover();
+    if(!bailed&&now-t0>CAP){bailed=now;bail();}      /* one rescue attempt */
+    if(bailed&&now-bailed>GRACE){reveal();killCover();return;}
     raf=requestAnimationFrame(mon);
   }
   raf=requestAnimationFrame(mon);
@@ -16012,6 +16037,25 @@ window.SB_restartOnboarding=function(){
 };
 
 function OB_boot(){
+  /* THE FAST PATH. A reader with an account and a chart already on this
+     device has nothing left to answer. Mounting the scene, drawing the
+     starfield and rendering page 2 only for OB_watchAuth to tear it all
+     down again is what put a second loading screen in the middle of every
+     start: between the walk fading out and the reading painting there is
+     no content on screen, so the boot cover correctly snapped back opaque.
+     Decide it here, synchronously, and none of it happens. The chart is
+     restored by the boot block beside SB_restoreBirth, which is gated on
+     exactly the same two conditions. */
+  try{
+    var quick=(typeof SB_readBirth==='function')?SB_readBirth():null;
+    var mark=(typeof SB_isSignedIn==='function')&&SB_isSignedIn();
+    if(mark&&quick&&quick.date){
+      OB.p=OB_read()||OB_fresh();
+      OB.p.done=true;OB_write();
+      try{localStorage.setItem(OB.TOURKEY,'1');}catch(e){}
+      return;
+    }
+  }catch(e){}
   /* The walk is the way in, every time. And for a reader without an account it
      starts EMPTY: pre-filling the fields would hand out the comfort of a saved
      chart to someone who never made one, and there would be no reason left to
@@ -16039,11 +16083,20 @@ function OB_boot(){
               OB.p[keep[ki]]=saved[keep[ki]];
         }
       }catch(e){}
-      OB_waitBirth(1600,function(b){
+      /* 1600 ms was a flash generator: the cloud chart often landed just after
+         it, so the walk was drawn and then dismissed a second later. The cover
+         is still opaque during this wait - nobody is looking at anything - so
+         waiting longer costs a moment of loading screen and saves a flicker. */
+      OB_waitBirth(4000,function(b){
         if(!OB.open)return;
-        if(false){                       /* the skip is retired — see OB_boot */
+        if(b){                           /* the chart landed while we waited:
+                                            OB_watchAuth would have dismissed
+                                            the walk a second later anyway —
+                                            do it now, before it is drawn */
+          OB.p.done=true;OB_write();
+          try{localStorage.setItem(OB.TOURKEY,'1');}catch(e){}
           OB_fadeAway();
-        }else{                           /* signed in: start at page 2 */
+        }else{                           /* signed in, nothing saved: page 2 */
           OB.noWelcome=true;
           OB.step=Math.max(2,OB.p.step||2);
           if(!OB.p.username&&u&&u.displayName)OB.p.username=String(u.displayName).split(' ')[0];
