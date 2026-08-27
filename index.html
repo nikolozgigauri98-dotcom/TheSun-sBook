@@ -529,6 +529,10 @@ body.sb-read #sbDock{display:flex}
 .sbSegBtn:hover{border-color:var(--gold-dim)}
 .sbSegBtn.cur{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.14);box-shadow:0 0 12px rgba(201,168,76,.2)}
 .sbTblWrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid rgba(201,168,76,.25);border-radius:12px}
+/* added at runtime around tables that had no scroller of their own: it
+   carries the scrolling and nothing else, so the table looks untouched */
+.sbTblAuto{border:0;border-radius:0;max-width:100%}
+.sbTblAuto>table{margin-bottom:0}
 .sbTbl{width:100%;border-collapse:collapse;font-size:12.5px;min-width:660px}
 .sbTbl th{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-dim);text-align:left;padding:10px 12px;border-bottom:1px solid rgba(201,168,76,.3);white-space:nowrap}
 .sbTbl td{padding:10px 12px;border-bottom:1px solid rgba(201,168,76,.12);color:var(--cream);vertical-align:top;line-height:1.5}
@@ -920,8 +924,10 @@ body.sb-light .hevaLead,body.sb-light .hevaFoot,body.sb-light .hevaBodyNote{colo
   .hevaNum{width:32px;font-size:10px}
   .hevaC{width:44px;flex:0 0 44px;font-size:11px}
   .hevaTbl{font-size:10.5px}
-  .hevaTbl th:nth-child(3),.hevaTbl td:nth-child(3){display:none}
-  .hevaTbl th:nth-child(7),.hevaTbl td:nth-child(7){display:none}
+  /* Columns 3 and 7 used to be hidden here. Hiding is not shrinking - the
+     reader simply lost the numbers. They stay, and the wrapper scrolls. */
+  .hevaTbl{min-width:540px}
+  .pevaTbl{min-width:620px}
 }
 
 /* ---- semantic colours, one place, both themes -----------------
@@ -1433,22 +1439,11 @@ function renderBiWheel(chart,trans){
      wheel, the diamond chart and the app icon all speak one palette:
      fire red, earth green, air purple, water blue - by sign index from Aries */
   var ELEMC=['#8c3324','#2f6b38','#553383','#24478a'];
-  /* zodiac glyphs drawn as strokes in a 100x100 box — device fonts and
-     phone emoji never touch the wheel */
-  var ZGLY=[
-    '<path d="M50 84 V40 M50 40 C50 18 26 12 20 32 M50 40 C50 18 74 12 80 32"/>',
-    '<circle cx="50" cy="62" r="23"/><path d="M20 16 C28 34 38 39 50 39 C62 39 72 34 80 16"/>',
-    '<path d="M20 18 C38 30 62 30 80 18 M20 82 C38 70 62 70 80 82 M36 27 V73 M64 27 V73"/>',
-    '<circle cx="32" cy="42" r="13"/><path d="M45 36 C56 22 82 26 84 42"/><circle cx="68" cy="60" r="13"/><path d="M55 66 C44 80 18 76 16 60"/>',
-    '<circle cx="30" cy="66" r="12"/><path d="M40 60 C34 30 66 20 66 46 C66 62 54 68 58 80 C61 89 74 87 78 78"/>',
-    '<path d="M14 36 C18 26 28 26 28 38 V70 M28 44 C30 30 44 30 44 40 V70 M44 44 C46 30 60 30 60 40 V62 C60 78 74 82 80 70 M60 52 C72 54 80 64 70 84"/>',
-    '<path d="M16 64 H36 M64 64 H84 M36 64 C28 38 72 38 64 64 M16 80 H84"/>',
-    '<path d="M14 36 C18 26 28 26 28 38 V70 M28 44 C30 30 44 30 44 40 V70 M44 44 C46 30 60 30 60 40 V60 C60 74 70 78 80 70 M80 70 L70 66 M80 70 L74 80"/>',
-    '<path d="M22 78 L74 26 M74 26 H50 M74 26 V50 M34 46 L54 66"/>',
-    '<path d="M16 30 L28 58 L40 30 V64 C40 82 62 86 68 72 C73 59 56 52 50 64"/>',
-    '<path d="M14 42 L28 30 L42 42 L56 30 L70 42 L84 30 M14 68 L28 56 L42 68 L56 56 L70 68 L84 56"/>',
-    '<path d="M32 16 C14 40 14 62 32 86 M68 16 C86 40 86 62 68 86 M24 51 H76"/>'
-  ];
+  /* The transit ring's palette: the same one the 3D sky paints its transit
+     bodies with, so a planet is the same colour wherever it is shown. */
+  var TCOL={Sun:'#e8c97a',Moon:'#a8c0e8',Mercury:'#7ac87a',Venus:'#e8a0c8',
+    Mars:'#e06048',Jupiter:'#e8b060',Saturn:'#8890b0',Rahu:'#4a5ac8',Ketu:'#8a5ac8',
+    Uranus:'#6ac8e8',Neptune:'#4a78e8',Pluto:'#c88a6a'};
   var s='<svg viewBox="0 0 940 940" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">';
   s+='<circle cx="'+C+'" cy="'+C+'" r="'+R1+'" fill="#221d3a" stroke="#c9a84c" stroke-opacity="0.55" stroke-width="2"/>';
   /* zodiac ring: 12 element-colored sectors built as fine polygons */
@@ -1458,7 +1453,8 @@ function renderBiWheel(chart,trans){
     for(k=0;k<=12;k++)pts+=pt(i*30+k*2.5,TRI)+' ';
     for(k=12;k>=0;k--)pts+=pt(i*30+k*2.5,ZI)+' ';
     s+='<polygon points="'+pts+'" fill="'+ELEMC[i%4]+'" fill-opacity="0.92" stroke="#0d0d1a" stroke-width="1.6"/>';
-    s+='<g transform="translate('+px(i*30+15,352).toFixed(1)+' '+py(i*30+15,352).toFixed(1)+') scale(0.46) translate(-50 -50)" fill="none" stroke="#f2e9cf" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">'+ZGLY[i]+'</g>';
+    /* the same glyphs the diamond chart draws - one alphabet for both charts */
+    s+='<text x="'+px(i*30+15,352).toFixed(1)+'" y="'+py(i*30+15,352).toFixed(1)+'" font-size="44" fill="#f2e9cf" text-anchor="middle" dominant-baseline="central" font-family="serif" font-weight="bold" opacity="0.95">'+(SSYM[SIGNS[i].name]||'')+'</text>';
   }
   /* one-degree ticks along the inner rim of the zodiac ring */
   for(i=0;i<360;i++){
@@ -1480,14 +1476,17 @@ function renderBiWheel(chart,trans){
   s+='<text x="'+(px(ascLon,R1-20))+'" y="'+(py(ascLon,R1-20)-10)+'" font-size="22" fill="#e8c97a" text-anchor="middle" font-family="Cinzel,serif">AC</text>';
   /* --- planets: one painter for each wheel --- */
   function drawSet(names,getP,glyphR,degR,edgeR,col,fs){
+    /* col may be a single colour for the whole ring, or a function of the
+       planet name when each body carries its own */
+    function cOf(n){return (typeof col==='function')?(col(n)||'#c9a0e8'):col;}
     var lons=names.map(function(n){return getP(n).deg;});
     var disp=bwSpread(lons,fs*0.85/glyphR*57.2958+2.5);
     var out='';
     names.forEach(function(n,ii){
       var p=getP(n),dl=disp[ii];
-      out+='<line x1="'+px(p.deg,edgeR)+'" y1="'+py(p.deg,edgeR)+'" x2="'+px(dl,glyphR+(glyphR>edgeR?-fs*0.75:fs*0.75))+'" y2="'+py(dl,glyphR+(glyphR>edgeR?-fs*0.75:fs*0.75))+'" stroke="'+col+'" stroke-opacity="0.45" stroke-width="1"/>';
-      out+='<text x="'+px(dl,glyphR)+'" y="'+py(dl,glyphR)+'" font-size="'+fs+'" fill="'+col+'" text-anchor="middle" dominant-baseline="central">'+TSYM[n]+'\uFE0E</text>';
-      out+='<text x="'+px(dl,degR)+'" y="'+py(dl,degR)+'" font-size="19" fill="'+col+'" fill-opacity="0.85" text-anchor="middle" dominant-baseline="central">'+p.degree+(p.retro?'<tspan font-size="13" fill="#c96060">R</tspan>':'')+'</text>';
+      out+='<line x1="'+px(p.deg,edgeR)+'" y1="'+py(p.deg,edgeR)+'" x2="'+px(dl,glyphR+(glyphR>edgeR?-fs*0.75:fs*0.75))+'" y2="'+py(dl,glyphR+(glyphR>edgeR?-fs*0.75:fs*0.75))+'" stroke="'+cOf(n)+'" stroke-opacity="0.45" stroke-width="1"/>';
+      out+='<text x="'+px(dl,glyphR)+'" y="'+py(dl,glyphR)+'" font-size="'+fs+'" fill="'+cOf(n)+'" text-anchor="middle" dominant-baseline="central">'+TSYM[n]+'\uFE0E</text>';
+      out+='<text x="'+px(dl,degR)+'" y="'+py(dl,degR)+'" font-size="19" fill="'+cOf(n)+'" fill-opacity="0.85" text-anchor="middle" dominant-baseline="central">'+p.degree+(p.retro?'<tspan font-size="13" fill="#c96060">R</tspan>':'')+'</text>';
     });
     return out;
   }
@@ -1496,7 +1495,7 @@ function renderBiWheel(chart,trans){
   if(chart.outerPlanets){['Uranus','Neptune','Pluto'].forEach(function(op){if(chart.outerPlanets[op])natN.push(op);});}
   s+=drawSet(natN,function(n){return chart.planets[n]||chart.outerPlanets[n];},268,232,ZI,'#f2ead2',34);
   /* transit wheel: everything we compute + the outer three */
-  s+=drawSet(trans.order,function(n){return trans.planets[n];},420,445,TRI,'#c9a0e8',32);
+  s+=drawSet(trans.order,function(n){return trans.planets[n];},420,445,TRI,function(n){return TCOL[n];},32);
   /* the seal */
   s+='<circle cx="'+C+'" cy="'+C+'" r="'+CC+'" fill="#0d0d1a" stroke="#c9a84c" stroke-width="1.6"/>';
   s+='<circle cx="'+C+'" cy="'+C+'" r="'+(CC-8)+'" fill="none" stroke="#c9a84c" stroke-opacity="0.45" stroke-width="1"/>';
@@ -1934,9 +1933,93 @@ function allAsps(planets,ascIdx){
   }
   return{recv:recv,houses:houses};
 }
+/* --------------------------------------------------------------------------
+   WHAT A PLANET SENDS OUT.
+   On planets: recv read backwards - every target holding this planet as a
+   source. Identical numbers to the ones the target already shows, so the two
+   sides of the page can never disagree.
+   On houses: SB_houseEval spins the chart until house h is house 1 and takes
+   the offset from there. Unwound, that offset is ((h - planetHouse) + 12) % 12
+   and the degree gap to the cusp does not change from house to house, so the
+   whole set costs one loop.
+   -------------------------------------------------------------------------- */
+function SB_aspGiven(chart,pl){
+  var out={pl:[],hs:[]};
+  if(!chart||!chart.planets||!chart.planets[pl])return out;
+  var rc=chart.aspects&&chart.aspects.recv;
+  if(rc)for(var t in rc){
+    for(var i=0;i<rc[t].length;i++)if(rc[t][i].from===pl)out.pl.push({to:t,str:rc[t][i].str});
+  }
+  out.pl.sort(function(a,b){return b.str-a.str;});
+  var p=chart.planets[pl],asc=chart.asc;
+  var hp=((p.index-asc.index+12)%12)+1;
+  var cusp=asc.totalDeg-Math.floor(asc.totalDeg/30)*30;
+  var gap=Math.abs((p.degree+(p.minutes||0)/60)-cusp);
+  var offs=getAspectOffsets(pl);
+  for(var h=1;h<=12;h++){
+    var off=((h-hp)+12)%12,base=offs[off];
+    if(base===undefined)continue;                 /* no aspect at this offset */
+    var pct=Math.round(base-gap);
+    if(pct<=0)continue;                           /* too far off the cusp */
+    out.hs.push({h:h,str:pct,own:off===0});
+  }
+  out.hs.sort(function(a,b){return b.str-a.str||a.h-b.h;});
+  return out;
+}
 const VINFO={'D-1':{name:'Natal Chart',topic:'Personality and life overview'},'D-2':{name:'Hora',topic:'Wealth and resources'},'D-3':{name:'Drekkana',topic:'Strength and siblings'},'D-9':{name:'Navamsa',topic:'Dharma, soul purpose, marriage'},'D-10':{name:'Dashamsa',topic:'Career and public status'},'D-12':{name:'Dwadasamsa',topic:'Ancestry and karmic inheritance'},'D-7':{name:'Saptamsha',topic:'Creativity, fertility & progeny'},'D-16':{name:'Shodashamsha',topic:'Vehicles, comforts & happiness'},'D-30':{name:'Trimsamsa',topic:'Limitations and karmic boundaries'},'D-60':{name:'Shashtiamsha',topic:'Past-life karma, the finest division'}};
 function hx6(c){return(c&&c.length===4)?'#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3]:c;}
+/* --------------------------------------------------------------------------
+   Horizontal scroll for tables, applied once per table, everywhere.
+   A <table> cannot scroll itself; it needs a parent that will. Rather than
+   hunting down every generator - and missing the next one - any table that
+   is not already inside a scrolling box gets one the moment it is rendered.
+   -------------------------------------------------------------------------- */
+function SB_tblScroll(root){
+  try{
+    var t=(root||document).getElementsByTagName('table'),i,el,p,w,list=[];
+    for(i=0;i<t.length;i++)list.push(t[i]);
+    for(i=0;i<list.length;i++){
+      el=list[i];
+      if(el.getAttribute('data-scrl'))continue;
+      el.setAttribute('data-scrl','1');
+      p=el.parentNode;
+      if(!p||p.nodeType!==1)continue;
+      var cls=(typeof p.className==='string')?p.className:'';
+      if(cls.indexOf('sbTblWrap')>=0)continue;                 /* already has one */
+      if(p.style&&(p.style.overflowX==='auto'||p.style.overflow==='auto'))continue;
+      w=document.createElement('div');
+      w.className='sbTblWrap sbTblAuto';
+      p.insertBefore(w,el);
+      w.appendChild(el);
+    }
+  }catch(e){}
+}
+(function(){
+  function sweep(){SB_tblScroll(document);}
+  function start(){
+    sweep();
+    if(!window.MutationObserver)return;
+    var app=document.querySelector('.app')||document.body;
+    if(!app)return;
+    var pending=0;
+    new MutationObserver(function(){
+      if(pending)return;
+      pending=1;
+      setTimeout(function(){pending=0;sweep();},60);   /* our own inserts settle */
+    }).observe(app,{childList:true,subtree:true});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);
+  else start();
+})();
 function baladiAvastha(si,deg){var masc=(si%2===0);var idx=masc?Math.floor(deg/6)+1:5-Math.floor(deg/6);if(idx<1)idx=1;if(idx>5)idx=5;var N=['','Balya','Kumara','Yuva','Vriddha','Mrita'],E=['','Infant','Youth','Prime','Old','Dead'];return{index:idx,name:N[idx],eng:E[idx]};}
+/* The five stages are Sanskrit and stay transliterated in Georgian; what gets
+   translated is the meaning in the brackets - Mrita (dead) -> მრიტა (მკვდარი).
+   Deliberately NOT in the substring dictionary: 'Old', 'Youth' and 'Prime'
+   are ordinary words and a blind text swap would hit them across the page. */
+var AVA_KA={Balya:['ბალია','ჩვილი'],Kumara:['კუმარა','ყრმა'],Yuva:['იუვა','სიმწიფე'],Vriddha:['ვრიდჰა','ბერი'],Mrita:['მრიტა','მკვდარი']};
+function avaKa(){return typeof LANG==='string'&&LANG==='ka';}
+function avaName(av){var k=av&&AVA_KA[av.name];return(avaKa()&&k)?k[0]:(av?av.name:'');}
+function avaEng(av){var k=av&&AVA_KA[av.name];return(avaKa()&&k)?k[1]:(av?av.eng:'');}
 /* ===== Georgian localisation (toggle). Planet names stay Latin everywhere. =====
    Translation is applied to text nodes as case-sensitive substring swaps (longest
    key first) plus placeholder attributes. Planet proper names are never in the
@@ -2217,6 +2300,12 @@ ka:{
 "Aspect sources":"ასპექტის წყაროები",
 "Aspects":"ასპექტები",
 "Aspects Received":"მიღებული ასპექტები",
+"Aspects Given":"გაცემული ასპექტები",
+"Aspects given":"გაცემული ასპექტები",
+"On houses":"სახლებზე",
+"Houses:":"სახლები:",
+"stands here":"დგას აქ",
+"No significant aspects sent to other planets.":"სხვა პლანეტებზე მნიშვნელოვან ასპექტს არ აგზავნის.",
 "Aspects Received (60%+ only)":"მიღებული ასპექტები (მხოლოდ 60%+)",
 "Aspects received":"მიღებული ასპექტები",
 "Athletic community":"ათლეტური საზოგადოება",
@@ -2233,8 +2322,8 @@ ka:{
 "Authority meets wisdom. Inclines toward teaching, mentorship or service to a cause, with respect from others and steady generosity.":"ავტორიტეტი ხვდება სიბრძნეს. იხრება სწავლებისკენ, მენტორობისკენ ან იდეის მსახურებისკენ, სხვების პატივისცემითა და სტაბილური გულუხვობით.",
 "Auto (from city)":"ავტო (ქალაქიდან)",
 "Auto - birth city":"ავტო - დაბადების ქალაქი",
-"Avastha":"ავასთა",
-"Avastha:":"ავასთა:",
+"Avastha":"ავასთა (მდგომარეობა)",
+"Avastha:":"ავასთა (მდგომარეობა):",
 "Avatar":"ავატარი",
 "Avatar 1":"ავატარი 1",
 "Avatars":"ავატარები",
@@ -3878,7 +3967,7 @@ ka:{
 "Remove":"წაშლა",
 "Removed.":"წაშლილია.",
 "Rename":"სახელის გადარქმევა",
-"Reports":"ანგარიშები",
+"Reports":"რეპორტები",
 "Repressed feeling":"ჩახშობილი გრძნობა",
 "Resilient identity":"მდგრადი იდენტობა",
 "Resourceful spouse":"საზრიანი მეუღლე",
@@ -5093,9 +5182,9 @@ ka:{
 "☉ Sun’s Hora":"☉ მზის ჰორა",
 "☽ Moon's Hora":"☽ მთვარის ჰორა",
 "☽ Moon’s Hora":"☽ მთვარის ჰორა",
-"Jarring shift from {0} ({1}) to {2} ({3}) — how you come across in this area flips tone here.":"მკვეთრი ცვლილება {0} ({1}) → {2} ({3}) — ამ სფეროში შენი გამოვლენა ტონს იცვლის.",
-"Jarring transition from {0} ({1}) to {2} ({3}) — the shift in nature blunts this fallback even at its stated dignity.":"მკვეთრი გადასვლა {0} ({1}) → {2} ({3}) — ბუნების ცვლილება აყრუებს ამ სათადარიგო გზას მითითებული ღირსების მიუხედავად.",
-"Jarring transition from {0} ({1}) to {2} ({3}) — the shift in style blunts this fallback even at its stated dignity.":"მკვეთრი გადასვლა {0} ({1}) → {2} ({3}) — სტილის ცვლილება აყრუებს ამ სათადარიგო გზას მითითებული ღირსების მიუხედავად.",
+"Shift from {0} ({1}) to {2} ({3}) — how you come across in this area flips tone here.":"ცვლილება {0} ({1}) → {2} ({3}) — ამ სფეროში შენი გამოვლენა ტონს იცვლის.",
+"Transition from {0} ({1}) to {2} ({3}) — the shift in nature blunts this fallback even at its stated dignity.":"გადასვლა {0} ({1}) → {2} ({3}) — ბუნების ცვლილება აყრუებს ამ სათადარიგო გზას მითითებული ღირსების მიუხედავად.",
+"Transition from {0} ({1}) to {2} ({3}) — the shift in style blunts this fallback even at its stated dignity.":"გადასვლა {0} ({1}) → {2} ({3}) — სტილის ცვლილება აყრუებს ამ სათადარიგო გზას მითითებული ღირსების მიუხედავად.",
 "✕ Close":"✕ დახურვა",
 "✕ HIDE":"✕ დამალვა",
 "📍 {0}°, {1}° · {2} · exact coordinates locked":"📍 {0}°, {1}° · {2} · ზუსტი კოორდინატები დაფიქსირებულია"
@@ -5379,6 +5468,37 @@ function drawChart(vd,sz){
     }
     return (lo>hi)?null:{lo:lo,hi:hi,w:hi-lo};
   }
+  /* the vertical extent of a house, and a point-in-polygon test against its
+     real outline - the two things needed to prove a glyph is inside it */
+  function yRange(ri){
+    var ps=REG[ri].map(function(k){return K[k];}),y0=Infinity,y1=-Infinity;
+    for(var i=0;i<ps.length;i++){y0=Math.min(y0,ps[i][1]);y1=Math.max(y1,ps[i][1]);}
+    return{y0:y0,y1:y1};
+  }
+  function inReg(ri,x,y){
+    var ps=REG[ri].map(function(k){return K[k];}),inside=false,i,j;
+    for(i=0,j=ps.length-1;i<ps.length;j=i++){
+      var xi=ps[i][0],yi=ps[i][1],xj=ps[j][0],yj=ps[j][1];
+      if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))inside=!inside;
+    }
+    return inside;
+  }
+  /* where planet number i sits inside a cols x rows block; a short last row
+     is centred rather than left-aligned */
+  function cellXY(bl,i,cols,rows,n){
+    var r=Math.floor(i/cols),c=i%cols,inRow=Math.min(cols,n-r*cols);
+    return{x:bl.cx+(c-(inRow-1)/2)*bl.cw, y:bl.cy+(r-(rows-1)/2)*bl.ch};
+  }
+  /* every corner of every glyph box - degree number included - inside */
+  function blockInside(ri,bl,cols,rows,n){
+    for(var i=0;i<n;i++){
+      var p=cellXY(bl,i,cols,rows,n);
+      var L=p.x-bl.fp*0.58-1, R=p.x+bl.fp*0.58+bl.fd*1.1+1,
+          T=p.y-bl.fp*0.82-bl.fd*0.55-1, B=p.y+bl.fp*0.24+1;
+      if(!inReg(ri,L,T)||!inReg(ri,R,T)||!inReg(ri,L,B)||!inReg(ri,R,B))return false;
+    }
+    return true;
+  }
   function ctr(ri){var ps=REG[ri].map(function(k){return K[k];});return[Math.round(ps.reduce(function(a,pt){return a+pt[0];},0)/ps.length),Math.round(ps.reduce(function(a,pt){return a+pt[1];},0)/ps.length)];}
   var fs=Math.max(10,Math.round(sz*0.044)),fp=Math.max(9,Math.round(sz*0.040)),fd=Math.max(6,Math.round(sz*0.022));
   var uid='ch'+Math.round(Math.random()*99999);
@@ -5407,45 +5527,49 @@ function drawChart(vd,sz){
     var pl=byH[h2],pn=pl.length;
     if(!pn)continue;
     svg+='<g clip-path="url(#'+uid+'h'+h2+')">';
-    /* Houses 5 and 6 are triangles whose apex points UP: the room narrows the
-       higher you go. Four planets in two rows pushed the top row past the apex
-       and the clip-path ate it. When they are crowded they go in one row
-       across the wide base instead, at a size that fits. */
-    var wideRow=(pn>2&&(h2===5||h2===6));
-    var pcols=wideRow?pn:(pn<=2?pn:2),prowH=fp+fd+4;
-    var fpW=wideRow?Math.round(fp*0.78):fp,fdW=wideRow?Math.round(fd*0.85):fd;
-    // Offset planet group UP from centroid so they don't sit on top of the sign symbol
-    var ancY=ct[1]-Math.round(m2*0.6)-Math.round((Math.ceil(pn/pcols)-1)*prowH/2);
-    // For bottom houses shift up more to avoid clipping
-    if(h2===5||h2===6||h2===7)ancY=ct[1]-Math.round(m2*1.1)-Math.round((Math.ceil(pn/pcols)-1)*prowH/2);
-    /* one wide row sits just above the sign symbol, in the roomy part */
-    var rowPitch=fpW*1.62,rowMid=ct[0];
-    if(wideRow){
-      ancY=ct[1]-Math.round(m2*0.62);
-      /* size the row to the room that is actually there at this height */
-      var sp=spanAtY(H2R[h2],ancY);
-      if(sp){
-        var pad=fpW*1.25;
-        var room=Math.max(fpW,sp.w-pad*2);
-        rowPitch=Math.min(rowPitch,room/pn);
-        /* if the room forced the pitch down, the type has to come down with it
-           or the degree numbers run into the next glyph */
-        var shrink=Math.min(1,rowPitch/(fpW*1.62));
-        if(shrink<1){fpW=Math.max(8,Math.round(fpW*shrink));fdW=Math.max(6,Math.round(fdW*shrink));}
-        rowMid=Math.min(Math.max(ct[0],sp.lo+pad+rowPitch*(pn-1)/2),sp.hi-pad-rowPitch*(pn-1)/2);
+    /* ---------------------------------------------------------------
+       Size follows the crowd. One planet owns the house and is drawn at
+       three times the old glyph; two share it at double; three or four go
+       two-and-two. Whatever is asked for, the block is then shrunk step by
+       step until it is provably inside this house's outline - which is why
+       houses 5 and 6 no longer need their old one-squeezed-row exception.
+       --------------------------------------------------------------- */
+    var rgi=H2R[h2], bnd=yRange(rgi);
+    var cols=(pn===1?1:(pn===2?2:(pn<=4?2:3))), rows=Math.ceil(pn/cols);
+    var want=(pn===1?3.0:(pn===2?2.0:(pn<=4?1.7:1.25)));
+    var signMid=ct[1]+Math.round(m2*0.35), best=null, pass, sc, cyc;
+    /* Size first, then tidiness. For each size, largest down, we try to keep
+       clear of the sign glyph (pass 0) and only then allow the overlap
+       (pass 1) - the planets carry a black outline and stay legible over it.
+       The other way round, a house would accept a tiny block that cleared the
+       glyph while a much larger one was available a few pixels away. */
+    for(sc=want;sc>=0.5&&!best;sc-=0.04){
+      /* the glyph grows freely; its degree number only to 1.4x, or the
+         number's width is what stops the glyph from growing at all */
+      var fpS=Math.max(8,fp*sc), fdS=Math.max(6,fd*Math.min(sc,1.4));
+      var cw=fpS*1.62, ch=fpS*1.70, bw=cols*cw, bh=rows*ch;
+      for(pass=0;pass<2&&!best;pass++){
+        for(cyc=bnd.y0+bh/2;cyc<=bnd.y1-bh/2;cyc+=2){
+          if(pass===0&&Math.abs(cyc-signMid)<bh/2+m2*0.45)continue;
+          var sp2=spanAtY(rgi,cyc);
+          if(!sp2||sp2.w<bw)continue;
+          var bl={cw:cw,ch:ch,fp:fpS,fd:fdS,
+                  cx:Math.min(Math.max(ct[0],sp2.lo+bw/2),sp2.hi-bw/2),cy:cyc};
+          if(blockInside(rgi,bl,cols,rows,pn)){best=bl;break;}
+        }
       }
     }
-    // For top houses shift down slightly so not hidden at edge
-    if(h2===2)ancY=ct[1]-Math.round(m2*0.2);
-    if(h2===3||h2===9)ancY=ct[1]-Math.round(m2*0.3);
+    if(!best)best={cw:fp*1.2,ch:fp*1.3,fp:Math.max(7,Math.round(fp*0.7)),
+                   fd:Math.max(6,Math.round(fd*0.7)),cx:ct[0],cy:ct[1]-Math.round(m2*0.6)};
     for(var pi=0;pi<pn;pi++){
-      var nm2=pl[pi],prow=Math.floor(pi/pcols),pcol=pi%pcols;
-      var px=Math.round(rowMid+(pcol-(pcols-1)/2)*rowPitch);
-      var py=ancY+prow*prowH;
+      var nm2=pl[pi],cxy=cellXY(best,pi,cols,rows,pn);
+      var px=Math.round(cxy.x),py=Math.round(cxy.y);
       var rp=vd.planets?vd.planets[nm2]:null,col=PCOL[nm2]||'#eee';
-      var sw=Math.max(2,Math.round(fp*0.14));
-      svg+='<text x="'+px+'" y="'+py+'" text-anchor="middle" font-size="'+fpW+'px" fill="'+col+'" font-weight="bold" font-family="sans-serif" stroke="#000" stroke-width="'+sw+'" stroke-linejoin="round" paint-order="stroke fill">'+(PGLY[nm2]||'')+'</text>';
-      if(rp&&isFinite(rp.divDeg))svg+='<text x="'+(px+Math.round(fpW*0.55))+'" y="'+(py-Math.round(fpW*0.5))+'" text-anchor="start" font-size="'+fdW+'px" fill="'+col+'" stroke="#000" stroke-width="1" paint-order="stroke fill" font-family="sans-serif">'+Math.floor(rp.divDeg)+'</text>';
+      /* the outline is there to lift the glyph off the sign colour, not to
+         become part of it - at 3x it would otherwise read as a black blob */
+      var sw=Math.max(2,Math.min(4,Math.round(best.fp*0.11)));
+      svg+='<text x="'+px+'" y="'+py+'" text-anchor="middle" font-size="'+Math.round(best.fp)+'px" fill="'+col+'" font-weight="bold" font-family="sans-serif" stroke="#000" stroke-width="'+sw+'" stroke-linejoin="round" paint-order="stroke fill">'+(PGLY[nm2]||'')+'</text>';
+      if(rp&&isFinite(rp.divDeg))svg+='<text x="'+(px+Math.round(best.fp*0.55))+'" y="'+(py-Math.round(best.fp*0.5))+'" text-anchor="start" font-size="'+Math.round(best.fd)+'px" fill="'+col+'" stroke="#000" stroke-width="1" paint-order="stroke fill" font-family="sans-serif">'+Math.floor(rp.divDeg)+'</text>';
     }
     svg+='</g>';
   }
@@ -5817,7 +5941,7 @@ function buildDrekkanaPanel(planets,asc){
     h+="<div style='display:flex;justify-content:space-between;align-items:baseline;gap:8px'><span style='color:"+pc+";font-weight:bold'>#"+(c+1)+" "+PGL(e.planet)+" "+e.planet+"</span><span style='font-size:12px;color:"+DIM+"'>"+T('dominance {0} \u00b7 dignity',[e.count])+" <b style='color:"+drekDCol(e.dignity)+"'>"+e.dignity+"%</b></span></div>";
     h+="<div style='font-size:11px;color:#8890a8;margin-top:3px'>"+T('Occupants: {0}',[e.occupants.map(function(x){return T(x);}).join(', ')])+"</div>";
     if(c===0){var fl=drekFlag(e.dignity);h+="<div style='font-size:12px;color:"+fl.c+";margin-top:5px'>First recourse \u2014 "+fl.t+"</div>";}
-    if(e.jarringWithPrev)h+="<div style='font-size:11px;color:#e0a85a;margin-top:5px'>"+T('Jarring transition from {0} ({1}) to {2} ({3}) \u2014 the shift in style blunts this fallback even at its stated dignity.',[T(a.chain[c-1].planet),T(DREK_SOFT[a.chain[c-1].planet]?"soft":"hard"),T(e.planet),T(DREK_SOFT[e.planet]?"soft":"hard")])+"</div>";
+    if(e.jarringWithPrev)h+="<div style='font-size:11px;color:#e0a85a;margin-top:5px'>"+T('Transition from {0} ({1}) to {2} ({3}) \u2014 the shift in style blunts this fallback even at its stated dignity.',[T(a.chain[c-1].planet),T(DREK_SOFT[a.chain[c-1].planet]?"soft":"hard"),T(e.planet),T(DREK_SOFT[e.planet]?"soft":"hard")])+"</div>";
     h+="</div>";}
 
   // Ascendant
@@ -6180,7 +6304,7 @@ function buildVargaPanel(planets,asc,v,showInterp){
     h+="<div style='background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,90,0.18);border-radius:10px;padding:11px 13px;margin-bottom:8px'>";
     h+="<div style='display:flex;justify-content:space-between;align-items:baseline;gap:8px'><span style='color:"+pc3+";font-weight:bold'>#"+(c+1)+" "+PGL(r.n)+" "+r.n+" <span style='font-size:11px;color:#8890a8'>H"+r.house+"</span></span><span style='font-size:12px;color:"+DIM+"'>"+T('{0} from asc \u00b7 dignity',[vgDegMin(r.diff)])+" <b style='color:"+trimDCol(r.dig)+"'>"+r.dig+"%</b></span></div>";
     h+="<div style='font-size:11px;color:#8890a8;margin-top:3px'>"+hnote+(r.conj?", conjunct a luminary":"")+"</div>";
-    if(c>0){var prev=A.prominence[c-1],pb=!!VG_BEN[prev.n],cb=!!VG_BEN[r.n];if(pb!==cb)h+="<div style='font-size:11px;color:#e0a85a;margin-top:5px'>"+T('Jarring shift from {0} ({1}) to {2} ({3}) \u2014 how you come across in this area flips tone here.',[T(prev.n),T(pb?"benefic":"malefic"),T(r.n),T(cb?"benefic":"malefic")])+"</div>";}
+    if(c>0){var prev=A.prominence[c-1],pb=!!VG_BEN[prev.n],cb=!!VG_BEN[r.n];if(pb!==cb)h+="<div style='font-size:11px;color:#e0a85a;margin-top:5px'>"+T('Shift from {0} ({1}) to {2} ({3}) \u2014 how you come across in this area flips tone here.',[T(prev.n),T(pb?"benefic":"malefic"),T(r.n),T(cb?"benefic":"malefic")])+"</div>";}
     h+="</div>";}
   // interpretation
   if(showInterp!==false){var top=A.prominence[0],weak=[];for(var w2=0;w2<A.names.length;w2++){var wn=A.names[w2];if(A.planets[wn]&&A.planets[wn].dig<=30)weak.push(wn);}
@@ -6279,7 +6403,7 @@ function buildTrimshaPanel(planets,asc){
     h+="<div style='display:flex;justify-content:space-between;align-items:baseline;gap:8px'><span style='color:"+pc2+";font-weight:bold'>#"+(c+1)+" "+PGL(eN.planet)+" "+eN.planet+"</span><span style='font-size:12px;color:"+DIM+"'>"+T('dominance {0} \u00b7 dignity',[eN.count])+" <b style='color:"+trimDCol(eN.dignity)+"'>"+eN.dignity+"%</b></span></div>";
     h+="<div style='font-size:11px;color:#8890a8;margin-top:3px'>"+T('Occupants: {0}',[eN.occupants.map(function(x){return T(x);}).join(', ')])+"</div>";
     if(c===0){var fl=trimFlag(eN.dignity);h+="<div style='font-size:12px;color:"+fl.c+";margin-top:5px'>First recourse \u2014 "+fl.t+"</div>";}
-    if(eN.jarringWithPrev)h+="<div style='font-size:11px;color:#e0a85a;margin-top:5px'>Jarring transition from "+a.chain[c-1].planet+" ("+(TRIM_SOFT[a.chain[c-1].planet]?"soft":"hard")+") to "+eN.planet+" ("+(TRIM_SOFT[eN.planet]?"soft":"hard")+") \u2014 the shift in nature blunts this fallback even at its stated dignity.</div>";
+    if(eN.jarringWithPrev)h+="<div style='font-size:11px;color:#e0a85a;margin-top:5px'>Transition from "+a.chain[c-1].planet+" ("+(TRIM_SOFT[a.chain[c-1].planet]?"soft":"hard")+") to "+eN.planet+" ("+(TRIM_SOFT[eN.planet]?"soft":"hard")+") \u2014 the shift in nature blunts this fallback even at its stated dignity.</div>";
     h+="</div>";}
   // ascendant
   var asR=a.ascendant;
@@ -7652,7 +7776,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
     if(dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span> '+T('({0} pts)',[dig.points])+'<br>';
     if(fn)html+='Functional Nature: <span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnScore>0?'+':'')+fnScore+')<br>';
-    html+='Avastha: <span style="color:var(--gold)">'+bav.name+'</span> ('+bav.eng+')<br>';if(sv!==null)html+='Shodasa varga: <span style="color:var(--gold)">'+sv+'/100</span><br>';
+    html+='Avastha: <span style="color:var(--gold)">'+avaName(bav)+'</span> ('+avaEng(bav)+')<br>';if(sv!==null)html+='Shodasa varga: <span style="color:var(--gold)">'+sv+'/100</span><br>';
     if(sb!==null)html+='Shadbala: <span style="color:var(--gold)">'+sb+'/100</span>';
     html+='</p></div></div>';
     if(recv.length){
@@ -7731,7 +7855,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
       html+='<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;margin-bottom:4px"><span style="color:var(--gold-dim);letter-spacing:0.1em;text-transform:uppercase">Functional</span><span style="color:'+mfn.col+';font-weight:bold">'+msg+mfsc+' \u00b7 '+mfn.label+'</span></div>';
       html+='<div style="height:5px;border-radius:3px;background:rgba(255,255,255,0.07);overflow:hidden;margin-bottom:11px"><div style="height:100%;width:'+mbw+'%;border-radius:3px;background:linear-gradient(90deg,'+mfn.col+'99,'+mfn.col+')"></div></div>';
     }else{html+='<div style="font-size:11px;color:var(--gold-dim);font-style:italic;margin-bottom:11px">Node \u00b7 no functional nature</div>';}
-    html+='<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px"><span style="color:var(--gold-dim);letter-spacing:0.1em;text-transform:uppercase">Avastha</span><span style="color:'+mavc+';border:1px solid '+mavc+'55;background:'+mavc+'18;border-radius:20px;padding:3px 11px;font-weight:bold;letter-spacing:0.03em">'+mav.name+' \u00b7 '+mav.eng+'</span></div>';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px"><span style="color:var(--gold-dim);letter-spacing:0.1em;text-transform:uppercase">Avastha</span><span style="color:'+mavc+';border:1px solid '+mavc+'55;background:'+mavc+'18;border-radius:20px;padding:3px 11px;font-weight:bold;letter-spacing:0.03em">'+avaName(mav)+' \u00b7 '+avaEng(mav)+'</span></div>';
     html+='</div>';
   }
   html+='</div></div>';
@@ -8516,7 +8640,7 @@ function SB_planetSectionHTML(chart,pl){
   if(nk)html+='Nakshatra: <span style="color:var(--gold)">'+nk.name+'</span> '+T('Pada {0} (Lord {1})',[nk.pada,T(nk.lord)])+'<br>';
   if(dig&&dig.label)html+='Dignity: <span style="color:var(--gold)">'+dig.label+'</span>'+(dig.points!==undefined?' '+T('({0} pts)',[dig.points]):'')+'<br>';
   if(fn)html+='Functional Nature: <span style="color:'+fn.col+'">'+fn.label+'</span> ('+(fnScore>0?'+':'')+fnScore+')<br>';
-  html+='Avastha: <span style="color:var(--gold)">'+bav.name+'</span> ('+bav.eng+')<br>';
+  html+='Avastha: <span style="color:var(--gold)">'+avaName(bav)+'</span> ('+avaEng(bav)+')<br>';
   if(sv!==null)html+='Dignity across 9 charts: <span style="color:var(--gold)">'+sv+'/100</span><br>';
   if(sb!==null)html+='Shadbala: <span style="color:var(--gold)">'+sb+'/100</span>';
   html+='</p></div></div>';
@@ -8526,6 +8650,19 @@ function SB_planetSectionHTML(chart,pl){
       html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+rc+';font-family:Cinzel,serif;font-size:12px">'+recv[ri].from+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+recv[ri].str+'%</span></div>';}
     html+='</div>';}
   else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects received.</p>';}
+  /* the other direction: what this planet throws, and where it lands */
+  var giv=SB_aspGiven(chart,pl);
+  html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Given</p>';
+  if(giv.pl.length){html+='<div class="asp-grid">';
+    for(var gi=0;gi<giv.pl.length;gi++){var gc=PCOL[giv.pl[gi].to]||'#aaa';
+      html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+gc+';font-family:Cinzel,serif;font-size:12px">'+giv.pl[gi].to+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+giv.pl[gi].str+'%</span></div>';}
+    html+='</div>';}
+  else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects sent to other planets.</p>';}
+  if(giv.hs.length){
+    html+='<p style="font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);text-transform:uppercase;margin:12px 0 6px">On houses</p><div class="asp-grid">';
+    for(var hi=0;hi<giv.hs.length;hi++){var gh=giv.hs[hi];
+      html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+col+';font-family:Cinzel,serif;font-size:12px">'+T('House {0}',[gh.h])+(gh.own?' <span style="color:var(--gold-dim);font-size:10px">'+T('stands here')+'</span>':'')+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+gh.str+'%</span></div>';}
+    html+='</div>';}
   html+='</div>';
   return html;
 }
@@ -8764,7 +8901,7 @@ function SB_planetEvalHTML(chart,pl){
     html+='</div>';}
   /* refinements */
   html+='<button class="zdFoldBtn" type="button" onclick="SB_zdFold(this)"><span>Refinements &middot; stage, karaka, sandhi, combustion, war, yogas</span><span class="zdCaret">&#9660;</span></button><div class="zdFold">';
-  html+='<div class="pevRef"><p class="pevRefK">'+T('Avastha - {0} ({1})',[e.avastha.name,T(PEV_AVA[e.avastha.index].t)])+'</p><p class="pevRefV">'+PEV_AVA[e.avastha.index].d+'.</p></div>';
+  html+='<div class="pevRef"><p class="pevRefK">'+T('Avastha - {0} ({1})',[avaName(e.avastha),avaEng(e.avastha)])+'</p><p class="pevRefV">'+PEV_AVA[e.avastha.index].d+'.</p></div>';
   if(e.karaka)html+='<div class="pevRef"><p class="pevRefK">'+e.karaka.role+'</p><p class="pevRefV">'+T('Ranked {0} of 7 by degree - it carries {1}.',[e.karaka.rank,T(e.karaka.meaning.toLowerCase())])+'</p></div>';
   html+='<div class="pevRef"><p class="pevRefK">'+(e.sandhi.pct?T('Sandhi - {0}% penalty',[e.sandhi.pct]):T('Sandhi - clear'))+'</p><p class="pevRefV">'
     +(e.sandhi.pct?'It stands '+e.sandhi.gap.toFixed(2)+'&#176; from the '+e.sandhi.edge+' of its sign; crossing between elements drains it.':'It stands '+e.sandhi.gap.toFixed(2)+'&#176; clear of the sign boundary - no drain.')+'</p></div>';
@@ -12950,10 +13087,25 @@ function SB3D_injectStyles(){
   +'#sb3dInfo b{color:#e8c97a;font-weight:600}'
   +'#sb3dDashaWrap{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);z-index:6;display:none;text-align:center;pointer-events:none}'
   +'#sb3dDashaWrap canvas{pointer-events:auto;touch-action:none;display:block;margin:0 auto;cursor:grab}'
+  /* Desktop: the dial's own centre is (W/2, H) - the middle of its flat
+     bottom edge. Anchoring the wrap to the bottom-left corner and shifting
+     the canvas half its width left puts that centre ON the corner, so one
+     quarter of the disc shows and the rest hangs off the screen. */
+  +'@media(min-width:641px){'
+    +'#sb3dDashaWrap{left:0;bottom:0;transform:none;text-align:left}'
+    +'#sb3dDashaWrap canvas{margin:0;transform:translateX(-50%)}'
+    +'#sb3dDashaSel{margin-left:18px;text-align:left}'
+  +'}'
   +'#sb3dDashaSel{pointer-events:none;color:#f5c518;font-family:Cinzel,serif;font-size:13px;letter-spacing:0.12em;text-shadow:0 0 8px rgba(0,0,0,0.95);margin-bottom:2px}'
   +'#sb3dDashaSel .dts{display:block;font-size:10px;color:#e8c97a;letter-spacing:0.08em;opacity:0.92}'
   +'#sb3dWt{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);width:min(430px,88vw);background:rgba(13,13,26,0.80);border:1px solid rgba(201,168,76,0.55);border-radius:14px;padding:16px 18px 14px;z-index:8;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:center;pointer-events:auto}'
   +'#sb3dWtTtl{font-family:Cinzel,serif;letter-spacing:0.22em;color:#e8c97a;font-size:12px;margin-bottom:8px;text-transform:uppercase}'
+  /* pressed the button the card was pointing at: everything but Continue
+     steps aside, panel included, so the dial underneath is visible */
+  +'#sb3dWt.wtBare{background:none;border-color:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;padding:0;max-height:none}'
+  +'#sb3dWt.wtBare #sb3dWtProg,#sb3dWt.wtBare #sb3dWtTtl,#sb3dWt.wtBare #sb3dWtBody,'
+    +'#sb3dWt.wtBare #sb3dWtMore,#sb3dWt.wtBare #sb3dWtSkip2{display:none}'
+  +'#sb3dWt.wtBare #sb3dWtFoot{justify-content:flex-end;margin:0}'
   +'#sb3dWtTxt{color:#d8d0b8;font-size:13.5px;line-height:1.75;margin-bottom:12px}'
   +'#sb3dWt{max-height:72vh;overflow:hidden;display:none;flex-direction:column}'
   +'#sb3dWtProg{font-family:Cinzel,serif;letter-spacing:.18em;text-transform:uppercase;font-size:9px;color:#8d8298;margin-bottom:6px;display:none}'
@@ -14248,6 +14400,9 @@ function SB3D_wtNext(){
     more.textContent='Tell me more \u25BE';
   }
   var nb=document.getElementById('sb3dWtBtn');if(nb)nb.innerHTML=(st.final?'Continue':'Next')+' \u25B8';
+  /* every card starts whole; only pressing the taught button strips it */
+  s.wtFinalCard=!!st.final;
+  var _wc=document.getElementById('sb3dWt');if(_wc)_wc.classList.remove('wtBare');
   /* The two closing cards sit low and carry Next inside them: the wheel behind
      needs the upper screen, and the toolbar is visible on the final step. */
   var cardEl=document.getElementById('sb3dWt'),navEl=document.getElementById('sb3dWtNav'),
@@ -14632,7 +14787,11 @@ function SB3D_startMain(){
   document.getElementById('sb3dExplore').style.display=_nt?'none':'';
   if(_nt){document.getElementById('sb3dDasha').style.display='none';s.dashaOn=false;}
   if(s.divMode){s.vargaOn=false;s.outersOn=false;s.dashaOn=false;}
-  SB3D_setPOV(s.divMode?'centerLow':'center',true);
+  /* The first thing the sky shows is the whole wheel, not the seat in the
+     middle of it: exactly what pressing Overview does, done before the
+     reader has to press anything. syncToggles() below lights the button. */
+  if(!s.divMode)s.vargaOn=true;
+  SB3D_setPOV(s.divMode?'centerLow':'overview',true);
   document.getElementById('sb3dFade').style.opacity='0';
   var _fl=document.getElementById('sb3dFlash');
   if(_fl){_fl.style.opacity='0';_fl.style.display='none';} /* random grey-veil bug: a mid-transition flash could linger over the whole sky */
@@ -14731,7 +14890,15 @@ function SB3D_startMain(){
   document.getElementById('sb3dBala').onclick=function(){s.balaOn=!s.balaOn;syncToggles();};
   document.getElementById('sb3dOuters').onclick=function(){if(s.divMode)return;s.outersOn=!s.outersOn;syncToggles();};
   document.getElementById('sb3dTransits').onclick=function(){if(s.divMode)return;s.transitsOn=!s.transitsOn;syncToggles();};
-  document.getElementById('sb3dDasha').onclick=function(){SB3D_dashaToggle();syncToggles();};
+  document.getElementById('sb3dDasha').onclick=function(){
+    SB3D_dashaToggle();syncToggles();
+    /* the closing card is parked exactly where the dial rises */
+    if(s.wtOn&&s.wtFinalCard&&s.dashaOn){
+      var c=document.getElementById('sb3dWt');
+      if(c){c.classList.add('wtBare');if(typeof SB3D_wtFit==='function')SB3D_wtFit();}
+      SB3D_wtPoint(null);            /* the arrow has done its job */
+    }
+  };
   document.getElementById('sb3dVarga').onclick=function(){
     if(s.divMode)return; /* no amsha layers inside a divisional world */
     s.vargaOn=!s.vargaOn;if(s.vargaOn&&s.pov==='centerLow')SB3D_setPOV('center');syncToggles();};
@@ -15045,7 +15212,7 @@ function SB3D_showInfoPanel(pl){
     if(fnS!==undefined&&typeof fnLabel==='function'){var fn=fnLabel(fnS);
       html+='<div><span class="k">Functional:</span> <b style="color:'+fn.col+'">'+fn.label+'</b> ('+(fnS>0?'+':'')+fnS+')</div>';}
     if(typeof baladiAvastha==='function'){var av=baladiAvastha(d.index,d.degree+(d.minutes||0)/60);
-      html+='<div><span class="k">Avastha:</span> <b>'+av.name+'</b> ('+av.eng+')</div>';}
+      html+='<div><span class="k">Avastha:</span> <b>'+(typeof avaName==='function'?avaName(av):av.name)+'</b> ('+(typeof avaEng==='function'?avaEng(av):av.eng)+')</div>';}
     if(chart.shodasavarga&&chart.shodasavarga[pl])html+='<div><span class="k">Shodasa Varga (9 charts):</span> <b>'+chart.shodasavarga[pl].final+'</b></div>';
     if(chart.shadbala&&chart.shadbala[pl])html+='<div><span class="k">Shadbala:</span> <b>'+chart.shadbala[pl].final+'</b></div>';
     if(nk===null&&b&&b.nakshatra)html+='<div><span class="k">Nakshatra:</span> <b>'+b.nakshatra+'</b></div>';
@@ -15053,6 +15220,18 @@ function SB3D_showInfoPanel(pl){
     if(rec&&rec.length){
       html+='<div class="k" style="margin-top:6px;letter-spacing:0.12em;font-size:11px;text-transform:uppercase">Aspects received</div>';
       for(var ri=0;ri<rec.length;ri++)html+='<div><b>'+rec[ri].from+'</b> <span class="k">'+rec[ri].str+'%</span></div>';
+    if(typeof SB_aspGiven==='function'){
+      var gv=SB_aspGiven(chart,pl);
+      if(gv.pl.length||gv.hs.length){
+        html+='<div class="k" style="margin-top:6px;letter-spacing:0.12em;font-size:11px;text-transform:uppercase">Aspects given</div>';
+        for(var gi=0;gi<gv.pl.length;gi++)html+='<div><b>'+gv.pl[gi].to+'</b> <span class="k">'+gv.pl[gi].str+'%</span></div>';
+        if(gv.hs.length){
+          var hb2=[];
+          for(var hj=0;hj<gv.hs.length;hj++)hb2.push('H'+gv.hs[hj].h+' '+gv.hs[hj].str+'%');
+          html+='<div><span class="k">Houses:</span> <b>'+hb2.join(' \u00b7 ')+'</b></div>';
+        }
+      }
+    }
     }
   }
   el.innerHTML=html;
