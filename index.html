@@ -314,7 +314,11 @@ tbody tr:hover{background:rgba(201,168,76,.05)}
    radial-gradient(1000px 680px at 84% 74%,rgba(26,56,92,.34),transparent 64%),
    radial-gradient(760px 520px at 62% 30%,rgba(90,64,120,.18),transparent 66%),
    linear-gradient(180deg,#0a0814 0%,#08060f 55%,#06050c 100%)}
-body::before{content:'';position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity .8s}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;
+  /* The starfield used to be switched on by .sb-cast and .sb-read alone, so
+     any frame where the body held neither class fell back to bare colour.
+     It is painted unconditionally now; the states only add their curtain. */
+  background-image:var(--bgMain);opacity:1;transition:opacity .8s}
 /* The old cast screen carried a photograph. With that gone a zoomed-out phone
    showed bare page behind the fixed layer, so the colour is painted on the
    page itself and the layer only adds depth on top of it. */
@@ -10378,6 +10382,7 @@ function SB_fbInit(){
       .then(function(){return SB_fbScript(base+'firebase-firestore-compat.js');})
       .catch(function(){return attempt();});
   }
+var SB_authSeen=false;   /* has onAuthStateChanged reported in yet? */
   SB_fbReady=attempt().then(function(){
     if(!window.firebase||!window.firebase.auth)throw new Error('sdk-unavailable');
     if(!window.firebase.apps.length)window.firebase.initializeApp(SB_FB_CFG);
@@ -10385,6 +10390,11 @@ function SB_fbInit(){
     var auth=window.firebase.auth();
     auth.onAuthStateChanged(function(u){
       var was=SB_user;
+      /* The first callback is Firebase reporting who was ALREADY signed in
+         when the page opened. `was` is null then for everyone, so without
+         this flag every reload reads as a fresh sign-in - and the walk
+         restarts on top of a chart that is already on screen. */
+      var firstAuth=!SB_authSeen; SB_authSeen=true;
       SB_user=u||null;
       try{u?localStorage.setItem(SB_FB_MARK,'1'):localStorage.removeItem(SB_FB_MARK);}catch(e){}
       if(u&&!was){
@@ -10406,8 +10416,9 @@ function SB_fbInit(){
       }
       if(u&&!was){try{if(typeof SB_cloudPull==='function')SB_cloudPull(true);}catch(e){}}
       /* signing in or out restarts the walk: the chart on screen belonged to
-         the previous state and nothing about it is still true */
-      if((!!u)!==(!!was)&&typeof SB_restartOnboarding==='function'){
+         the previous state and nothing about it is still true. A reload is
+         neither, so firstAuth is excluded. */
+      if(!firstAuth&&(!!u)!==(!!was)&&typeof SB_restartOnboarding==='function'){
         setTimeout(function(){try{SB_restartOnboarding();}catch(e){}},60);
       }
       if(!u&&was){try{SB_SLOTS=null;SB_PLAN='free';SB_EDIT_SLOT=null;SB_PLAN_UNTIL=0;
