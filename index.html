@@ -7783,11 +7783,29 @@ function renderReading(name,date,time,place,chart,aiTxt){
     html+='Avastha: <span style="color:var(--gold)">'+avaName(bav)+'</span> ('+avaEng(bav)+')<br>';if(sv!==null)html+='Shodasa varga: <span style="color:var(--gold)">'+sv+'/100</span><br>';
     if(sb!==null)html+='Shadbala: <span style="color:var(--gold)">'+sb+'/100</span>';
     html+='</p></div></div>';
-    if(recv.length){
-      html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:8px">Aspects Received</p><div class="asp-grid" style="margin-bottom:8px">';
-      for(var ri=0;ri<recv.length;ri++){html+='<div class="asp-pill"><span>'+recv[ri].from+'</span><span style="color:var(--gold)">'+recv[ri].str+'%</span></div>';}
-      html+='</div>';
-    }
+    /* Both directions, exactly as the planet pages read them: the headings
+       always stand, and an empty side says so rather than vanishing. */
+    var _pc=PCOL[pl]||'#c9a84c';
+    html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Received</p>';
+    if(recv.length){html+='<div class="asp-grid">';
+      for(var ri=0;ri<recv.length;ri++){var _rc=PCOL[recv[ri].from]||'#aaa';
+        html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_rc+';font-family:Cinzel,serif;font-size:12px">'+recv[ri].from+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+recv[ri].str+'%</span></div>';}
+      html+='</div>';}
+    else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects received.</p>';}
+    /* what this luminary throws, and where it lands */
+    var _gv=(typeof SB_aspGiven==='function')?SB_aspGiven(chart,pl):{pl:[],hs:[]};
+    html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Given</p>';
+    if(_gv.pl.length){html+='<div class="asp-grid">';
+      for(var gi=0;gi<_gv.pl.length;gi++){var _gc=PCOL[_gv.pl[gi].to]||'#aaa';
+        html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_gc+';font-family:Cinzel,serif;font-size:12px">'+_gv.pl[gi].to+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+_gv.pl[gi].str+'%</span></div>';}
+      html+='</div>';}
+    else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects sent to other planets.</p>';}
+    if(_gv.hs.length){
+      html+='<p style="font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);text-transform:uppercase;margin:12px 0 6px">On houses</p><div class="asp-grid">';
+      for(var hi=0;hi<_gv.hs.length;hi++){var _gh=_gv.hs[hi];
+        html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_pc+';font-family:Cinzel,serif;font-size:12px">'+T('House {0}',[_gh.h])+(_gh.own?' <span style="color:var(--gold-dim);font-size:10px">'+T('stands here')+'</span>':'')+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+_gh.str+'%</span></div>';}
+      html+='</div>';}
+    html+='<div style="height:8px"></div>';
     return html;
   }
   function altLagnaVD(lagna){
@@ -7925,7 +7943,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
     if(!(vk2==='D-2'&&typeof SB_OB_genderNA==='function'&&SB_OB_genderNA()))
     html+=SB_pillGrid(vd,{split:(vk2!=='D-2'),hora:(vk2==='D-2'),deg:(vk2==='D-1'),
                           naks:(vk2==='D-1'?chart.nakshatras:null),ctx:vk2});
-    if(vk2!=='D-2'&&vk2!=='D-3'&&vk2!=='D-30'&&vk2!=='D-7'&&vk2!=='D-16'&&vk2!=='D-60'){
+    if(vk2!=='D-2'&&vk2!=='D-3'&&vk2!=='D-30'&&vk2!=='D-60'){
       html+='<div style="margin:16px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Yogas ▲\':\'Show Yogas ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Yogas ▼</button><div class="adsub" style="margin-top:8px">'+yogaListHTML(vk2)+'</div></div>';
     }
     if(vk2==='D-2'){var _gEl=document.getElementById('iGender');var _g=_gEl?_gEl.value:'u';
@@ -13186,7 +13204,7 @@ function SB3D_injectStyles(){
   
   +'@keyframes wtPtBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}'
   +'#sb3dWtSkip{position:absolute;top:162px;right:12px;z-index:10;display:none;pointer-events:auto}'
-  +'#sb3dMute{position:absolute;top:112px;right:0;z-index:10;display:none;pointer-events:auto;font-size:15px;padding:6px 12px 6px 10px;line-height:1;border-top-right-radius:0;border-bottom-right-radius:0;border-right-color:transparent}'
+  +'#sb3dMute{position:absolute;top:112px;right:12px;z-index:10;display:none;pointer-events:auto;font-size:15px;padding:6px 12px;line-height:1}'
   +'.sb3d-bar{position:absolute;top:0;left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;padding-top:calc(12px + env(safe-area-inset-top));z-index:5;pointer-events:none}'
   +'.sb3dRow{display:contents}' /* desktop: one flowing row, exactly as before */
   +'.sb3d-btn .bs{display:none}'
@@ -13768,7 +13786,12 @@ function SB3D_setPOV(id,instant){
       camPos=camPos.clone()
         .addScaledVector(trueUp,-dLen*0.22).addScaledVector(right,-dLen*0.05);
     }else{
-      camPos=camPos.clone().addScaledVector(trueUp,-dLen*0.15);
+      /* Desktop: the button bar owns the top of the screen and the dial now
+         sweeps a big quarter-arc out of the bottom-left corner. Pull back a
+         little so the ring is smaller, drop it clear of the bar instead of
+         tucking it underneath, and ease it right of the dial. */
+      camPos=camPos.clone().setLength(dLen*1.16)
+        .addScaledVector(trueUp,-dLen*0.04).addScaledVector(right,-dLen*0.07);
     }
   }
   var target={pos:camPos,fwd:fwd,up:trueUp,right:right};
@@ -14538,13 +14561,36 @@ function SB3D_dashaDialInit(){
   SB3D_dashaApply();
 }
 
-/* protractor geometry: screen angle t runs 0 (left horizon) -> 90 (top,
-   the selected period) -> 180 (right horizon); time flows left to right */
+/* protractor geometry: screen angle t runs 0 (left horizon) -> 180 (right
+   horizon); time flows left to right, and SEL is the angle the running
+   period is parked at.
+
+   On a phone the whole half-disc is on screen and SEL is the top (90).
+   On desktop the dial's centre sits ON the bottom-left corner of the
+   window, so only the quarter from straight up (90) to the bottom edge
+   (180) is visible. Parking the selection at 90 there pinned it to the
+   left wall with nothing but the future beside it; 135 is the middle of
+   that visible quarter, so the past and the future both read. The radius
+   is sized off the window instead of a fixed 270 so more antardashas fit
+   along the sweep. */
+function SB3D_dashaGeom(){
+  var desk=false;
+  try{desk=window.matchMedia('(min-width:641px)').matches;}
+  catch(e){desk=(window.innerWidth>640);}
+  if(desk){
+    var R=Math.max(240,Math.min(window.innerHeight*0.64,window.innerWidth*0.36,470));
+    return{desk:true,R:R,W:Math.round(R*2),H:Math.round(R+34),
+           STEP:7.5,SEL:135,DR:0.34,DF:13};
+  }
+  var W=Math.min(window.innerWidth-8,600),R2=Math.min(W*0.47,270);
+  return{desk:false,R:R2,W:W,H:Math.round(R2+34),
+         STEP:10,SEL:90,DR:0.13,DF:16};
+}
 function SB3D_dashaDialDraw(){
   var s=SB3D.state;if(!s||!s.dashaPeriods)return;
   var cv=document.getElementById('sb3dDashaCv');if(!cv)return;
   var dpr=Math.min(window.devicePixelRatio||1,2);
-  var W=Math.min(window.innerWidth-8,600),R=Math.min(W*0.47,270),H=Math.round(R+34);
+  var G=SB3D_dashaGeom(),W=G.W,R=G.R,H=G.H,SEL=G.SEL;
   cv.style.width=W+'px';cv.style.height=H+'px';
   cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
   var g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);
@@ -14556,10 +14602,10 @@ function SB3D_dashaDialDraw(){
   g.fillStyle='rgba(9,9,20,0.66)';g.fill();
   g.beginPath();g.arc(cx,cy,R,Math.PI,0);
   g.strokeStyle='rgba(201,168,76,0.55)';g.lineWidth=1.2;g.stroke();
-  var P=s.dashaPeriods,N=P.length,STEP=10; /* 10 deg per antardasha: 180/18 = two mahadashas visible */
+  var P=s.dashaPeriods,N=P.length,STEP=G.STEP;
   var sel=s.dashaIdx,rot=s.dashaRot||0;
   for(var i=0;i<N;i++){
-    var t=90+(i-sel-rot)*STEP;
+    var t=SEL+(i-sel-rot)*STEP;
     if(t<-3||t>183)continue;
     var p=P[i],isSel=(i===sel&&Math.abs(rot)<0.5);
     /* tick line */
@@ -14588,9 +14634,9 @@ function SB3D_dashaDialDraw(){
     /* the START date written along the foot of the tick, sketch-style */
     var a=t*Math.PI/180,ux=-Math.cos(a),uy=-Math.sin(a);
     var ang=Math.atan2(uy,ux),flip=(ang>Math.PI/2||ang<-Math.PI/2);
-    var o=px(t,R*0.13);
+    var o=px(t,R*G.DR);
     g.save();g.translate(o.x,o.y);g.rotate(flip?ang+Math.PI:ang);
-    g.font='400 16px Cinzel,serif';
+    g.font='400 '+G.DF+'px Cinzel,serif';
     g.fillStyle=isSel?'#f5c518':'rgba(200,192,170,0.85)';
     g.textAlign=flip?'right':'left';g.textBaseline='middle';
     g.fillText(SB3D_dashaFmt(p.startDate),0,0);
@@ -14600,13 +14646,18 @@ function SB3D_dashaDialDraw(){
      old height; where the transparent circle still overlaps the empty
      protractor corner it wins the touch (higher z-index) */
   var joy=document.getElementById('sb3dJoy');
-  if(joy)joy.style.bottom=Math.round(H*0.55)+'px';
-  /* fixed yellow center marker at the top, exactly like the camera dial */
-  var m1=px(90,R*0.99),m2=px(90,R*0.90);
+  if(joy)joy.style.bottom=G.desk?'':Math.round(H*0.55)+'px';
+  /* fixed yellow marker on the selection ray, exactly like the camera dial */
+  var m1=px(SEL,R*0.99),m2=px(SEL,R*0.90);
   g.beginPath();g.moveTo(m1.x,m1.y);g.lineTo(m2.x,m2.y);
   g.strokeStyle='#f5c518';g.lineWidth=3;g.stroke();
-  g.beginPath();g.moveTo(cx,H-R+2);g.lineTo(cx-5,H-R-7);g.lineTo(cx+5,H-R-7);g.closePath();
-  g.fillStyle='#f5c518';g.fill();
+  /* the arrowhead rides the rim, pointing outward along that same ray */
+  var aS=SEL*Math.PI/180,ux2=-Math.cos(aS),uy2=-Math.sin(aS);
+  var tip=px(SEL,R+2),bA=px(SEL,R-7);
+  g.beginPath();g.moveTo(tip.x,tip.y);
+  g.lineTo(bA.x-uy2*5,bA.y+ux2*5);
+  g.lineTo(bA.x+uy2*5,bA.y-ux2*5);
+  g.closePath();g.fillStyle='#f5c518';g.fill();
 }
 
 /* one haptic tick per division change: Android speaks the Vibration API;
@@ -14650,9 +14701,9 @@ function SB3D_dashaDialWire(cv){
   });
   cv.addEventListener('pointermove',function(ev){
     if(!drag)return;ev.preventDefault();ev.stopPropagation();
-    /* arc length of one 10-degree tick at the rim = the finger distance per period */
-    var R=Math.min((Math.min(window.innerWidth-8,600))*0.47,270);
-    var pxPerTick=R*10*Math.PI/180;
+    /* arc length of one tick at the rim = the finger distance per period */
+    var G=SB3D_dashaGeom();
+    var pxPerTick=G.R*G.STEP*Math.PI/180;
     setV(drag.v-(ev.clientX-drag.x)/pxPerTick,false); /* drag right -> back in time */
   });
   function up(ev){if(!drag)return;drag=null;cv.style.cursor='grab';
@@ -15175,11 +15226,13 @@ function SB3D_outerGlyph(name,size){
     g.beginPath();g.moveTo(94,198);g.lineTo(162,198);g.stroke();
     ah(70,60);ah(128,52);ah(186,60);
   }else if(name==='Uranus'){
-    g.beginPath();g.moveTo(80,52);g.quadraticCurveTo(48,110,80,168);g.stroke();
-    g.beginPath();g.moveTo(176,52);g.quadraticCurveTo(208,110,176,168);g.stroke();
-    g.beginPath();g.moveTo(128,52);g.lineTo(128,164);g.stroke();
-    g.beginPath();g.moveTo(82,110);g.lineTo(174,110);g.stroke();
-    g.beginPath();g.arc(128,190,24,0,6.2832);g.stroke();
+    /* the western bi-wheel prints U+2645 for Uranus; the sky now prints the
+       same character rather than a hand-drawn lookalike, so one planet keeps
+       one glyph wherever it is shown */
+    g.fillStyle='#eef4fb';
+    g.textAlign='center';g.textBaseline='middle';
+    g.font='196px "EB Garamond",Cinzel,serif';
+    g.fillText('\u2645\uFE0E',128,132);
   }else{ /* Pluto */
     g.beginPath();g.arc(128,84,30,0,6.2832);g.stroke();
     g.beginPath();g.moveTo(66,58);g.quadraticCurveTo(66,140,128,140);
