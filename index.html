@@ -551,6 +551,7 @@ body.sb-read #sbDock{display:flex}
    its own element so the name beside it stays a translatable text node. */
 .pgl{font-family:"Segoe UI Symbol","Noto Sans Symbols2","DejaVu Sans",serif;font-variant-emoji:text;letter-spacing:0}
 .dcur{font-weight:bold}
+.dpart{font-size:12px;font-style:italic;color:var(--gold-dim);margin:-2px 0 8px 2px;line-height:1.45}
 .wgd{font:inherit}
 @media(max-width:640px){.sbDD{min-width:0;flex:1 1 30%}.sbDDBtn{font-size:10px;padding:10px 10px;letter-spacing:.06em}#sbDock{justify-content:space-between;gap:2px;padding:8px 6px calc(9px + env(safe-area-inset-bottom))}
 .sbDockBtn{width:auto;flex:1 1 0;min-width:0;padding:6px 1px;min-height:62px}
@@ -4516,6 +4517,7 @@ ka:{
 "That’s not a verdict on you — it’s where this planet has to work hardest.":"ეს შენზე გამოტანილი განაჩენი არ არის — ეს ის ადგილია, სადაც ამ პლანეტას ყველაზე მეტი შრომა უწევს.",
 "That’s where your chart stops being a picture and starts being a clock.":"სწორედ აქ წყვეტს შენი რუკა სურათად ყოფნას და საათად გადაიქცევა!",
 "The 120-Year Life Cycle":"ცხოვრების 120-წლიანი ციკლი",
+"This period began on {0}, before the birth. {1}% of it was still to run.":"ეს პერიოდი {0}-ში დაიწყო, დაბადებამდე. დაბადებისას მისი {1}% ჯერ კიდევ გასავლელი იყო.",
 "The 3D sky needs WebGL, which this device does not offer - so here is your written reading instead.":"3D ცას WebGL სჭირდება, რაც ამ მოწყობილობას არ აქვს - ამიტომ სანაცვლოდ შენი წერილობითი წაკითხვაა.",
 "The Achiever":"მიზანდასახული",
 "The Analyst":"ანალიტიკოსი",
@@ -6852,7 +6854,19 @@ function calcDashaSequence(moonTropicalDeg, birthDateStr, jdOpt){
   var cur=new Date(birth.getTime());
   var totalDaysElapsed=0;
   var end=new Date(birth.getTime()+remainingDays*86400000);
-  dashaSeq.push({planet:lord,sym:DASHA_SYMS[lord],start:0,end:remainingDays/DAY_YEAR,startDate:new Date(cur),endDate:new Date(end)});
+  /* The first mahadasha is the only one that is already part-spent: the Moon
+     stood somewhere inside its nakshatra at birth, so the period opened before
+     the person did. We list it from the birth, not from that earlier date -
+     a date preceding the birth reads as an error in a life timeline - but we
+     carry the real start and the surviving share so the reading can say so.
+     This is also why only the first row differs from software that prints the
+     whole period: every later mahadasha is untouched and lines up exactly. */
+  var elapsedDays=Math.round(DASHA_YEARS[lord]*DAY_YEAR*fracInNak);
+  dashaSeq.push({planet:lord,sym:DASHA_SYMS[lord],start:0,end:remainingDays/DAY_YEAR,
+    startDate:new Date(cur),endDate:new Date(end),
+    partial:fracInNak>0.0005,
+    pctLeft:Math.round(remainingFraction*100),
+    trueStart:new Date(birth.getTime()-elapsedDays*86400000)});
   cur=end;
   totalDaysElapsed=remainingDays;
   var idx=(lordIdx+1)%9;
@@ -8258,6 +8272,9 @@ function renderReading(name,date,time,place,chart,aiTxt){
     var sY=ds.startDate.toISOString().slice(0,10),eY=ds.endDate.toISOString().slice(0,10);
     var spanYears=(ds.endDate-ds.startDate)/(365.25*86400000);
     html+='<div class="dr'+(isCur?' dact':'')+'" onclick="toggleAntar(\'adsub'+dsi+'\')"><div class="dpn">'+PGL(ds.planet)+' '+ds.planet+(isCur?'<span class="dcur"> &lt;</span>':'')+'</div><div class="dbw"><div class="dbi" style="width:'+Math.round((spanYears/20)*100)+'%"></div></div><div class="dyr">'+sY+' to '+eY+'</div></div>';
+    /* the opening period was already running at birth - say so, or the first
+       row looks wrong next to any table that prints the whole period */
+    if(ds.partial)html+='<div class="dpart">'+T('This period began on {0}, before the birth. {1}% of it was still to run.',[ds.trueStart.toISOString().slice(0,10),ds.pctLeft])+'</div>';
     var adSeq=calcAntardasha(ds);
     html+='<div class="adsub" id="adsub'+dsi+'">';
     for(var ai=0;ai<adSeq.length;ai++){
@@ -16100,8 +16117,14 @@ function SBScene_set(frac,instant){
   S.belt.style.opacity=(1-warm).toFixed(3);
   var bd=S.brand||(S.brand=document.getElementById('sbObBrand'));
   if(bd){
-    bd.style.color='rgba(232,201,122,'+warm.toFixed(3)+')';
-    bd.style.textShadow=warm>0.02?('0 0 '+(20*warm).toFixed(1)+'px rgba(232,201,122,'+(0.6*warm).toFixed(3)+')'):'none';
+    /* The wordmark fills with gold as the sun climbs, but step 1 already sits
+       at frac = 1/6, so it opened with a sixth of a gold wash over a dark sky
+       - which reads as grey rather than as an outline. Re-base the fill so it
+       starts at nothing on the first page and still reaches full gold at the
+       end; the letters are genuinely hollow when the reader first sees them. */
+    var bwarm=Math.max(0,(warm-1/6)/(1-1/6));
+    bd.style.color='rgba(232,201,122,'+bwarm.toFixed(3)+')';
+    bd.style.textShadow=bwarm>0.02?('0 0 '+(20*bwarm).toFixed(1)+'px rgba(232,201,122,'+(0.6*bwarm).toFixed(3)+')'):'none';
   }
   if(instant){void S.sun.getBoundingClientRect();S.sun.style.transition=tr;S.rays.style.transition=tg;}
   SBScene_moon(mfrac,instant);
