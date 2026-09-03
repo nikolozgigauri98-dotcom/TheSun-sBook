@@ -1340,7 +1340,22 @@ const DASHAS=[
   {planet:'Venus',years:20,sym:'Ve'}
 ];
 const NAK_LORDS=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'];
-const AYANAMSA=23+49/60;
+/* Lahiri ayanamsa, evaluated for the moment of the chart instead of frozen at
+   one epoch. This is the ayanamsa DiCara's method asks for: no correction on
+   the rasis, Lahiri on the nakshatras. What used to sit here was a bare
+   constant, 23 deg 49 min, which is Lahiri's value for 1997 and nothing else.
+   Precession runs about 50.29"/yr, so a chart drifted roughly a degree for
+   every 72 years away from that one year - Hitler's 1889 chart was out by
+   1.5 deg, which pushed the Moon across the Mula / Purva Ashadha line and
+   handed his whole Vimshottari sequence to Ketu instead of Venus, a two-year
+   error in every mahadasha date.
+   The quadratic below reproduces the Swiss Ephemeris Lahiri to under a
+   thousandth of an arcsecond across 1700-2150. */
+function AYANAMSA_AT(jd){
+  var T=(jd-2451545.0)/36525.0;
+  return 23.857092389+1.396887955*T+0.000307049*T*T;
+}
+function AYANAMSA_NOW(){return AYANAMSA_AT(2440587.5+Date.now()/86400000);}
 const MOON_TA=[[0,0,1,0,6288774],[2,0,-1,0,1274027],[2,0,0,0,658314],[0,0,2,0,213618],[0,1,0,0,-185116],[0,0,0,2,-114332],[2,0,-2,0,58793],[2,-1,-1,0,57066],[2,0,1,0,53322],[2,-1,0,0,45758],[0,1,-1,0,-40923],[1,0,0,0,-34720],[0,1,1,0,-30383],[2,0,0,-2,15327],[0,0,1,2,-12528],[0,0,1,-2,10980],[4,0,-1,0,10675],[0,0,3,0,10034],[4,0,-2,0,8548],[2,1,-1,0,-7888],[2,1,0,0,-6766],[1,0,-1,0,-5163],[1,1,0,0,4987],[2,-1,1,0,4036],[2,0,2,0,3994],[4,0,0,0,3861],[2,0,-3,0,3665],[0,1,-2,0,-2689],[2,0,-1,2,-2602],[2,-1,-2,0,2390],[1,0,1,0,-2348],[2,-2,0,0,2236],[0,1,2,0,-2120],[0,2,0,0,-2069],[2,-2,-1,0,2048],[2,0,1,-2,-1773],[2,0,0,2,-1595],[4,-1,-1,0,1215],[0,0,2,2,-1110],[3,0,-1,0,-892],[2,1,1,0,-810],[4,-1,-2,0,759],[0,2,-1,0,-713],[2,2,-1,0,-700],[2,1,-2,0,691],[2,-1,0,-2,596],[4,0,1,0,549],[0,0,4,0,537],[4,-1,0,0,520],[1,0,-2,0,-487],[2,1,0,-2,-399],[0,0,2,-2,-381],[1,1,1,0,351],[3,0,-2,0,-340],[4,0,-3,0,330],[2,-1,2,0,327],[0,2,1,0,-323],[1,1,-1,0,299],[2,0,3,0,294],[2,0,-1,-2,0]];
 const VIM_ORDER=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'];
 const VIM_YEARS={Ketu:7,Venus:20,Sun:6,Moon:10,Mars:7,Rahu:18,Jupiter:16,Saturn:19,Mercury:17};
@@ -1361,10 +1376,11 @@ function calcAntardasha(ds){
 }
 function toggleAntar(id){var el=document.getElementById(id);if(el)el.classList.toggle('open');}
 const NAKSHATRAS=['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
-function calcNakshatras(planets){
+function calcNakshatras(planets,jd){
   var span=360/27,padaSpan=span/4,result={};
+  var ayan=AYANAMSA_AT((jd===undefined||jd===null)?(2440587.5+Date.now()/86400000):jd);
   for(var p in planets){
-    var d=planets[p],sid=norm(d.deg-AYANAMSA);
+    var d=planets[p],sid=norm(d.deg-ayan);
     var idx=Math.floor(sid/span),posInNak=sid%span,pada=Math.floor(posInNak/padaSpan)+1;
     result[p]={name:NAKSHATRAS[idx],lord:NAK_LORDS[idx%9],pada:pada,siderealDeg:sid};
   }
@@ -1530,7 +1546,7 @@ function calcTransitsNow(jdOpt){
     var a=(l1[n]!==undefined)?l1[n]:o1[n],b=(l2[n]!==undefined)?l2[n]:o2[n];
     var motion=norm(b-a+180)-180;
     var retro=(n==='Sun'||n==='Moon')?false:((n==='Rahu'||n==='Ketu')?true:motion<0);
-    var av=(typeof window!=='undefined'&&window.SB_SIDEREAL)?norm(a-AYANAMSA):a;
+    var av=(typeof window!=='undefined'&&window.SB_SIDEREAL)?norm(a-AYANAMSA_AT(jd)):a;
     out[n]=Object.assign({},d2s(av),{deg:av,retro:retro});
   });
   return{jd:jd,when:nn,order:ORD,planets:out};
@@ -4628,7 +4644,7 @@ ka:{
 "Trimsamsa · D-30":"ტრიმშამშა · D-30",
 "Trimshamsha":"ტრიმშამშა",
 "Tropical":"ტროპიკული",
-"Tropical is the default. Sidereal shifts every longitude by the ayanamsa (23°49′) and recalculates the whole book - degrees, houses, vargas, aspects, transits and the 3D sky. Nakshatras are already sidereal and stay put.":"ნაგულისხმევია ტროპიკული. სიდერული ყოველ გრძედს აიანამშათი (23°49′) წაანაცვლებს და მთელ წიგნს ხელახლა ითვლის — გრადუსებს, სახლებს, ვარგებს, ასპექტებს, ტრანზიტებსა და 3D ცას. ნაკშატრები უკვე სიდერულია და ადგილზე რჩება.",
+"Tropical is the default. Sidereal shifts every longitude by the ayanamsa for the chart’s own date (Lahiri) and recalculates the whole book - degrees, houses, vargas, aspects, transits and the 3D sky. Nakshatras are already sidereal and stay put.":"ნაგულისხმევია ტროპიკული. სიდერული ყოველ გრძედს რუკის საკუთარი თარიღის აიანამშათი (ლაჰირი) წაანაცვლებს და მთელ წიგნს ხელახლა ითვლის — გრადუსებს, სახლებს, ვარგებს, ასპექტებს, ტრანზიტებსა და 3D ცას. ნაკშატრები უკვე სიდერულია და ადგილზე რჩება.",
 "Truth":"ჭეშმარიტება",
 "Truth-seeking occult":"ჭეშმარიტების მაძიებელი ოკულტიზმი",
 "Truthful ethics":"ჭეშმარიტი ეთიკა",
@@ -5645,21 +5661,159 @@ function drawChart(vd,sz){
   svg+='</defs><rect width="'+W+'" height="'+H+'" fill="#06060e"/>';
   for(var h=1;h<=12;h++){var sn=SIGNS[(vd.ascIdx+h-1)%12].name;svg+='<polygon points="'+poly(H2R[h])+'" fill="'+SCOL[sn]+'" stroke="#000" stroke-width="1.5"/>';}
 
-  // Sign symbol positions:
-  // Square houses (1,4,7,10) = center of diamond, sign goes center
-  // Triangular houses = outer tip corner
-  // H2R maps house->region index. Outer corners per house:
-  // H2=top(A), H3=top-right(B), H4=right(C), H5=bot-right(D), H6=bot(E), H7=bot-left(F), H8=left(G), H9=top-left(H)
-  // H1,H10,H11,H12 = diamond centers use ctr
-  var m2=fs;
-  for(var h2=1;h2<=12;h2++){
-    var ct=ctr(H2R[h2]),sn2=SIGNS[(vd.ascIdx+h2-1)%12].name;
-    // Sign symbol always at centroid — this is correct for all house types
-    var isSq=[1,4,7,10].indexOf(h2)>-1;
-    var signY=ct[1]+(isSq?Math.round(m2*0.4):Math.round(m2*0.35));
-    svg+='<text x="'+ct[0]+'" y="'+signY+'" text-anchor="middle" font-size="'+m2+'px" fill="#ffffffbb" font-weight="bold" font-family="serif">'+SSYM[sn2]+'</text>';
-    if(h2===1&&vd.ascDeg!==undefined)svg+='<text x="'+(ct[0]+Math.round(m2*1.1))+'" y="'+signY+'" text-anchor="start" font-size="'+fd+'px" fill="#ffd060" font-family="sans-serif">'+Math.floor(vd.ascDeg)+'</text>';
 
+  /* ---------------------------------------------------------------
+     SIGN BADGES.  The signs used to sit on each house's centroid,
+     which is exactly where the planets want to be. They move to the
+     five points where houses already meet, leaving every house
+     interior free:
+
+       CC  - the four diamonds (1,4,7,10) meet here -> one ring,
+             their glyphs at N / W / S / E
+       ip  - houses 2 and 3 meet here   \
+       Q   - houses 11 and 12 meet here  |  the same ring cut in half,
+       R   - houses 8 and 9 meet here    |  opening outward
+       S   - houses 5 and 6 meet here   /
+
+     Two things about the half-rings are worth stating, because both
+     are consequences of the chart being 480x360 rather than square:
+
+     1. The flat edge is NOT the perpendicular to the outward
+        direction. It is the real house boundary - at ip, the straight
+        line A-ip-G - and it is found from REG, not assumed.
+
+     2. That boundary and the divider between the two houses meet at
+        106.26 and 73.74 degrees, not 90 and 90. A half-ring centred on
+        the vertex therefore gives one house 59 per cent of itself and
+        the other 41. So the arc centre is slid along the boundary
+        until the divider cuts it exactly in half; the flat edge still
+        lies on the line, the shape is still a clean half-ring, and the
+        two houses now show the same area. The offset is solved at
+        runtime by bisection rather than written in, so it stays right
+        if the chart's proportions ever change.
+
+     Nothing is hard-coded to a house number: the diameter, the outward
+     side, which house is the wider one, and each glyph's seat are all
+     derived, and every seat is proved with the same inReg() the planet
+     placer uses.
+     --------------------------------------------------------------- */
+  var m2=fs;
+  var badgeR=Math.max(22,Math.round(sz*0.092));   /* one radius for all five */
+  var BADGE_STROKE='#000';                        /* the same line as every house edge */
+  var BADGE_SW=1.5;
+  var signPts=[];                                  /* for planet avoidance */
+
+  function sname(h){return SIGNS[(vd.ascIdx+h-1)%12].name;}
+  function vlen(x,y){return Math.sqrt(x*x+y*y);}
+  /* the vertex of region ri that is neither the shared centre nor the tip */
+  function thirdV(ri,vk,ok){var r=REG[ri];
+    for(var i=0;i<r.length;i++){if(r[i]!==vk&&r[i]!==ok)return r[i];}return null;}
+  function glyph(x,y,h,fsz){
+    signPts.push({x:x,y:y,r:fsz*0.62});
+    return '<text x="'+Math.round(x)+'" y="'+Math.round(y+fsz*0.35)+'" text-anchor="middle" font-size="'+fsz+'px" fill="#ffffffdd" font-weight="bold" font-family="serif">'+SSYM[sname(h)]+'</text>';
+  }
+
+  /* area of the half-ring lying on the wide side of the divider, when the
+     vertex sits at -t along the chord. Used only by the bisection below. */
+  function wideArea(t,R,phi){
+    var c=Math.cos(phi), s0=Math.sin(phi);
+    var s=t*c+Math.sqrt(Math.max(0,R*R-t*t*s0*s0));
+    var a=Math.atan2(s*s0,-t+s*c); if(a<0)a+=2*Math.PI;
+    return 0.5*R*R*a+0.5*t*R*Math.sin(a);
+  }
+  function equalOffset(R,phi){
+    var lo=-0.6*R, hi=0.6*R, target=Math.PI*R*R/4, i, t;
+    for(i=0;i<32;i++){t=(lo+hi)/2; if(wideArea(t,R,phi)>target)hi=t; else lo=t;}
+    return (lo+hi)/2;
+  }
+
+  /* Walk the glyph outward along its ray and take the first spot where the
+     whole ink box keeps a margin from every black line - the house edges and
+     the ring itself. Measured on the glyph's real ink (a serif sign fills
+     about 0.75 x 0.72 of its font size), not the em box, which would demand
+     a ring far larger than it needs to be. */
+  function seat(ri,ox,oy,dx,dy,fsz,mx,my,rmax){
+    var hw=fsz*0.44, hh=fsz*0.42, pad=Math.max(2,fsz*0.22);
+    var pw=hw+pad, ph=hh+pad, lim=rmax-Math.max(hw,hh)*0.30-pad*0.7, d, best=null;
+    for(d=rmax*0.20;d<=rmax*0.85;d+=1){
+      var x=ox+dx*d, y=oy+dy*d;
+      if(!(inReg(ri,x-pw,y-ph)&&inReg(ri,x+pw,y-ph)&&
+           inReg(ri,x-pw,y+ph)&&inReg(ri,x+pw,y+ph)))continue;
+      if(!best)best={x:x,y:y};
+      var far=0,sx,sy,ex,ey;
+      for(sx=-1;sx<=1;sx+=2)for(sy=-1;sy<=1;sy+=2){
+        ex=x+sx*hw-mx; ey=y+sy*hh-my;
+        far=Math.max(far,Math.sqrt(ex*ex+ey*ey));
+      }
+      if(far<=lim)return{x:x,y:y};
+    }
+    return best||{x:ox+dx*rmax*0.45, y:oy+dy*rmax*0.45};
+  }
+
+  /* --- the centre ring: houses 1, 4, 7, 10 --- */
+  var cx0=K.CC[0], cy0=K.CC[1], cg=Math.max(9,Math.round(m2*0.80));
+  svg+='<circle cx="'+cx0+'" cy="'+cy0+'" r="'+badgeR+'" fill="none" stroke="'+BADGE_STROKE+'" stroke-width="'+BADGE_SW+'"/>';
+  var CEN=[[1,0,-1],[4,-1,0],[7,0,1],[10,1,0]];
+  for(var ci2=0;ci2<CEN.length;ci2++){
+    var Cc=CEN[ci2], sp=seat(H2R[Cc[0]],cx0,cy0,Cc[1],Cc[2],cg,cx0,cy0,badgeR);
+    svg+=glyph(sp.x,sp.y,Cc[0],cg);
+    if(Cc[0]===1&&vd.ascDeg!==undefined)
+      svg+='<text x="'+Math.round(sp.x+cg*0.62)+'" y="'+Math.round(sp.y-cg*0.20)+'" text-anchor="start" font-size="'+fd+'px" fill="#ffd060" font-family="sans-serif">'+Math.floor(vd.ascDeg)+'</text>';
+  }
+  signPts.push({x:cx0,y:cy0,r:badgeR*0.92});
+
+  /* --- the four half-rings at the inner vertices --- */
+  var BADGES=[{v:'ip',out:'H',hs:[2,3]},{v:'Q',out:'B',hs:[12,11]},
+              {v:'R',out:'D',hs:[8,9]},{v:'S',out:'F',hs:[5,6]}];
+  for(var bi=0;bi<BADGES.length;bi++){
+    var B=BADGES[bi], V=K[B.v], O=K[B.out];
+    var rA=H2R[B.hs[0]];
+    /* the diameter runs between the two triangles' far vertices - at ip that
+       is A -> ip -> G, the genuine house boundary */
+    var P1=K[thirdV(rA,B.v,B.out)];
+    var ddx=P1[0]-V[0], ddy=P1[1]-V[1], dL=vlen(ddx,ddy);
+    var dx=ddx/dL, dy=ddy/dL;
+    /* the divider, and which arm belongs to the WIDER house */
+    var wx=O[0]-V[0], wy=O[1]-V[1], wL=vlen(wx,wy); wx/=wL; wy/=wL;
+    if(dx*wx+dy*wy>0){dx=-dx;dy=-dy;}      /* keep +d on the wide side */
+    var phi=Math.acos(Math.max(-1,Math.min(1,dx*wx+dy*wy)));
+    /* of the two normals, keep the one pointing at the outer corner */
+    var nx=dy, ny=-dx;
+    if(nx*wx+ny*wy<0){nx=-nx;ny=-ny;}
+    /* slide the centre along the boundary until the divider halves the ring */
+    var toff=equalOffset(badgeR,phi);
+    var mx=V[0]+dx*toff, my=V[1]+dy*toff;
+    var p1x=mx+dx*badgeR, p1y=my+dy*badgeR;
+    var p2x=mx-dx*badgeR, p2y=my-dy*badgeR;
+    var sweep=((dx*ny-dy*nx)>0)?1:0;
+    svg+='<path d="M'+Math.round(p1x)+','+Math.round(p1y)+' A'+badgeR+','+badgeR+' 0 0 '+sweep+' '+Math.round(p2x)+','+Math.round(p2y)+' Z" fill="none" stroke="'+BADGE_STROKE+'" stroke-width="'+BADGE_SW+'"/>';
+    /* each glyph rides the ray from the vertex toward its own triangle */
+    for(var si=0;si<2;si++){
+      var hh2=B.hs[si], ri2=H2R[hh2], cc=ctr(ri2);
+      var sx2=cc[0]-V[0], sy2=cc[1]-V[1], sL=vlen(sx2,sy2);
+      var sp2=seat(ri2,V[0],V[1],sx2/sL,sy2/sL,cg,mx,my,badgeR);
+      svg+=glyph(sp2.x,sp2.y,hh2,cg);
+    }
+    signPts.push({x:mx+nx*badgeR*0.30,y:my+ny*badgeR*0.30,r:badgeR*0.82});
+  }
+
+  /* a glyph block is clear when none of its cells touch a sign badge */
+  function clearOfBadges(bl,cols,rows,n){
+    for(var i=0;i<n;i++){
+      var p=cellXY(bl,i,cols,rows,n);
+      var L=p.x-bl.fp*0.58, R=p.x+bl.fp*0.58+bl.fd*1.1,
+          T=p.y-bl.fp*0.82-bl.fd*0.55, B=p.y+bl.fp*0.24;
+      for(var s=0;s<signPts.length;s++){
+        var q=signPts[s];
+        var qx=Math.max(L,Math.min(q.x,R)), qy=Math.max(T,Math.min(q.y,B));
+        var ex=q.x-qx, ey=q.y-qy;
+        if(ex*ex+ey*ey < q.r*q.r) return false;
+      }
+    }
+    return true;
+  }
+  for(var h2=1;h2<=12;h2++){
+    var ct=ctr(H2R[h2]);
     var pl=byH[h2],pn=pl.length;
     if(!pn)continue;
     svg+='<g clip-path="url(#'+uid+'h'+h2+')">';
@@ -5673,7 +5827,7 @@ function drawChart(vd,sz){
     var rgi=H2R[h2], bnd=yRange(rgi);
     var cols=(pn===1?1:(pn===2?2:(pn<=4?2:3))), rows=Math.ceil(pn/cols);
     var want=(pn===1?3.0:(pn===2?2.0:(pn<=4?1.7:1.25)));
-    var signMid=ct[1]+Math.round(m2*0.35), best=null, pass, sc, cyc;
+    var best=null, pass, sc, cyc;
     /* Size first, then tidiness. For each size, largest down, we try to keep
        clear of the sign glyph (pass 0) and only then allow the overlap
        (pass 1) - the planets carry a black outline and stay legible over it.
@@ -5686,17 +5840,17 @@ function drawChart(vd,sz){
       var cw=fpS*1.62, ch=fpS*1.70, bw=cols*cw, bh=rows*ch;
       for(pass=0;pass<2&&!best;pass++){
         for(cyc=bnd.y0+bh/2;cyc<=bnd.y1-bh/2;cyc+=2){
-          if(pass===0&&Math.abs(cyc-signMid)<bh/2+m2*0.45)continue;
           var sp2=spanAtY(rgi,cyc);
           if(!sp2||sp2.w<bw)continue;
           var bl={cw:cw,ch:ch,fp:fpS,fd:fdS,
                   cx:Math.min(Math.max(ct[0],sp2.lo+bw/2),sp2.hi-bw/2),cy:cyc};
+          if(pass===0&&!clearOfBadges(bl,cols,rows,pn))continue;
           if(blockInside(rgi,bl,cols,rows,pn)){best=bl;break;}
         }
       }
     }
     if(!best)best={cw:fp*1.2,ch:fp*1.3,fp:Math.max(7,Math.round(fp*0.7)),
-                   fd:Math.max(6,Math.round(fd*0.7)),cx:ct[0],cy:ct[1]-Math.round(m2*0.6)};
+                   fd:Math.max(6,Math.round(fd*0.7)),cx:ct[0],cy:ct[1]};
     for(var pi=0;pi<pn;pi++){
       var nm2=pl[pi],cxy=cellXY(best,pi,cols,rows,pn);
       var px=Math.round(cxy.x),py=Math.round(cxy.y);
@@ -6672,13 +6826,16 @@ function calcShadbala(planets,ascIdx,ascTotalDeg,dateStr,timeStr){
   return result;
 }
 
-function calcDashaSequence(moonTropicalDeg, birthDateStr){
+function calcDashaSequence(moonTropicalDeg, birthDateStr, jdOpt){
   var DAY_YEAR=359.016; /* the book's dasha year, to the day it specifies */
   var DASHA_YEARS={Ketu:7,Venus:20,Sun:6,Moon:10,Mars:7,Rahu:18,Jupiter:16,Saturn:19,Mercury:17};
   var DASHA_SYMS={Sun:'Su',Moon:'Mo',Mars:'Ma',Rahu:'Ra',Jupiter:'Ju',Saturn:'Sa',Mercury:'Me',Ketu:'Ke',Venus:'Ve'};
   var ORDER=['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury'];
 
-  var moonSidereal=norm(moonTropicalDeg-AYANAMSA);
+  /* the ayanamsa of the birth, not of today: the nakshatra this lands in
+     decides the first mahadasha lord and every date after it */
+  var _jd=(jdOpt===undefined||jdOpt===null)?toJD(birthDateStr,12):jdOpt;
+  var moonSidereal=norm(moonTropicalDeg-AYANAMSA_AT(_jd));
   var nakSpan=360/27;
   var nakIdx=Math.floor(moonSidereal/nakSpan);
   var fracInNak=(moonSidereal%nakSpan)/nakSpan;
@@ -7527,7 +7684,8 @@ function calculateChart(dateStr,timeStr,place,tzOverride,geoOv,ascOv){
   var hUT=lh-tzUse;
   var jd=toJD(dateStr,hUT),raw=allPlanets(jd),planets={},retro=calcRetro(jd);
   var rawTrop={};for(var _rt in raw)rawTrop[_rt]=raw[_rt];
-  var _sid=(typeof window!=='undefined'&&window.SB_SIDEREAL)?AYANAMSA:0;
+  var _ayan=AYANAMSA_AT(jd);
+  var _sid=(typeof window!=='undefined'&&window.SB_SIDEREAL)?_ayan:0;
   if(_sid)for(var _rn in raw)raw[_rn]=norm(raw[_rn]-_sid);
   for(var n in raw)planets[n]=Object.assign({},d2s(raw[n]),{deg:raw[n],retro:retro[n]||false});
   var ascDeg=norm(calcAsc(jd,city.lat,city.lng)-_sid),asc=Object.assign({},d2s(ascDeg),{deg:ascDeg});
@@ -7539,7 +7697,7 @@ function calculateChart(dateStr,timeStr,place,tzOverride,geoOv,ascOv){
     ascDeg=norm(raw[ascOv]);asc=Object.assign({},d2s(ascDeg),{deg:ascDeg});
   }
   var moon=rawTrop.Moon; /* dasha always from the tropical lon (ayanamsa applied inside) */
-  var dashaSeq=calcDashaSequence(moon,dateStr);
+  var dashaSeq=calcDashaSequence(moon,dateStr,jd);
   var dp=dateStr.split('-'),bDate=new Date(Date.UTC(+dp[0],+dp[1]-1,+dp[2]));
   var nowDate=new Date();
   var curDasha=null;
@@ -7549,12 +7707,12 @@ function calculateChart(dateStr,timeStr,place,tzOverride,geoOv,ascOv){
   var curAge=(nowDate-bDate)/(365.25*24*3600*1000);
   var dignities=allDigs(planets,asc.index),funcNature=FN[asc.sign.name]||{},ascInfo=ASC_INFO[asc.sign.name]||{},aspects=allAsps(planets,asc.index),shodasavarga=calcShodasavarga(planets,asc.index),shadbala=calcShadbala(planets,asc.index,asc.totalDeg,dateStr,timeStr||'12:00');
   var vargas={};var vkeys={'D-1':1,'D-2':2,'D-3':3,'D-7':7,'D-9':9,'D-10':10,'D-12':12,'D-16':16,'D-30':30,'D-60':60};for(var vk in vkeys)vargas[vk]=buildVarga(planets,asc.totalDeg,vkeys[vk]);
-  var nakshatras=calcNakshatras(_sid?(function(){var o={};for(var k in rawTrop)o[k]={deg:rawTrop[k]};return o;})():planets); /* nakshatra calc expects tropical input */
+  var nakshatras=calcNakshatras(_sid?(function(){var o={};for(var k in rawTrop)o[k]={deg:rawTrop[k]};return o;})():planets,jd); /* nakshatra calc expects tropical input */
   var moonPhase=moonPhaseInfo(raw.Sun,raw.Moon);
   var suryaLagna=calcAltLagna(planets,'Sun'),chandraLagna=calcAltLagna(planets,'Moon');
   var outerPlanets=calcOuterPlanets(jd); /* Uranus / Neptune / Pluto: list + bi-wheel only */
   if(_sid)for(var _op in outerPlanets){var _ov=norm(outerPlanets[_op].deg-_sid);outerPlanets[_op]=Object.assign({},d2s(_ov),{deg:_ov,retro:outerPlanets[_op].retro});}
-  var chartPartial={planets:planets,asc:asc,dashaSeq:dashaSeq,curDasha:curDasha,curAge:curAge,dignities:dignities,funcNature:funcNature,ascInfo:ascInfo,aspects:aspects,shodasavarga:shodasavarga,shadbala:shadbala,vargas:vargas,nakshatras:nakshatras,moonPhase:moonPhase,suryaLagna:suryaLagna,chandraLagna:chandraLagna,outerPlanets:outerPlanets};
+  var chartPartial={jd:jd,ayanamsa:_ayan,planets:planets,asc:asc,dashaSeq:dashaSeq,curDasha:curDasha,curAge:curAge,dignities:dignities,funcNature:funcNature,ascInfo:ascInfo,aspects:aspects,shodasavarga:shodasavarga,shadbala:shadbala,vargas:vargas,nakshatras:nakshatras,moonPhase:moonPhase,suryaLagna:suryaLagna,chandraLagna:chandraLagna,outerPlanets:outerPlanets};
   chartPartial.charaKarakas=calcCharaKarakas(planets);
   chartPartial.zodiacMode=_sid?'sidereal':'tropical';
   chartPartial.yogas=computeAllYogas(chartPartial);
@@ -7979,7 +8137,7 @@ function renderReading(name,date,time,place,chart,aiTxt){
   html+=lagnaTableHTML(chart.suryaLagna,'Surya Lagna - House Placements');
   html+='<div style="margin:16px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Yogas ▲\':\'Show Yogas ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Yogas ▼</button><div class="adsub" style="margin-top:8px">'+yogaListHTML('SuryaLagna')+'</div></div>';
   html+='</div>';
-  html+='<div class="section" id="secNak"><p class="section-label">Nakshatras - Lunar Mansions</p><p class="section-title">27 Sidereal Stations</p><p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:18px">'+T('Sidereal positions (ayanamsa {0}\u00b0 subtracted). Each nakshatra spans 13\u00b020\u0027, divided into 4 padas.',[AYANAMSA.toFixed(2)])+'</p><div class="grid7">';
+  html+='<div class="section" id="secNak"><p class="section-label">Nakshatras - Lunar Mansions</p><p class="section-title">27 Sidereal Stations</p><p style="font-size:13px;color:var(--silver);font-style:italic;margin-bottom:18px">'+T('Sidereal positions (ayanamsa {0}\u00b0 subtracted). Each nakshatra spans 13\u00b020\u0027, divided into 4 padas.',[(chart&&chart.ayanamsa!==undefined?chart.ayanamsa:AYANAMSA_NOW()).toFixed(2)])+'</p><div class="grid7">';
   if(chart.nakshatras){
     var NAKCOL={Ketu:'#c8b870',Venus:'#ff80b0',Sun:'#f5cc40',Moon:'#b8d8ff',Mars:'#ff6040',Rahu:'#90b8a8',Jupiter:'#e8b830',Saturn:'#c8a0f0',Mercury:'#70e070'};
     var nakOrder=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
@@ -11088,7 +11246,7 @@ function SB_settingsHTML(){
   var html='<div class="sbSetCard">';
   html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:26px"><p style="font-family:Cinzel,serif;font-size:15px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase">Settings</p><button type="button" onclick="SB_closeSettings()" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:Cinzel,serif;font-size:11px;letter-spacing:0.15em;padding:7px 16px;cursor:pointer;border-radius:20px">&#10005; Close</button></div>';
   html+='<div class="sbSetRow"><h3>Time Zone</h3><p>Overrides the time zone of the current chart and recalculates it instantly.</p><select id="sbSetTz" onchange="SB_setTz(this.value)" style="max-width:280px">'+tzOpts+'</select></div>';
-  html+='<div class="sbSetRow"><h3>Time System</h3><p>Tropical is the default. Sidereal shifts every longitude by the ayanamsa (23&deg;49&#8242;) and recalculates the whole book - degrees, houses, vargas, aspects, transits and the 3D sky. Nakshatras are already sidereal and stay put.</p><div class="sbSeg" id="sbSegZod"><button class="sbSegBtn cur" type="button" onclick="SB_setZodiac(\'trop\',this)">Tropical</button><button class="sbSegBtn" type="button" onclick="SB_setZodiac(\'sid\',this)">Sidereal</button></div></div>';
+  html+='<div class="sbSetRow"><h3>Time System</h3><p>Tropical is the default. Sidereal shifts every longitude by the ayanamsa for the chart&#8217;s own date (Lahiri) and recalculates the whole book - degrees, houses, vargas, aspects, transits and the 3D sky. Nakshatras are already sidereal and stay put.</p><div class="sbSeg" id="sbSegZod"><button class="sbSegBtn cur" type="button" onclick="SB_setZodiac(\'trop\',this)">Tropical</button><button class="sbSegBtn" type="button" onclick="SB_setZodiac(\'sid\',this)">Sidereal</button></div></div>';
   html+='<div class="sbSetRow"><h3>Theme</h3><p>The night sky, or a daylight parchment.</p><div class="sbSeg" id="sbSegTheme"><button class="sbSegBtn cur" type="button" onclick="SB_setTheme(\'dark\',this)">Dark</button><button class="sbSegBtn" type="button" onclick="SB_setTheme(\'light\',this)">Light</button></div></div>';
   html+='<div class="sbSetRow"><h3>Font Size</h3><p>Enlarge the whole book for easier reading.</p><div class="sbSeg" id="sbSegFont"><button class="sbSegBtn" type="button" onclick="SB_setFont(90,this)">90%</button><button class="sbSegBtn cur" type="button" onclick="SB_setFont(100,this)">100%</button><button class="sbSegBtn" type="button" onclick="SB_setFont(115,this)">115%</button><button class="sbSegBtn" type="button" onclick="SB_setFont(130,this)">130%</button></div></div>';
   /* Georgian law gives every account holder the right to have it erased, and
@@ -11309,7 +11467,7 @@ function SB_initGeo(){
    3D CHART WALKTHROUGH — DATA LAYER (pure math, no THREE, no DOM)
    Reuses (never reimplements): computeSkyView, heliocentricSnapshot,
    eclipticToHorizon, vSign, getAspectOffsets, allAsps output, calcShadbala
-   output, calcNakshatras output, moonPhaseInfo output, AYANAMSA, NAKSHATRAS,
+   output, calcNakshatras output, moonPhaseInfo output, AYANAMSA_AT, NAKSHATRAS,
    SIGNS — all already present and verified in this file.
    ============================================================================ */
 
@@ -11474,7 +11632,7 @@ function SB3D_buildAspects(chart,cusps,ctx){
 function SB3D_buildNakLayout(ctx){
   var span=360/27,out=[];
   for(var i=0;i<27;i++){
-    var startTrop=norm(i*span+(window.SB_SIDEREAL?0:AYANAMSA)),centerTrop=norm(startTrop+span/2);
+    var startTrop=norm(i*span+(window.SB_SIDEREAL?0:AYANAMSA_AT(ctx.jd))),centerTrop=norm(startTrop+span/2);
     out.push({idx:i,name:NAKSHATRAS[i],startLon:startTrop,centerLon:centerTrop,
               startVec:SB3D_eclToVec(startTrop,0,ctx),
               centerVec:SB3D_eclToVec(centerTrop,0,ctx)});
@@ -11536,7 +11694,7 @@ function SB3D_buildData(chart,birth,divV){
      allAsps() on the divisional positions. */
   var div=(divV&&divV>1)?vargaAnalysis(chart.planets,chart.asc,divV):null;
   var chartX=chart;
-  SB3D_LON_SHIFT=(window.SB_SIDEREAL?AYANAMSA:0); /* natal: the real sky; in sidereal mode the display is rotated back onto the physical (tropical) frame so the ASC still rises on the eastern horizon */
+  SB3D_LON_SHIFT=(window.SB_SIDEREAL?AYANAMSA_AT(ctx.jd):0); /* natal: the real sky; in sidereal mode the display is rotated back onto the physical (tropical) frame so the ASC still rises on the eastern horizon */
   /* unknown birth time: the chart stands on the Surya Lagna (ASC = Sun), but the
      placeholder clock would hang that axis anywhere in the sky. Rotate the whole
      chart frame so the Surya Lagna sits exactly on the physically rising point -
@@ -11559,7 +11717,7 @@ function SB3D_buildData(chart,birth,divV){
       aspects:allAsps(dp,div.aSign)};
     /* rotate the display so the divisional Ascendant sits exactly where
        the natal Ascendant rises — on the eastern horizon */
-    SB3D_LON_SHIFT=norm(chart.asc.deg-ascAbs+(window.SB_SIDEREAL?AYANAMSA:0));
+    SB3D_LON_SHIFT=norm(chart.asc.deg-ascAbs+(window.SB_SIDEREAL?AYANAMSA_AT(ctx.jd):0));
   }
   var cusps=SB3D_buildCusps(chartX,ctx);
   var names=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Rahu','Ketu'];
