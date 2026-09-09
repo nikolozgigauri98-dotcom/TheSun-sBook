@@ -4304,6 +4304,8 @@ ka:{
 "Shodashamsha":"შოდაშამშა",
 "Show Amsha Layers":"მაჩვენე ამშას ფენები",
 "Show Aspects":"მაჩვენე ასპექტები",
+"Show Aspects ▼":"მაჩვენე ასპექტები ▼",
+"Hide Aspects ▲":"დამალე ასპექტები ▲",
 "Show Bala":"მაჩვენე ბალა",
 "Show Outer Planets":"მაჩვენე გარე პლანეტები",
 "Show Transit Planets":"მაჩვენე ტრანზიტები",
@@ -5799,6 +5801,96 @@ function drawChart(vd,sz){
     signPts.push({x:mx+nx*badgeR*0.30,y:my+ny*badgeR*0.30,r:badgeR*0.82});
   }
 
+
+  /* ---------------------------------------------------------------
+     HOUSE NUMBERS.  Nothing above says which diamond is which house,
+     and that is the one thing a newcomer cannot read off the shape.
+
+     The four edge midpoints carry them. Three houses meet at each -
+     A: II | I | XII,  C: XI | X | IX,  E: VIII | VII | VI,
+     G: V | IV | III - which is all twelve, once each. The outer edge
+     is a straight line, so the badge is the same half-ring as the
+     others with its diameter lying on that edge, opening inward.
+
+     No centre slide is needed here. The three wedges are already
+     symmetric about the middle (36.87 / 106.26 / 36.87 along the top
+     and bottom, 53.13 / 73.74 / 53.13 down the sides), so the badge
+     reads level as drawn. The house-boundary strokes already run
+     through it, which is what divides it into three compartments -
+     nothing extra is drawn.
+
+     The two outer wedges are narrow, and a numeral like VIII is wide.
+     The ring is the shared badgeR, so rather than inflate it for the
+     worst case each numeral shrinks on its own until its box clears
+     the black lines, and only the ones that need it do.
+
+     The middle wedge is the kendra - I, IV, VII, X - and its bisector
+     points straight at the centre of the chart. Those four are seated
+     from the far end inwards, so each rests against the inner edge of
+     its ring and leans toward the middle: I down, VII up, IV right,
+     X left. Seated from the near end like the rest they hugged their
+     own edge of the chart and the badge read lopsided.
+     --------------------------------------------------------------- */
+  var numR=badgeR;                                 /* the same ring as everywhere else */
+  var numF0=Math.max(8,Math.round(m2*0.55));
+  var ROMAN=['','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+  /* rough advance widths in a serif face, in units of the font size */
+  var RW={I:0.33,II:0.66,III:0.99,IV:1.05,V:0.72,VI:1.05,VII:1.38,VIII:1.71,IX:1.11,X:0.78,XI:1.11,XII:1.44};
+  var NPLAN=[['A','B',[[2,'H','ip'],[1,'ip','Q'],[12,'Q','B']]],
+             ['C','D',[[11,'B','Q'],[10,'Q','R'],[9,'R','D']]],
+             ['E','F',[[8,'D','R'],[7,'R','S'],[6,'S','F']]],
+             ['G','H',[[5,'F','S'],[4,'S','ip'],[3,'ip','H']]]];
+  /* below this the narrow wedges cannot hold VIII and XII at a readable size,
+     so the whole set stands down rather than shipping a badge with two
+     numerals silently missing. drawChart is only called at 360 and 560. */
+  if(sz>=360){
+  for(var ni=0;ni<NPLAN.length;ni++){
+    var NV=K[NPLAN[ni][0]], NB=K[NPLAN[ni][1]], tri=NPLAN[ni][2];
+    var edx=NB[0]-NV[0], edy=NB[1]-NV[1], eL=vlen(edx,edy);
+    edx/=eL; edy/=eL;                                   /* along the outer edge */
+    var inx=K.CC[0]-NV[0], iny=K.CC[1]-NV[1], iL=vlen(inx,iny); inx/=iL; iny/=iL;
+    var nnx=edy, nny=-edx;                              /* pick the inward normal */
+    if(nnx*inx+nny*iny<0){nnx=-nnx;nny=-nny;}
+    var q1x=NV[0]+edx*numR, q1y=NV[1]+edy*numR;
+    var q2x=NV[0]-edx*numR, q2y=NV[1]-edy*numR;
+    var nsw=((edx*nny-edy*nnx)>0)?1:0;
+    svg+='<path d="M'+Math.round(q1x)+','+Math.round(q1y)+' A'+numR+','+numR+' 0 0 '+nsw+' '+Math.round(q2x)+','+Math.round(q2y)+' Z" fill="none" stroke="'+BADGE_STROKE+'" stroke-width="'+BADGE_SW+'"/>';
+    for(var ti=0;ti<tri.length;ti++){
+      var hN=tri[ti][0], riN=H2R[hN], txt=ROMAN[hN];
+      var av=[K[tri[ti][1]][0]-NV[0],K[tri[ti][1]][1]-NV[1]];
+      var bv=[K[tri[ti][2]][0]-NV[0],K[tri[ti][2]][1]-NV[1]];
+      var aL=vlen(av[0],av[1]), bL=vlen(bv[0],bv[1]);
+      var bx=av[0]/aL+bv[0]/bL, by=av[1]/aL+bv[1]/bL, bL2=vlen(bx,by);
+      bx/=bL2; by/=bL2;                                  /* the wedge's bisector */
+      /* the kendra sits in the middle wedge; seat it from the far end so it
+         leans toward the centre of the chart */
+      var deep=(ti===1);
+      var put=null, F;
+      for(F=numF0;F>=7&&!put;F--){
+        var hwN=RW[txt]*F/2, hhN=F*0.36, padN=Math.max(1,F*0.12);
+        var pwN=hwN+padN, phN=hhN+padN;
+        var limN=numR-Math.max(hwN,hhN)*0.30-padN*0.7, dN;
+        for(dN=deep?numR*0.64:numR*0.18; deep?(dN>=numR*0.18):(dN<=numR*0.92); dN+=(deep?-1:1)){
+          var xN=NV[0]+bx*dN, yN=NV[1]+by*dN;
+          if(!(inReg(riN,xN-pwN,yN-phN)&&inReg(riN,xN+pwN,yN-phN)&&
+               inReg(riN,xN-pwN,yN+phN)&&inReg(riN,xN+pwN,yN+phN)))continue;
+          var farN=0,sxN,syN,exN,eyN;
+          for(sxN=-1;sxN<=1;sxN+=2)for(syN=-1;syN<=1;syN+=2){
+            exN=xN+sxN*hwN-NV[0]; eyN=yN+syN*hhN-NV[1];
+            farN=Math.max(farN,Math.sqrt(exN*exN+eyN*eyN));
+          }
+          if(farN<=limN){put={x:xN,y:yN,f:F,w:hwN,h:hhN};break;}
+        }
+      }
+      if(put){
+        svg+='<text x="'+Math.round(put.x)+'" y="'+Math.round(put.y+put.f*0.35)+'" text-anchor="middle" font-size="'+put.f+'px" fill="#e8c97a" font-family="Cinzel,serif" letter-spacing="0.5">'+txt+'</text>';
+        signPts.push({x:put.x,y:put.y,r:Math.max(put.w,put.h)+put.f*0.30});
+      }
+    }
+    signPts.push({x:NV[0]+nnx*numR*0.34,y:NV[1]+nny*numR*0.34,r:numR*0.56});
+  }
+  }
+
   /* a glyph block is clear when none of its cells touch a sign badge */
   function clearOfBadges(bl,cols,rows,n){
     for(var i=0;i<n;i++){
@@ -5827,7 +5919,14 @@ function drawChart(vd,sz){
        houses 5 and 6 no longer need their old one-squeezed-row exception.
        --------------------------------------------------------------- */
     var rgi=H2R[h2], bnd=yRange(rgi);
-    var cols=(pn===1?1:(pn===2?2:(pn<=4?2:3))), rows=Math.ceil(pn/cols);
+    /* Houses 3, 5, 9 and 11 are the side triangles: their apex points
+       inward, so they are tall and narrow where the others are wide and
+       short. A pair laid side by side there has to shrink to fit the
+       width; stacked, it uses the height the house actually has. Only a
+       pair is special-cased - one planet has no arrangement, and three or
+       more already go two-and-two. */
+    var SIDE_TRI={3:1,5:1,9:1,11:1};
+    var cols=(pn===1?1:(pn===2?(SIDE_TRI[h2]?1:2):(pn<=4?2:3))), rows=Math.ceil(pn/cols);
     var want=(pn===1?3.0:(pn===2?2.0:(pn<=4?1.7:1.25)));
     var best=null, pass, sc, cyc;
     /* Size first, then tidiness. For each size, largest down, we try to keep
@@ -8088,27 +8187,31 @@ function renderReading(name,date,time,place,chart,aiTxt){
     if(sb!==null)html+='Shadbala: <span style="color:var(--gold)">'+sb+'/100</span>';
     html+='</p></div></div>';
     /* Both directions, exactly as the planet pages read them: the headings
-       always stand, and an empty side says so rather than vanishing. */
-    var _pc=PCOL[pl]||'#c9a84c';
-    html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Received</p>';
-    if(recv.length){html+='<div class="asp-grid">';
+       always stand, and an empty side says so rather than vanishing.
+       Two grids of pills sitting open under every planet made the page hard
+       to scan, so the pair is built into one string and folded behind a
+       single toggle - the same .adsub panel the yoga lists use. */
+    var _pc=PCOL[pl]||'#c9a84c', _asp='';
+    _asp+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Received</p>';
+    if(recv.length){_asp+='<div class="asp-grid">';
       for(var ri=0;ri<recv.length;ri++){var _rc=PCOL[recv[ri].from]||'#aaa';
-        html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_rc+';font-family:Cinzel,serif;font-size:12px">'+recv[ri].from+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+recv[ri].str+'%</span></div>';}
-      html+='</div>';}
-    else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects received.</p>';}
+        _asp+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_rc+';font-family:Cinzel,serif;font-size:12px">'+recv[ri].from+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+recv[ri].str+'%</span></div>';}
+      _asp+='</div>';}
+    else{_asp+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects received.</p>';}
     /* what this luminary throws, and where it lands */
     var _gv=(typeof SB_aspGiven==='function')?SB_aspGiven(chart,pl):{pl:[],hs:[]};
-    html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Given</p>';
-    if(_gv.pl.length){html+='<div class="asp-grid">';
+    _asp+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Given</p>';
+    if(_gv.pl.length){_asp+='<div class="asp-grid">';
       for(var gi=0;gi<_gv.pl.length;gi++){var _gc=PCOL[_gv.pl[gi].to]||'#aaa';
-        html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_gc+';font-family:Cinzel,serif;font-size:12px">'+_gv.pl[gi].to+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+_gv.pl[gi].str+'%</span></div>';}
-      html+='</div>';}
-    else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects sent to other planets.</p>';}
+        _asp+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_gc+';font-family:Cinzel,serif;font-size:12px">'+_gv.pl[gi].to+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+_gv.pl[gi].str+'%</span></div>';}
+      _asp+='</div>';}
+    else{_asp+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects sent to other planets.</p>';}
     if(_gv.hs.length){
-      html+='<p style="font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);text-transform:uppercase;margin:12px 0 6px">On houses</p><div class="asp-grid">';
+      _asp+='<p style="font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);text-transform:uppercase;margin:12px 0 6px">On houses</p><div class="asp-grid">';
       for(var hi=0;hi<_gv.hs.length;hi++){var _gh=_gv.hs[hi];
-        html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_pc+';font-family:Cinzel,serif;font-size:12px">'+T('House {0}',[_gh.h])+(_gh.own?' <span style="color:var(--gold-dim);font-size:10px">'+T('stands here')+'</span>':'')+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+_gh.str+'%</span></div>';}
-      html+='</div>';}
+        _asp+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+_pc+';font-family:Cinzel,serif;font-size:12px">'+T('House {0}',[_gh.h])+(_gh.own?' <span style="color:var(--gold-dim);font-size:10px">'+T('stands here')+'</span>':'')+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+_gh.str+'%</span></div>';}
+      _asp+='</div>';}
+    html+='<div style="margin:14px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Aspects ▲\':\'Show Aspects ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Aspects ▼</button><div class="adsub" style="margin-top:8px;padding:2px 10px 10px">'+_asp+'</div></div>';
     html+='<div style="height:8px"></div>';
     return html;
   }
@@ -8973,25 +9076,28 @@ function SB_planetSectionHTML(chart,pl){
   if(sv!==null)html+='Dignity across 9 charts: <span style="color:var(--gold)">'+sv+'/100</span><br>';
   if(sb!==null)html+='Shadbala: <span style="color:var(--gold)">'+sb+'/100</span>';
   html+='</p></div></div>';
-  html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Received</p>';
-  if(recv.length){html+='<div class="asp-grid">';
+  /* the same fold as the luminaries: both directions in one panel */
+  var _asp='';
+  _asp+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Received</p>';
+  if(recv.length){_asp+='<div class="asp-grid">';
     for(var ri=0;ri<recv.length;ri++){var rc=PCOL[recv[ri].from]||'#aaa';
-      html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+rc+';font-family:Cinzel,serif;font-size:12px">'+recv[ri].from+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+recv[ri].str+'%</span></div>';}
-    html+='</div>';}
-  else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects received.</p>';}
+      _asp+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+rc+';font-family:Cinzel,serif;font-size:12px">'+recv[ri].from+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+recv[ri].str+'%</span></div>';}
+    _asp+='</div>';}
+  else{_asp+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects received.</p>';}
   /* the other direction: what this planet throws, and where it lands */
   var giv=SB_aspGiven(chart,pl);
-  html+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Given</p>';
-  if(giv.pl.length){html+='<div class="asp-grid">';
+  _asp+='<p style="font-size:12px;letter-spacing:0.15em;color:var(--gold-dim);text-transform:uppercase;margin:14px 0 8px">Aspects Given</p>';
+  if(giv.pl.length){_asp+='<div class="asp-grid">';
     for(var gi=0;gi<giv.pl.length;gi++){var gc=PCOL[giv.pl[gi].to]||'#aaa';
-      html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+gc+';font-family:Cinzel,serif;font-size:12px">'+giv.pl[gi].to+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+giv.pl[gi].str+'%</span></div>';}
-    html+='</div>';}
-  else{html+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects sent to other planets.</p>';}
+      _asp+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+gc+';font-family:Cinzel,serif;font-size:12px">'+giv.pl[gi].to+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+giv.pl[gi].str+'%</span></div>';}
+    _asp+='</div>';}
+  else{_asp+='<p style="font-size:12px;color:var(--gold-dim);font-style:italic">No significant aspects sent to other planets.</p>';}
   if(giv.hs.length){
-    html+='<p style="font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);text-transform:uppercase;margin:12px 0 6px">On houses</p><div class="asp-grid">';
+    _asp+='<p style="font-size:11px;letter-spacing:0.14em;color:var(--gold-dim);text-transform:uppercase;margin:12px 0 6px">On houses</p><div class="asp-grid">';
     for(var hi=0;hi<giv.hs.length;hi++){var gh=giv.hs[hi];
-      html+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+col+';font-family:Cinzel,serif;font-size:12px">'+T('House {0}',[gh.h])+(gh.own?' <span style="color:var(--gold-dim);font-size:10px">'+T('stands here')+'</span>':'')+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+gh.str+'%</span></div>';}
-    html+='</div>';}
+      _asp+='<div class="asp-pill" style="display:flex;justify-content:space-between;align-items:baseline"><span style="color:'+col+';font-family:Cinzel,serif;font-size:12px">'+T('House {0}',[gh.h])+(gh.own?' <span style="color:var(--gold-dim);font-size:10px">'+T('stands here')+'</span>':'')+'</span><span style="color:var(--gold);font-family:Cinzel,serif">'+gh.str+'%</span></div>';}
+    _asp+='</div>';}
+  html+='<div style="margin:14px 0 0"><button onclick="this.nextElementSibling.classList.toggle(\'open\');this.textContent=this.nextElementSibling.classList.contains(\'open\')?\'Hide Aspects ▲\':\'Show Aspects ▼\'" style="background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:\'Cinzel\',serif;font-size:11px;letter-spacing:0.15em;padding:7px 18px;cursor:pointer;text-transform:uppercase">Show Aspects ▼</button><div class="adsub" style="margin-top:8px;padding:2px 10px 10px">'+_asp+'</div></div>';
   html+='</div>';
   return html;
 }
