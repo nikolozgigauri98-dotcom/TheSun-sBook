@@ -133,6 +133,17 @@
   input[type="email"]{ background:var(--panel); border:1px solid var(--line); color:var(--ink); border-radius:.375rem; padding:.5rem .75rem; width:100%; font-size:.9rem; }
   input[type="email"]::placeholder{ color:var(--ink-2); opacity:.7; }
   .loading{ font-size:.85rem; color:var(--ink-2); padding:2rem 0; text-align:center; }
+  .edition{ display:flex; flex-direction:column; gap:.9rem; padding:1rem; }
+  .cover-btn{ position:relative; display:block; width:100%; padding:0; border:0; background:none; cursor:pointer; border-radius:.35rem; overflow:hidden; }
+  .cover-btn:disabled{ cursor:default; }
+  .cover-btn img{ display:block; width:100%; aspect-ratio:2/3; object-fit:cover; box-shadow:0 10px 26px rgba(0,0,0,.4); border-radius:.35rem; }
+  .cover-btn:hover:not(:disabled) img{ box-shadow:0 14px 32px rgba(0,0,0,.5); }
+  .is-soon .cover-btn img{ filter:grayscale(.75) brightness(.55); }
+  .cover-fallback{ display:none; position:absolute; inset:0; align-items:center; justify-content:center; padding:1rem; text-align:center; color:var(--head); background:var(--panel); font-size:.95rem; }
+  .no-cover .cover-fallback{ display:flex; }
+  .no-cover img{ display:none; }
+  .ed-body{ display:flex; flex-direction:column; gap:.5rem; flex:1; }
+  .ed-body .btn{ align-self:flex-start; margin-top:auto; }
 </style>
 </head>
 
@@ -479,51 +490,49 @@ async function loadBooks(){
 function renderCatalogue(){
   const wrap = $("catalogue");
   if (!booksMeta.length) return;
-
-  wrap.innerHTML = booksMeta.map((b) => {
-    const glyph = (BOOK_GLYPH[b.id] || NODE_GLYPH) + VS;
-    const reason = openReason(b.id);
-    const readable = canRead(b.id);
-
-    let status;
-    if (reason){
-      status = `<span class="badge ${reason.kind === "owned" ? "" : "badge-quiet"}">${esc(reason.label)}</span>`;
-    } else if (user){
-      status = `<span class="badge badge-quiet">Locked &middot; purchase or subscription</span>`;
-    } else {
-      status = b.id === "part1"
-        ? `<span class="badge badge-quiet">Free &mdash; sign in to read</span>`
-        : `<span class="badge badge-quiet">Requires purchase or subscription</span>`;
-    }
-
-    const langBtns = LANGS.map((lang) => {
-      const avail = langAvail[`${b.id}/${lang}`]?.exists;
-      if (avail){
-        return `<button class="btn chrome text-xs" data-open="${esc(b.id)}" data-lang="${lang}">${esc(LANG_LABEL[lang])}</button>`;
-      }
-      return `<span class="flex flex-col items-start gap-1">
-                <button class="btn chrome text-xs" disabled>${esc(LANG_LABEL[lang])}</button>
-                <span class="text-[10px] ka-text" style="color:var(--ink-2);">${esc(LANG_SOON[lang])}</span>
-              </span>`;
-    }).join("");
-
-    return `
-      <article class="card p-5 flex flex-col gap-3">
-        <div class="flex items-start gap-3">
-          <span class="glyph text-2xl" style="color:${readable || !user ? "var(--accent)" : "var(--accent-dim)"};" aria-hidden="true">${glyph}</span>
-          <div style="min-width:0;">
-            <h2 class="chrome text-sm" style="color:var(--head); line-height:1.3;">${esc(b.titleEn || b.id)}</h2>
-            <div class="ka-text text-xs mt-0.5" style="color:var(--ink-2);">${esc(b.titleKa || "")}</div>
-          </div>
-        </div>
-        <div>${status}</div>
-        <div class="mt-auto flex flex-wrap items-start gap-2">${langBtns}</div>
-      </article>`;
-  }).join("");
-
-  wrap.querySelectorAll("[data-open]").forEach((btn) => {
-    btn.onclick = () => requestOpen(btn.dataset.open, btn.dataset.lang);
+  // one card per EDITION (book × language), each with its own cover
+  const cards = [];
+  for (const b of booksMeta) for (const lang of LANGS) cards.push(editionCard(b, lang));
+  wrap.innerHTML = cards.join("");
+  wrap.querySelectorAll("[data-open]").forEach((el) => {
+    el.onclick = () => requestOpen(el.dataset.open, el.dataset.lang);
   });
+}
+
+function editionCard(b, lang){
+  const avail = !!langAvail[`${b.id}/${lang}`]?.exists;
+  const reason = openReason(b.id);
+  const title = lang === "ka" ? (b.titleKa || b.id) : (b.titleEn || b.id);
+  const sub   = lang === "ka" ? (b.titleEn || "") : (b.titleKa || "");
+
+  let status;
+  if (!avail){
+    status = `<span class="badge badge-quiet">${esc(LANG_SOON[lang])}</span>`;
+  } else if (reason){
+    status = `<span class="badge ${reason.kind === "owned" ? "" : "badge-quiet"}">${esc(reason.label)}</span>`;
+  } else if (user){
+    status = `<span class="badge badge-quiet">Locked &middot; purchase or subscription</span>`;
+  } else {
+    status = b.id === "part1"
+      ? `<span class="badge badge-quiet">Free &mdash; sign in to read</span>`
+      : `<span class="badge badge-quiet">Requires purchase or subscription</span>`;
+  }
+
+  const attr = avail ? `data-open="${esc(b.id)}" data-lang="${lang}"` : "disabled";
+  const cover = `/img/covers/${lang}-${b.id}.jpg`;
+  return `
+    <article class="card edition${avail ? "" : " is-soon"}">
+      <button class="cover-btn" ${attr} aria-label="${esc(title)}">
+        <img src="${cover}" alt="" loading="lazy" onerror="this.closest('.cover-btn').classList.add('no-cover')">
+        <span class="cover-fallback chrome">${esc(title)}</span>
+      </button>
+      <div class="ed-body">
+        <h2 class="chrome text-sm" style="color:var(--head); line-height:1.3;">${esc(title)}</h2>
+        <div class="${lang === "ka" ? "" : "ka-text"} text-xs" style="color:var(--ink-2);">${esc(sub)}</div>
+        <div>${status}</div>
+        ${avail ? `<button class="btn btn-gold chrome text-xs" ${attr}>${lang === "ka" ? "კითხვა" : "Read"}</button>` : ""}
+      </div>
+    </article>`;
 }
 
 function requestOpen(bookId, lang){
