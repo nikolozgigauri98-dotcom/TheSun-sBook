@@ -166,8 +166,13 @@
   <!-- ================= Catalogue ================= -->
   <main id="view-catalogue" style="flex:1;">
     <div style="max-width:1200px; margin:0 auto; padding:2rem 1rem;">
-      <h1 class="chrome text-xl mb-1" style="color:var(--head);">Library</h1>
-      <p class="text-sm mb-6" style="color:var(--ink-2);">Three volumes of Vedic astrology. Part one is free to any signed-in reader.</p>
+      <div class="flex items-start gap-3 mb-6">
+        <div style="flex:1; min-width:0;">
+          <h1 class="chrome text-xl mb-1" style="color:var(--head);">Library</h1>
+          <p class="text-sm" style="color:var(--ink-2);">Three volumes of Vedic astrology. Part one is free to any signed-in reader.</p>
+        </div>
+        <button id="langBtn" class="btn chrome text-xs" title="Language"></button>
+      </div>
       <div id="catalogue" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="card p-5 text-sm" style="color:var(--ink-2);">Loading the catalogue&hellip;</div>
       </div>
@@ -180,6 +185,7 @@
     <!-- top bar: back, title, page buttons, bookmark, theme, size, contents -->
     <div class="rd-top border-b" style="border-color:var(--line); background:var(--panel);">
       <div class="px-3 py-2 flex items-center gap-2 flex-wrap" style="max-width:1200px; margin:0 auto;">
+        <a class="btn btn-icon" href="https://thesunsbook.com/" title="Back to the website" aria-label="Back to the website" style="text-decoration:none;">&#x2302;</a>
         <button id="btn-back" class="btn btn-icon chrome" title="Back to library">&larr; <span class="hidden sm:inline text-xs">Library</span></button>
         <span id="reader-glyph" class="glyph" style="color:var(--accent);" aria-hidden="true"></span>
         <span id="reader-title" class="chrome text-xs sm:text-sm truncate" style="color:var(--head); max-width:9rem;"></span>
@@ -332,6 +338,8 @@ const chunkInflight = new Map();
 const chunkBase = {};         // `${bookId}/${lang}` -> 0 or 1
 
 let current = null;           // {bookId, lang, book, page (left page of the view), total}
+// the website's language choice (same key, same default: English)
+let catLang = (() => { try { return localStorage.getItem("sb_lang") === "ka" ? "ka" : "en"; } catch { return "en"; } })();
 let navToken = 0;             // ignores answers from pages the reader has already left
 
 /* ============================== Entitlement =============================== */
@@ -494,9 +502,17 @@ async function loadBooks(){
 function renderCatalogue(){
   const wrap = $("catalogue");
   if (!booksMeta.length) return;
-  // one card per EDITION (book × language), each with its own cover
-  const cards = [];
-  for (const b of booksMeta) for (const lang of LANGS) cards.push(editionCard(b, lang));
+  // one card per book in the chosen language, each with its own cover
+  const cards = booksMeta.map((b) => editionCard(b, catLang));
+  const langBtn = $("langBtn");
+  if (langBtn){
+    langBtn.textContent = catLang === "ka" ? "English" : "ქართული";
+    langBtn.onclick = () => {
+      catLang = catLang === "ka" ? "en" : "ka";
+      try { localStorage.setItem("sb_lang", catLang); } catch {}
+      renderCatalogue();
+    };
+  }
   wrap.innerHTML = cards.join("");
   wrap.querySelectorAll("[data-open]").forEach((el) => {
     el.onclick = () => requestOpen(el.dataset.open, el.dataset.lang);
